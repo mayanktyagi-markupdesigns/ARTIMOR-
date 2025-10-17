@@ -1,0 +1,152 @@
+@extends('admin.layouts.app')
+@section('content')
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0 fw-bold">Add New Cut outs</h3>
+        <a href="{{ route('admin.cut.outs.list') }}" class="btn btn-primary btn-custom-add">
+            <i class="bi bi-arrow-left me-1"></i>Back to List
+        </a>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @include('admin.layouts.alerts')
+            <div class="">
+                <form action="{{ route('admin.cut.outs.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- Name -->
+                        <div class="col-md-4 mb-3">
+                            <label for="name">Name</label><span style="color:red;">*</span>
+                            <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}"
+                                placeholder="Enter name">
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <!-- series_type -->
+                        <div class="col-md-4 mb-3">
+                            <label for="series_type">Series Type</label><span style="color:red;">*</span>
+                            <select class="form-select" name="series_type" id="series_type">
+                                <option value="">Select Series Type</option>
+                                <option value="Lorreine r series"
+                                    {{ old('series_type') == 'Lorreine r series' ? 'selected' : '' }}>Lorreine r series
+                                </option>
+                                <option value="LORREINE SUPERPLUG SERIES"
+                                    {{ old('series_type') == 'LORREINE SUPERPLUG SERIES' ? 'selected' : '' }}>LORREINE
+                                    SUPERPLUG SERIES</option>
+                                <option value="LORREINE BLACK QUARTZ SERIES"
+                                    {{ old('series_type') == 'LORREINE BLACK QUARTZ SERIES' ? 'selected' : '' }}>
+                                    LORREINE BLACK QUARTZ SERIES</option>
+                                <option value="LORREINE ROYAL SERIES"
+                                    {{ old('series_type') == 'LORREINE ROYAL SERIES' ? 'selected' : '' }}>LORREINE ROYAL
+                                    SERIES</option>
+                            </select>
+                            @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>        
+                        <!-- Price -->
+                        <div class="col-md-4 mb-3">
+                            <label for="price">Per Sq/Price</label>
+                            <input type="number" step="0.01" class="form-control" name="price" id="price" 
+                                value="{{ old('price') }}" placeholder="Enter price">
+                            @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>               
+                        <!-- Status -->
+                        <div class="col-md-4 mb-3">
+                            <label for="status">Status</label>
+                            <select class="form-select" name="status" id="status">
+                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            @error('status') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <!-- Additional Images -->
+                        <div class="col-md-4 mb-3">
+                            <label for="images">Images</label>
+                            <input type="file" class="form-control" name="images[]" id="images" multiple
+                                accept=".jpg,.jpeg,.png,.svg">
+                            @error('images') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                         <!-- Description -->
+                        <div class="col-md-6 mb-3">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" name="description" id="description" rows="3"
+                                placeholder="Enter description">{{ old('description') }}</textarea>
+                            @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <!-- Image Preview Box -->
+                        <div class="col-md-6 mb-3">
+                            <label>Preview of Selected Images:</label>
+                            <div id="preview-box" class="border p-3 rounded bg-light">
+                                <p class="mb-2"><strong>Total Images:</strong> <span id="image-count">0</span></p>
+                                <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <a href="{{ route('admin.cut.outs.list') }}" class="btn btn-danger ms-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@push('scripts')
+<script>
+const imageInput = document.getElementById('images');
+const previewContainer = document.getElementById('image-preview');
+const imageCount = document.getElementById('image-count');
+let selectedFiles = [];
+
+imageInput.addEventListener('change', function(event) {
+    selectedFiles = Array.from(event.target.files);
+    renderPreviews();
+});
+
+function renderPreviews() {
+    previewContainer.innerHTML = '';
+    imageCount.textContent = selectedFiles.length;
+
+    selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('position-relative');
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('rounded');
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+            removeBtn.style.padding = '2px 6px';
+            removeBtn.style.fontSize = '14px';
+            removeBtn.style.lineHeight = '1';
+            removeBtn.onclick = function() {
+                selectedFiles.splice(index, 1);
+                renderPreviews();
+                updateFileInput();
+            };
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            previewContainer.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+    imageInput.files = dataTransfer.files;
+    imageCount.textContent = selectedFiles.length;
+}
+</script>
+@endpush
+
+@endsection
