@@ -61,8 +61,8 @@
                         <strong>Brand:</strong> {{ $material->brand ?? 'N/A' }}<br>
                         <strong>Color:</strong> {{ $material->color ?? 'N/A' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($material->price * (($dimensions['blad1']['width'] * $dimensions['blad1']['height']) / 10000), 2) ?? 'N/A' }}<br>
-                        @if($material->image && file_exists(public_path('Uploads/materials/' . $material->image)))
-                        <img src="{{ asset('Uploads/materials/' . $material->image) }}" alt="{{ $material->name }}"
+                        @if($material->image && file_exists(public_path('uploads/materials/' . $material->image)))
+                        <img src="{{ asset('uploads/materials/' . $material->image) }}" alt="{{ $material->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -78,8 +78,8 @@
                     <td>
                         <strong>Name:</strong> {{ $materialType->name ?? 'N/A' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($materialType->price * (($dimensions['blad1']['width'] * $dimensions['blad1']['height']) / 10000), 2) ?? 'N/A' }}<br>
-                        @if($materialType->image && file_exists(public_path('Uploads/material-types/' . $materialType->image)))
-                        <img src="{{ asset('Uploads/material-types/' . $materialType->image) }}" alt="{{ $materialType->name }}"
+                        @if($materialType->image && file_exists(public_path('uploads/material-types/' . $materialType->image)))
+                        <img src="{{ asset('uploads/material-types/' . $materialType->image) }}" alt="{{ $materialType->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -95,8 +95,8 @@
                     <td>
                         <strong>Name:</strong> {{ $layout->name ?? 'N/A' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($layout->price * (($dimensions['blad1']['width'] * $dimensions['blad1']['height']) / 10000), 2) ?? 'N/A' }}<br>
-                        @if($layout->image && file_exists(public_path('Uploads/material-layout/' . $layout->image)))
-                        <img src="{{ asset('Uploads/material-layout/' . $layout->image) }}" alt="{{ $layout->name }}"
+                        @if($layout->image && file_exists(public_path('uploads/material-layout/' . $layout->image)))
+                        <img src="{{ asset('uploads/material-layout/' . $layout->image) }}" alt="{{ $layout->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -126,8 +126,8 @@
                         <strong>Thickness:</strong> {{ $quotation->edge_thickness ?? 'N/A' }} cm<br>
                         <strong>Edges to be Finished:</strong> {{ implode(', ', $edgeSelectedEdges) ?: 'None' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($edge->price * (($dimensions['blad1']['width'] * $dimensions['blad1']['height']) / 10000), 2) ?? 'N/A' }}<br>
-                        @if($edge->image && file_exists(public_path('Uploads/material-edge/' . $edge->image)))
-                        <img src="{{ asset('Uploads/material-edge/' . $edge->image) }}" alt="{{ $edge->name }}"
+                        @if($edge->image && file_exists(public_path('uploads/material-edge/' . $edge->image)))
+                        <img src="{{ asset('uploads/material-edge/' . $edge->image) }}" alt="{{ $edge->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -145,8 +145,8 @@
                         <strong>Thickness:</strong> {{ $quotation->back_wall_thickness ?? 'N/A' }} cm<br>
                         <strong>Sides to be Finished:</strong> {{ implode(', ', $backWallSelectedEdges) ?: 'None' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($wall->price * (($dimensions['blad1']['width'] * $dimensions['blad1']['height']) / 10000), 2) ?? 'N/A' }}<br>
-                        @if($wall->image && file_exists(public_path('Uploads/back-wall/' . $wall->image)))
-                        <img src="{{ asset('Uploads/back-wall/' . $wall->image) }}" alt="{{ $wall->name }}"
+                        @if($wall->image && file_exists(public_path('uploads/back-wall/' . $wall->image)))
+                        <img src="{{ asset('uploads/back-wall/' . $wall->image) }}" alt="{{ $wall->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -164,8 +164,8 @@
                         <strong>Type:</strong> {{ ucfirst($quotation->sink_cutout) ?? 'N/A' }}<br>
                         <strong>Number:</strong> {{ $quotation->sink_number ?? 'N/A' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($sink->price * ($quotation->sink_number ?? 1), 2) ?? 'N/A' }}<br>
-                        @if($sink->images->first() && file_exists(public_path('Uploads/sinks/' . $sink->images->first()->image)))
-                        <img src="{{ asset('Uploads/sinks/' . $sink->images->first()->image) }}" alt="{{ $sink->name }}"
+                        @if($sink->images->first() && file_exists(public_path('uploads/sinks/' . $sink->images->first()->image)))
+                        <img src="{{ asset('uploads/sinks/' . $sink->images->first()->image) }}" alt="{{ $sink->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -182,8 +182,8 @@
                         <strong>Kind:</strong> {{ $cutout->name ?? 'N/A' }}<br>
                         <strong>Type:</strong> {{ ucfirst($quotation->cutout_recess_type) ?? 'N/A' }}<br>
                         <strong>Price:</strong> ₹{{ number_format($cutout->price, 2) ?? 'N/A' }}<br>
-                        @if($cutout->images->first() && file_exists(public_path('Uploads/cut-outs/' . $cutout->images->first()->image)))
-                        <img src="{{ asset('Uploads/cut-outs/' . $cutout->images->first()->image) }}" alt="{{ $cutout->name }}"
+                        @if($cutout->images->first() && file_exists(public_path('uploads/cut-outs/' . $cutout->images->first()->image)))
+                        <img src="{{ asset('uploads/cut-outs/' . $cutout->images->first()->image) }}" alt="{{ $cutout->name }}"
                             class="img-thumbnail mt-2" style="max-width: 200px;">
                         @else
                         <span class="text-muted">No Image</span>
@@ -195,7 +195,7 @@
                 <!-- Total Price -->
                 <tr>
                     <th>Total Price</th>
-                    <td><strong>₹{{ number_format($quotation->total_price, 2) }}</strong></td>
+                    <td><strong>€{{ number_format($quotation->total_price, 2) }}</strong></td>
                 </tr>
             </table>
         </div>

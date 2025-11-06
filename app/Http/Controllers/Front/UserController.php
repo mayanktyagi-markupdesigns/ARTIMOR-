@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+
 
 
 class UserController extends Controller
@@ -67,10 +69,10 @@ class UserController extends Controller
         }
 
         $user->save();
+        return redirect()->back()->with('success', 'Profile updated successfully!');
 
-        return back()->with('success', 'Profile updated successfully!');
+        // return back()->with('success', 'Profile updated successfully!');
     }
-
 
     // Handle Logout
     public function logout(Request $request)

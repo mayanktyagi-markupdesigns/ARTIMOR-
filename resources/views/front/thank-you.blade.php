@@ -1,5 +1,11 @@
 @extends('front.layouts.app')
 @section('content')
+
+<style>
+    .section-cl.top-step-section .row {
+        display: none;
+    }
+</style>
     <!-- Steps Section -->
     <div class="main-pg">
         <section class="thank-you-section">

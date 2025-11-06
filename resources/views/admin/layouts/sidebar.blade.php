@@ -27,33 +27,6 @@
                     </a>
                 </li>
 
-                {{-- Banner --}}
-                <li class="nav-item has-treeview {{ request()->is('admin/banner*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/banner*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-image"></i>
-                        <p>
-                            Banners
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.banner.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.banner.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>Banner List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.banner.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.banner.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Banner</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 {{-- Material --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/material*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/material*') ? 'active' : '' }}">
@@ -130,33 +103,6 @@
                                 class="nav-link {{ request()->routeIs('admin.layout.create') ? 'active' : '' }}">
                                 <i class="bi bi-plus-square nav-icon"></i>
                                 <p>Add Material Layout</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Dimension Menu -->
-                <li class="nav-item has-treeview {{ request()->is('admin/dimension*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/dimension*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-arrows-expand"></i>
-                        <p>
-                            Dimensions
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.dimension.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.dimension.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>Dimension List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.dimension.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.dimension.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Dimension</p>
                             </a>
                         </li>
                     </ul>
@@ -269,8 +215,8 @@
                         </li>
                     </ul>
                 </li>
-
-                <!-- Promo Code Menu -->
+                
+                   <!-- Promo Code Menu -->
                 <li class="nav-item has-treeview {{ request()->is('admin/promo-code*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/promo-code*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-ticket-perforated"></i>
@@ -297,7 +243,6 @@
                     </ul>
                 </li>
 
-
                 <!-- Quotation Menu -->
                 <li class="nav-item has-treeview {{ request()->is('admin/quotation*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/quotation*') ? 'active' : '' }}">
@@ -314,7 +259,7 @@
                                 <i class="bi bi-list-ul nav-icon"></i>
                                 <p>Quotation List</p>
                             </a>
-                        </li>
+                        </li>                        
                     </ul>
                 </li>
 

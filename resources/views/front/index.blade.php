@@ -138,7 +138,7 @@ $selectedMaterialId = session('selected_material_id');
 </div>
 <!-- Next Step Button -->
 <div class="text-center my-5 d-flex align-items-center justify-content-center gap-4">
-    <a href="{{ route('home') }}" class="btn btn-secondary cancel-btn hidden">Step Back</a>
+    <a href="{{ route('home') }}" class="btn btn-secondary cancel-btn">Step Back</a>
     <button id="nextStepBtn" class="btn btn-dark btn-primary px-4" data-step="2">Next Step</button>
 </div>
 

@@ -21,7 +21,7 @@ a:focus,button:focus,input:focus,select:focus,textarea:focus{outline:0!important
 .steps{display:flex;justify-content:center;flex-wrap:nowrap;margin:40px 0;overflow-x: auto;}
 .step{text-align:center;flex:1;padding:10px;border-bottom:2px solid var(--black-color)}
 .step.active{border-color:var(--primary-color)}
-.step.completed{border-color:var(--primary-color)}
+.step.completed{border-color:var(--black-color)}
 .step.completed .icon{background:var(--primary-color)}
 .step .icon{width:58px;height:58px;margin:0 auto 10px;border-radius:50%;background:#000;color:var(--white-color);display:flex;align-items:center;justify-content:center;position:relative;font-size:20px}
 .materials .nav-tabs{position:relative}
@@ -188,13 +188,24 @@ input::placeholder {color: #dbdada !important;}
   position: absolute;
   top:100%;
 }
-@media (max-width:719px){
-.banner-title{
-  font-size: 53px;
-    line-height: 55px;
-}
-}
+.thank-you-section {padding: 62px 0;height: 780px;max-height: 100%;}
+.thank-you-section .info-text {max-width: 580px;margin: 0 auto;display: flex;flex-direction: column;justify-content: center;align-items: center;}
+.thank-you-text {display: flex;flex-direction: column;justify-content: center;align-items: center;max-width: 252px;margin: 0 auto 62px;}
+.thank-you-text img {max-width: 100%;}
+.info-text p {text-align: center;margin-bottom: 36px;font-size: 22px;line-height: 40px;font-weight: 300;}
+.info-text .btn-primary {font-size: 17px;line-height: 1;padding: 20px 52px !important;}
 
+@media screen and (max-width: 767px) {
+        .thank-you-section {
+            max-height: 750px;
+        }
+    }
+@media (max-width:719px) {
+    .banner-title{
+      font-size: 53px;
+      line-height: 55px;
+    }
+}
 
 .hidden{
     display: none !important;

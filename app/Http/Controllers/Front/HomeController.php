@@ -284,11 +284,12 @@ public function submitQuote(Request $request)
                 'user_details',
             ]);
 
-            // // Send email to user
+            //Send email to user
             Mail::to($validated['email'])->send(new UserOverviewConfirmationMail($validated));
 
-            // // Send email to admin
+            //Send email to admin
             Mail::to('qatest02md@gmail.com')->send(new AdminOverviewNotificationMail($validated));
+            
             return response()->json(['success' => true, 'message' => 'Quotation submitted successfully']);
         } catch (\Exception $e) {
             Log::error('Error in submitQuote', ['error' => $e->getMessage()]);

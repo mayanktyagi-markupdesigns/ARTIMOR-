@@ -306,6 +306,29 @@
 
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+@endif
+
+@if($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            html: `{!! implode('<br>', $errors->all()) !!}`
+        });
+    </script>
+@endif
 
 <!-- Steps Section -->
 <div class="main-pg">
@@ -343,7 +366,6 @@
                 <div class="profile-section">
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="profile-form">
                         @csrf
-                        @method('PUT')
                         <h2>Profile</h2>
                         <div class="profile-image-upload">
                             <img src="{{ Auth::user()->photo ? asset('uploads/users/'.Auth::user()->photo) : asset('assets/front/img/default-profile.png') }}" 

@@ -161,7 +161,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/view/{id}', [QuotationController::class, 'show'])->name('view');            
         });
         /*---------------------------------End Quotation Controller---------------------------------------------*/
-        
         /*---------------------------------Promo Code Controller------------------------------------------------*/
         Route::prefix('promo-code')->name('promo.code.')->group(function () {
             Route::get('/list', [PromoCodeController::class, 'index'])->name('list');          

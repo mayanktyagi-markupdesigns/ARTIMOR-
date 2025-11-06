@@ -9,7 +9,7 @@
                 </p>
             </div>
             <div class="logo-text">
-                <a href="/">
+                <a href="{{ route('home') }}">
                     <img width="60" src="{{ asset('assets/front/img/logo.png')}}" alt="" />
                 </a>
             </div>
@@ -31,9 +31,8 @@
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <!-- Left Links -->
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://artimar.be/contact-opnemen"
-                            target="_blank">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://artimar.be/contact-opnemen" target="_blank">Contact Us</a></li>
                 </ul>
                 <!-- Right Icons -->
                 <ul class="navbar-nav">
@@ -65,16 +64,16 @@
 </header>
 
 <!-- Steps Section -->
-<div class="main-pg">
-    @foreach (get_banners() as $banner)
-    <div class="hero-banner text-center text-white d-flex align-items-center justify-content-center"
-        style="background: url('{{ asset('uploads/banners/' . $banner->image) }}') center/cover;">
-        <div class="text-white text-center py-5">
-            <h1 class="banner-title">{{ $banner->title }}</h1>
-            <p class="banner-caption">{!! strip_tags($banner->description, '<br>') !!}</p>
-        </div>
-    </div>
-    @endforeach
+<div class="main-pg">   
+    <!--@foreach (get_banners() as $banner)-->
+    <!--<div class="hero-banner text-center text-white d-flex align-items-center justify-content-center"-->
+    <!--     style="background: url('{{ asset('uploads/banners/' . $banner->image) }}') center/cover;">-->
+    <!--    <div class="text-white text-center py-5">-->
+    <!--        <h1 class="banner-title">{{ $banner->title }}</h1>-->
+    <!--        <p class="banner-caption">{!! strip_tags($banner->description, '<br>') !!}</p>        -->
+    <!--    </div>-->
+    <!--</div>-->
+    <!--@endforeach-->
     <div class="section-cl top-step-section">
         <div class="container">
             <div class="row">
