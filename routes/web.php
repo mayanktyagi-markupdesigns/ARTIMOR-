@@ -4,18 +4,24 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\MaterialCategoryController;
 use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\MaterialTypeCategoryController;
 use App\Http\Controllers\Admin\MaterialTypeController;
+use App\Http\Controllers\Admin\MaterialLayoutCaterogyController;
 use App\Http\Controllers\Admin\MaterialLayoutController;
 use App\Http\Controllers\Admin\DimensionController;
 use App\Http\Controllers\Admin\MaterialEdgeController;
 use App\Http\Controllers\Admin\BackWallController;
+use App\Http\Controllers\Admin\SinkCategoryController;
 use App\Http\Controllers\Admin\SinkController;
+use App\Http\Controllers\Admin\CutOutsCategoryController;
 use App\Http\Controllers\Admin\CutOutsController;
 use App\Http\Controllers\Admin\QuotationController;
 use App\Http\Controllers\Admin\PromoCodeController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\MasterProductController;
 use App\Http\Middleware\AdminAuthenticate;
 
 
@@ -41,19 +47,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('delete');            
             Route::get('/view/{id}', [UserController::class, 'detailView'])->name('view');            
         });
-        /*---------------------------------End User Controller---------------------------------------------------*/
-
-        /*---------------------------------Banner Controller-----------------------------------------------------*/
-        Route::prefix('banner')->name('banner.')->group(function () {
-            Route::get('/list', [BannerController::class, 'index'])->name('list');          
-            Route::get('/add', [BannerController::class, 'create'])->name('create');        
-            Route::post('/create', [BannerController::class, 'store'])->name('store');     
-            Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('edit');      
-            Route::post('/update/{id}', [BannerController::class, 'update'])->name('update'); 
-            Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
-            Route::get('/view/{id}', [BannerController::class, 'view'])->name('view');
-        });
-        /*---------------------------------End Banner Controller-------------------------------------------------*/
+        /*---------------------------------End User Controller---------------------------------------------------*/        
 
         /*---------------------------------Setting Controller ---------------------------------------------------*/
         Route::prefix('settings')->name('settings.')->group(function () {
@@ -61,6 +55,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('update', [SettingController::class, 'update'])->name('update');
         });
         /*---------------------------------End Setting Controller------------------------------------------------*/
+
+        /*---------------------------------Material Category Controller------------------------------------------*/
+        Route::prefix('material-category')->name('material.category.')->group(function () {
+            Route::get('/list', [MaterialCategoryController::class, 'index'])->name('list');
+            Route::get('/add', [MaterialCategoryController::class, 'create'])->name('create');
+            Route::post('/create', [MaterialCategoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [MaterialCategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [MaterialCategoryController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [MaterialCategoryController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Material Category Controller--------------------------------------*/
 
         /*---------------------------------Material Controller---------------------------------------------------*/
         Route::prefix('material')->name('material.')->group(function () {
@@ -74,6 +79,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
         /*---------------------------------End Material Controller-----------------------------------------------*/
 
+        /*---------------------------------Material Category Controller------------------------------------------*/
+        Route::prefix('material-type-category')->name('material.type.category.')->group(function () {
+            Route::get('/list', [MaterialTypeCategoryController::class, 'index'])->name('list');
+            Route::get('/add', [MaterialTypeCategoryController::class, 'create'])->name('create');
+            Route::post('/create', [MaterialTypeCategoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [MaterialTypeCategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [MaterialTypeCategoryController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [MaterialTypeCategoryController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Material Category Controller--------------------------------------*/
+
         /*---------------------------------Material Type Controller----------------------------------------------*/
         Route::prefix('material-type')->name('material.type.')->group(function () {
             Route::get('/list', [MaterialTypeController::class, 'index'])->name('list');          
@@ -85,6 +101,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/view/{id}', [MaterialTypeController::class, 'view'])->name('view');
         });
         /*---------------------------------End Material Type Controller------------------------------------------*/
+
+        /*---------------------------------Material Layout Controller--------------------------------------------*/
+        Route::prefix('material-layout-category')->name('material.layout.category.')->group(function () {
+            Route::get('/list', [MaterialLayoutCaterogyController::class, 'index'])->name('list');
+            Route::get('/add', [MaterialLayoutCaterogyController::class, 'create'])->name('create');
+            Route::post('/create', [MaterialLayoutCaterogyController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [MaterialLayoutCaterogyController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [MaterialLayoutCaterogyController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [MaterialLayoutCaterogyController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Material Category Controller--------------------------------------*/
 
         /*---------------------------------Material Layout Controller--------------------------------------------*/
         Route::prefix('material-layout')->name('layout.')->group(function () {
@@ -132,6 +159,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         }); 
         /*---------------------------------End Back Wall Controller----------------------------------------------*/
 
+        /*---------------------------------sink Category Controller----------------------------------------------*/
+        Route::prefix('sink-category')->name('sink.category.')->group(function () {
+            Route::get('/list', [SinkCategoryController::class, 'index'])->name('list');
+            Route::get('/add', [SinkCategoryController::class, 'create'])->name('create');
+            Route::post('/create', [SinkCategoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [SinkCategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [SinkCategoryController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [SinkCategoryController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End sink Category Controller------------------------------------------*/
+
         /*---------------------------------Sink Controller-------------------------------------------------------*/
         Route::prefix('sink')->name('sink.')->group(function () {
             Route::get('/list', [SinkController::class, 'index'])->name('list');          
@@ -142,9 +180,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [SinkController::class, 'destroy'])->name('destroy');
             Route::get('/view/{id}', [SinkController::class, 'view'])->name('view');
         });
-        /*---------------------------------End Sink Controller--------------------------------------------------*/
+        /*---------------------------------End Sink Controller---------------------------------------------------*/
 
-        /*---------------------------------Cut Outs Controller--------------------------------------------------*/
+        /*---------------------------------Cut Outs Category Controller---------------------------------------------------*/
+        Route::prefix('cut-outs-category')->name('cutouts.category.')->group(function () {
+            Route::get('/list', [CutOutsCategoryController::class, 'index'])->name('list');
+            Route::get('/add', [CutOutsCategoryController::class, 'create'])->name('create');
+            Route::post('/create', [CutOutsCategoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CutOutsCategoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CutOutsCategoryController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [CutOutsCategoryController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Cut Outs Category Controller----------------------------------------------*/
+
+        /*---------------------------------Cut Outs Controller---------------------------------------------------*/
         Route::prefix('cut-outs')->name('cut.outs.')->group(function () {
             Route::get('/list', [CutOutsController::class, 'index'])->name('list');          
             Route::get('/add', [CutOutsController::class, 'create'])->name('create');        
@@ -154,14 +203,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [CutOutsController::class, 'destroy'])->name('destroy');
             Route::get('/view/{id}', [CutOutsController::class, 'view'])->name('view');
         });
-        /*---------------------------------End Cut Outs Controller----------------------------------------------*/
-        /*---------------------------------Quotation Controller-------------------------------------------------*/
+        /*---------------------------------End Cut Outs Controller-----------------------------------------------*/
+
+        /*---------------------------------Quotation Controller--------------------------------------------------*/
         Route::prefix('quotation')->name('quotations.')->group(function () {
             Route::get('/list', [QuotationController::class, 'index'])->name('list');          
             Route::get('/view/{id}', [QuotationController::class, 'show'])->name('view');            
         });
-        /*---------------------------------End Quotation Controller---------------------------------------------*/
-        /*---------------------------------Promo Code Controller------------------------------------------------*/
+        /*---------------------------------End Quotation Controller----------------------------------------------*/
+
+        /*---------------------------------Promo Code Controller-------------------------------------------------*/
         Route::prefix('promo-code')->name('promo.code.')->group(function () {
             Route::get('/list', [PromoCodeController::class, 'index'])->name('list');          
             Route::get('/add', [PromoCodeController::class, 'create'])->name('create');        
@@ -172,5 +223,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/view/{id}', [PromoCodeController::class, 'view'])->name('view');
         });
         /*---------------------------------End Promo Code Controller---------------------------------------------*/
+
+         /*---------------------------------Color Controller-----------------------------------------------------*/
+        Route::prefix('color')->name('color.')->group(function () {
+            Route::get('/list', [ColorController::class, 'index'])->name('list');          
+            Route::get('/add', [ColorController::class, 'create'])->name('create');        
+            Route::post('/create', [ColorController::class, 'store'])->name('store');     
+            Route::get('/edit/{id}', [ColorController::class, 'edit'])->name('edit');      
+            Route::post('/update/{id}', [ColorController::class, 'update'])->name('update'); 
+            Route::delete('/destroy/{id}', [ColorController::class, 'destroy'])->name('destroy');            
+        });
+        /*---------------------------------End Color Controller-------------------------------------------------*/
+
+        /*---------------------------------Master Product Controller-------------------------------------------------*/
+        Route::prefix('product')->name('masterproduct.')->group(function () {
+            Route::get('/list', [MasterProductController::class, 'index'])->name('list');          
+            Route::get('/add', [MasterProductController::class, 'create'])->name('create');        
+            Route::post('/create', [MasterProductController::class, 'store'])->name('store');     
+            Route::get('/edit/{id}', [MasterProductController::class, 'edit'])->name('edit');      
+            Route::post('/update/{id}', [MasterProductController::class, 'update'])->name('update'); 
+            Route::delete('/destroy/{id}', [MasterProductController::class, 'destroy'])->name('destroy');
+            Route::get('/view/{id}', [MasterProductController::class, 'view'])->name('view');
+        });
+        /*---------------------------------End Master Product Controller---------------------------------------------*/
+        Route::get('/ajax/materials/{category_id}', [MasterProductController::class, 'getMaterialsByCategory']);
     });
+
 }); 

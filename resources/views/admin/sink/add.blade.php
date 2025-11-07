@@ -23,27 +23,21 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- series_type -->
+                        <!-- Material Category -->
                         <div class="col-md-4 mb-3">
-                            <label for="series_type">Series Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="series_type" id="series_type">
-                                <option value="">Select Series Type</option>
-                                <option value="Lorreine r series"
-                                    {{ old('series_type') == 'Lorreine r series' ? 'selected' : '' }}>Lorreine r series
+                            <label for="sink_categorie_id">Sink Category</label><span style="color:red;">*</span>
+                            <select class="form-select" name="sink_categorie_id" id="sink_categorie_id">
+                                <option value="">Select Sink Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('sink_categorie_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
                                 </option>
-                                <option value="LORREINE SUPERPLUG SERIES"
-                                    {{ old('series_type') == 'LORREINE SUPERPLUG SERIES' ? 'selected' : '' }}>LORREINE
-                                    SUPERPLUG SERIES</option>
-                                <option value="LORREINE BLACK QUARTZ SERIES"
-                                    {{ old('series_type') == 'LORREINE BLACK QUARTZ SERIES' ? 'selected' : '' }}>
-                                    LORREINE BLACK QUARTZ SERIES</option>
-                                <option value="LORREINE ROYAL SERIES"
-                                    {{ old('series_type') == 'LORREINE ROYAL SERIES' ? 'selected' : '' }}>LORREINE ROYAL
-                                    SERIES</option>
+                                @endforeach
                             </select>
-                            @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('sink_categorie_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-
+                        
                         <!-- Price -->
                         <div class="col-md-4 mb-3">
                             <label for="price">Per Sq/Price</label>

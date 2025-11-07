@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\MaterialLayout;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use App\Models\materialLayoutCategory;
+use Illuminate\Support\Facades\Storage;
 
 class MaterialLayoutController extends Controller
 {
@@ -22,7 +24,8 @@ class MaterialLayoutController extends Controller
     //Add material
     public function create()
     {
-        return view('admin.material-layout.add');
+        $data['categories'] = materialLayoutCategory::where('status', 1)->orderBy('name')->get();
+        return view('admin.material-layout.add', $data);       
     }
     
     //Insert material 
@@ -30,7 +33,7 @@ class MaterialLayoutController extends Controller
     {
         $validated = $request->validate([
             'name'          => 'required|string|max:255',            
-            'layout_type'   => ['required', Rule::in(['Island Setup', 'Straight Arrangement', 'Corner Setup', 'U Setup', 'Different Setup'])],
+            'material_layout_category_id' => 'required|exists:material_layout_categories,id',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
@@ -58,11 +61,11 @@ class MaterialLayoutController extends Controller
 
         $layout = new MaterialLayout();
 
-        $layout->name               = $request->name;
-        $layout->layout_type        = $request->layout_type;    
-        $layout->image              = $imageName;
-        $layout->price              = $request->price;
-        $layout->status             = $request->status;
+        $layout->name                         = $request->name;
+        $layout->material_layout_category_id  = $request->material_layout_category_id;    
+        $layout->image                        = $imageName;
+        $layout->price                        = $request->price;
+        $layout->status                       = $request->status;
         $layout->save();    
 
         return redirect()->route('admin.layout.list')->with('success', 'Material Layout added successfully!');
@@ -71,7 +74,8 @@ class MaterialLayoutController extends Controller
     //Edit material
     public function edit($id)
     {
-        $data['layout'] = MaterialLayout::findOrFail($id);        
+        $data['layout'] = MaterialLayout::findOrFail($id);   
+        $data['categories'] = materialLayoutCategory::where('status', 1)->orderBy('name')->get();     
         return view('admin.material-layout.edit', $data);
     }
 
@@ -82,7 +86,7 @@ class MaterialLayoutController extends Controller
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
-            'layout_type'   => ['required', Rule::in(['Island Setup', 'Straight Arrangement', 'Corner Setup', 'U Setup', 'Different Setup'])],
+            'material_layout_category_id' => 'required|exists:material_layout_categories,id',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
@@ -109,10 +113,10 @@ class MaterialLayoutController extends Controller
             $layout->image = $imageName;
         }
               
-        $layout->name          = $request->name;
-        $layout->layout_type   = $request->layout_type;
-        $layout->price         = $request->price;
-        $layout->status        = $request->status;
+        $layout->name                          = $request->name;
+        $layout->material_layout_category_id   = $request->material_layout_category_id;
+        $layout->price                         = $request->price;
+        $layout->status                        = $request->status;
         $layout->save();
 
         return redirect()->route('admin.layout.list')->with('success', 'Material layout updated successfully!');

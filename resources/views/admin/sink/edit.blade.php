@@ -23,19 +23,18 @@
                         @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Series Type -->
+                      <!-- Sink  Category -->
                     <div class="col-md-4 mb-3">
-                        <label>Series Type</label><span class="text-danger">*</span>
-                        <select class="form-select" name="series_type">
-                            <option value="">Select Series Type</option>
-                            @foreach(['Lorreine r series','LORREINE SUPERPLUG SERIES','LORREINE BLACK QUARTZ
-                            SERIES','LORREINE ROYAL SERIES'] as $series)
-                            <option value="{{ $series }}"
-                                {{ old('series_type', $sink->series_type) == $series ? 'selected' : '' }}>{{ $series }}
+                        <label for="sink_categorie_id">Sink Category</label><span style="color:red;">*</span>
+                        <select class="form-select" name="sink_categorie_id" id="sink_categorie_id">
+                            @foreach(($categories ?? []) as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('sink_categorie_id', $sink->sink_categorie_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
                             </option>
                             @endforeach
                         </select>
-                        @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
+                        @error('sink_categorie_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <!-- Price -->

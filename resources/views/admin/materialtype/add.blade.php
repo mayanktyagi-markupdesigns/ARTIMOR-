@@ -15,18 +15,19 @@
                 <form action="{{ route('admin.material.type.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">                                            
-                        <!-- Type -->
+                         <!-- Material Category -->
                         <div class="col-md-4 mb-3">
-                            <label for="type">Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="type" id="type">
-                                <option value="">Select Type</option>
-                                <option value="Polished" {{ old('type') == 'Polished' ? 'selected' : '' }}>Polished</option>
-                                <option value="Gray sanded" {{ old('type') == 'Gray sanded' ? 'selected' : '' }}>Gray sanded</option>
-                                <option value="Dark honed" {{ old('type') == 'Dark honed' ? 'selected' : '' }}>Dark honed</option>
-                                <option value="Leathano" {{ old('type') == 'Leathano' ? 'selected' : '' }}>Leathano</option>
-                                <option value="Anticato" {{ old('type') == 'Anticato' ? 'selected' : '' }}>Anticato</option>
+                            <label for="material_type_category_id">Material Type Category</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_type_category_id" id="material_type_category_id">
+                                <option value="">Select Material Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('material_type_category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
                             </select>
-                            @error('type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('material_type_category_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Image -->

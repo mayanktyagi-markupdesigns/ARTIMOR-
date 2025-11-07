@@ -17,16 +17,18 @@
                     @csrf
                     <div class="row">                      
                         <!-- Material Type -->
+                        <!-- Material Type -->
                         <div class="col-md-4 mb-3">
-                            <label for="type">Material Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="type" id="type"> 
-                                <option value="Polished" {{ (old('type', $materialtype->type) == 'Polished') ? 'selected' : '' }}>Polished</option>
-                                <option value="Gray sanded" {{ (old('type', $materialtype->type) == 'Gray sanded') ? 'selected' : '' }}>Gray sanded</option>
-                                <option value="Dark honed" {{ (old('type', $materialtype->type) == 'Dark honed') ? 'selected' : '' }}>Dark honed</option>
-                                <option value="Leathano" {{ (old('type', $materialtype->type) == 'Leathano') ? 'selected' : '' }}>Leathano</option>
-                                <option value="Anticato" {{ (old('type', $materialtype->type) == 'Anticato') ? 'selected' : '' }}>Anticato</option>
+                            <label for="material_type_category_id">Material Type</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_type_category_id" id="material_type_category_id">
+                                @foreach(($categories ?? []) as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('material_type_category_id', $materialtype->material_type_category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
                             </select>
-                            @error('type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('material_type_category_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Image -->

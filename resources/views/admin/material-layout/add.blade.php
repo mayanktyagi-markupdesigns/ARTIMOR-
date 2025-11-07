@@ -23,18 +23,19 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- Material Type -->
+                        <!-- Material Type -->                       
                         <div class="col-md-4 mb-3">
-                            <label for="layout_type">Layout Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="layout_type" id="layout_type">
-                                <option value="">Select layout Type</option>
-                                <option value="Island Setup" {{ old('layout_type') == 'Island Setup' ? 'selected' : '' }}>Island Setup</option>
-                                <option value="Straight Arrangement" {{ old('layout_type') == 'Straight Arrangement' ? 'selected' : '' }}>Straight Arrangement</option>
-                                <option value="Corner Setup" {{ old('layout_type') == 'Corner Setup' ? 'selected' : '' }}>Corner Setup</option>
-                                <option value="U Setup" {{ old('layout_type') == 'U Setup' ? 'selected' : '' }}>U Setup</option>
-                                <option value="Different Setup" {{ old('layout_type') == 'Different Setup' ? 'selected' : '' }}>Different Setup</option>
+                            <label for="material_layout_category_id">Material Layout Category</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_layout_category_id" id="material_layout_category_id">
+                                <option value="">Select Layout Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('material_layout_category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
                             </select>
-                            @error('layout_type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('material_layout_category_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Price -->

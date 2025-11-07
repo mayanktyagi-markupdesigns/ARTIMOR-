@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name'); 
             $table->decimal('price', 10, 2)->default(0); 
-            $table->enum('series_type', ['Lorreine r series', 'LORREINE SUPERPLUG SERIES', 'LORREINE BLACK QUARTZ SERIES', 'LORREINE ROYAL SERIES']); 
+            $table->foreignId('cut_outs_category_id')
+                  ->constrained('cut_outs_categories')
+                  ->onDelete('cascade');        
             $table->text('description')->nullable();            
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();

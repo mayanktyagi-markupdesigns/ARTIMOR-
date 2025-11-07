@@ -28,8 +28,10 @@
                 </li>
 
                 {{-- Material --}}
-                <li class="nav-item has-treeview {{ request()->is('admin/material*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/material*') ? 'active' : '' }}">
+                <li
+                    class="nav-item has-treeview {{ request()->is('admin/material*') || request()->is('admin/material-category*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ request()->is('admin/material*') || request()->is('admin/material-category*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-box-seam"></i>
                         <p>
                             Material
@@ -37,6 +39,15 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.material.category.list') }}"
+                                class="nav-link {{ request()->routeIs('material.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Category List</p>
+                            </a>
+                        </li>
+                        {{-- Material List --}}
                         <li class="nav-item">
                             <a href="{{ route('admin.material.list') }}"
                                 class="nav-link {{ request()->routeIs('material.list') ? 'active' : '' }}">
@@ -44,19 +55,14 @@
                                 <p>Material List</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.material.create') }}"
-                                class="nav-link {{ request()->routeIs('material.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Material</p>
-                            </a>
-                        </li>
                     </ul>
                 </li>
 
                 {{-- Material Type --}}
-                <li class="nav-item has-treeview {{ request()->is('admin/material-type*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/material-type*') ? 'active' : '' }}">
+                <li
+                    class="nav-item has-treeview {{ request()->is('admin/material-type*') || request()->is('admin/material-type-category*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ request()->is('admin/material-type*') || request()->is('admin/material-type-category*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-tags"></i>
                         <p>
                             Material Type
@@ -64,18 +70,21 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Type Category List --}}
                         <li class="nav-item">
-                            <a href="{{ route('admin.material.type.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.material.type.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>Material Type List</p>
+                            <a href="{{ route('admin.material.type.category.list') }}"
+                                class="nav-link {{ request()->routeIs('material.type.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tag nav-icon"></i>
+                                <p>Type Category List</p>
                             </a>
                         </li>
+
+                        {{-- Material Type List --}}
                         <li class="nav-item">
-                            <a href="{{ route('admin.material.type.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.material.type.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Material Type</p>
+                            <a href="{{ route('admin.material.type.list') }}"
+                                class="nav-link {{ request()->routeIs('material.type.list') ? 'active' : '' }}">
+                                <i class="bi bi-list-ul nav-icon"></i>
+                                <p>Material Type List</p>
                             </a>
                         </li>
                     </ul>
@@ -91,6 +100,15 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.material.layout.category.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.material.layout.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Category List</p>
+                            </a>
+                        </li>
+                        {{-- Material Layout List --}}
                         <li class="nav-item">
                             <a href="{{ route('admin.layout.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.layout.list') ? 'active' : '' }}">
@@ -98,68 +116,26 @@
                                 <p>Material Layout List</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.layout.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.layout.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Material Layout</p>
-                            </a>
-                        </li>
                     </ul>
                 </li>
 
-                <!-- Material Edge Menu -->
-                <li class="nav-item has-treeview {{ request()->is('admin/material-edge*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/material-edge*') ? 'active' : '' }}">
+                {{-- Material Edge Menu --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.material.edge.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.material.edge.list') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-box-seam"></i>
-                        <p>
-                            Material Edge
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
+                        <p>Material Edge</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.material.edge.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.material.edge.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.material.edge.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.material.edge.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add New</p>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
                 <!-- Back Wall Menu -->
-                <li class="nav-item has-treeview {{ request()->is('admin/back-wall*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/back-wall*') ? 'active' : '' }}">
+                {{-- Back Wall Menu --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.back.wall.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.back.wall.list') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-door-open"></i>
-                        <p>
-                            Back Wall
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
+                        <p>Back Wall</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.back.wall.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.back.wall.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.back.wall.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.back.wall.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add New</p>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
                 {{-- Sink Menu --}}
@@ -172,6 +148,15 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sink.category.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.sink.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Category List</p>
+                            </a>
+                        </li>
+                        {{-- Sink List --}}
                         <li class="nav-item">
                             <a href="{{ route('admin.sink.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.sink.list') ? 'active' : '' }}">
@@ -179,17 +164,11 @@
                                 <p>Sink List</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.sink.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.sink.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add Sink</p>
-                            </a>
-                        </li>
                     </ul>
                 </li>
 
                 <!-- Cut Outs Menu -->
+                {{-- Cut Outs Menu --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/cut-outs*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/cut-outs*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-scissors"></i>
@@ -199,98 +178,71 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Cut Outs Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.cutouts.category.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.cutouts.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Category List</p>
+                            </a>
+                        </li>
+                        {{-- Cut Outs List --}}
                         <li class="nav-item">
                             <a href="{{ route('admin.cut.outs.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.cut.outs.list') ? 'active' : '' }}">
                                 <i class="bi bi-list-ul nav-icon"></i>
-                                <p>List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.cut.outs.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.cut.outs.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add New</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                
-                   <!-- Promo Code Menu -->
-                <li class="nav-item has-treeview {{ request()->is('admin/promo-code*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/promo-code*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-ticket-perforated"></i>
-                        <p>
-                            Promo Code
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.promo.code.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.promo.code.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.promo.code.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.promo.code.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add New</p>
+                                <p>Cut Outs List</p>
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <!-- Quotation Menu -->
-                <li class="nav-item has-treeview {{ request()->is('admin/quotation*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/quotation*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-file-earmark-text"></i>
-                        <p>
-                            Quotations
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
+                {{-- Promo Code Menu --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.promo.code.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.promo.code.list') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-ticket-perforated"></i>
+                        <p>Promo Code</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.quotations.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.quotations.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>Quotation List</p>
-                            </a>
-                        </li>                        
-                    </ul>
+                </li>
+
+                <!-- Color Menu -->                
+                <li class="nav-item">
+                    <a href="{{ route('admin.color.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.color.list') ? 'active' : '' }}">
+                        <i class="nav-icon bi-droplet"></i>
+                        <p>Color</p>
+                    </a>
+                </li>
+                
+                {{-- Master Product --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.masterproduct.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.masterproduct.list') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-door-open"></i>
+                        <p>Product</p>
+                    </a>
+                </li>
+
+                {{-- Quotation Menu --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.quotations.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.quotations.list') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-file-earmark-text"></i>
+                        <p>Quotations</p>
+                    </a>
                 </li>
 
                 {{-- User Management --}}
-                <li class="nav-item has-treeview {{ request()->is('admin/user*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/user*') ? 'active' : '' }}">
+                <li class="nav-item">
+                    <a href="{{ route('admin.user.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.user.list') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-people-fill"></i>
-                        <p>
-                            Users
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
+                        <p>Users</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.user.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.user.list') ? 'active' : '' }}">
-                                <i class="bi bi-list-ul nav-icon"></i>
-                                <p>User List</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.user.create') }}"
-                                class="nav-link {{ request()->routeIs('admin.user.create') ? 'active' : '' }}">
-                                <i class="bi bi-plus-square nav-icon"></i>
-                                <p>Add User</p>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
-                {{-- Settings --}}
+                <!-- Settings -->
                 <li class="nav-item has-treeview {{ request()->is('admin/settings*') ? 'menu-open' : '' }}">
                     <a href="{{ route('admin.settings.edit') }}"
                         class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
@@ -299,7 +251,7 @@
                     </a>
                 </li>
 
-                {{-- Auth Section --}}
+                <!-- Auth Section -->
                 <li
                     class="nav-item has-treeview {{ request()->is('admin/profile') || request()->is('admin/change-password') ? 'menu-open' : '' }}">
                     <a href="#"

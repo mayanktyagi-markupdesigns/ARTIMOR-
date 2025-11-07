@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Material;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use App\Models\MaterialCategory;
+use Illuminate\Support\Facades\Storage;
+
 
 class MaterialController extends Controller
 {
@@ -22,7 +25,8 @@ class MaterialController extends Controller
     //Add material
     public function create()
     {        
-        return view('admin.materials.add');
+        $data['categories'] = MaterialCategory::where('status', 1)->orderBy('name')->get();
+        return view('admin.materials.add', $data);
     }
     
     //Insert material 
@@ -30,7 +34,7 @@ class MaterialController extends Controller
     {
         $validated = $request->validate([
             'name'          => 'required|string|max:255',            
-            'material_type' => ['required', Rule::in(['Natural Stone', 'Ceramics', 'Quartz'])],
+            'material_category_id' => 'required|exists:material_categories,id',
             'price'         => 'required|numeric|min:0',
             'status'        => 'required|in:0,1',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
@@ -58,11 +62,11 @@ class MaterialController extends Controller
 
         $material = new Material();
 
-        $material->name               = $request->name;
-        $material->material_type      = $request->material_type;    
-        $material->price              = $request->price;
-        $material->image              = $imageName;
-        $material->status             = $request->status;
+        $material->name                   = $request->name;
+        $material->material_category_id   = $request->material_category_id;    
+        $material->price                  = $request->price;
+        $material->image                  = $imageName;
+        $material->status                 = $request->status;
         $material->save();    
 
         return redirect()->route('admin.material.list')->with('success', 'Material added successfully!');
@@ -71,7 +75,8 @@ class MaterialController extends Controller
     //Edit material
     public function edit($id)
     {
-        $data['materials'] = Material::findOrFail($id);        
+        $data['materials'] = Material::findOrFail($id);
+        $data['categories'] = MaterialCategory::where('status', 1)->orderBy('name')->get();
         return view('admin.materials.edit', $data);
     }
 
@@ -82,7 +87,7 @@ class MaterialController extends Controller
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
-            'material_type' => ['required', Rule::in(['Natural Stone', 'Ceramics', 'Quartz'])],
+            'material_category_id' => 'required|exists:material_categories,id',
             'price'         => 'required|numeric|min:0',
             'status'        => 'required|in:0,1',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
@@ -109,10 +114,11 @@ class MaterialController extends Controller
         }
         $material = Material::findOrFail($id);
         
-        $material->name          = $request->name;
-        $material->material_type = $request->material_type;
-        $material->price         = $request->price;
-        $material->status        = $request->status;
+        $material->name                  = $request->name;
+        $material->material_category_id  = $request->material_category_id; 
+        $material->price                 = $request->price;
+        $material->image                 = $imageName;
+        $material->status                = $request->status;
         $material->save();
 
         return redirect()->route('admin.material.list')->with('success', 'Material updated successfully!');
@@ -143,4 +149,6 @@ class MaterialController extends Controller
         $data['materials'] = Material::findOrFail($id);
         return view('admin.materials.view', $data);
     }
+
+    
 }

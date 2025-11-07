@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
-            $table->enum('material_type', ['Natural Stone', 'Ceramics', 'Quartz']); 
+            $table->foreignId('material_category_id')
+                  ->constrained('material_categories')
+                  ->onDelete('cascade');
             $table->decimal('price', 10, 2)->default(0); 
             $table->string('image')->nullable(); 
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');

@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('material_layouts', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
-            $table->enum('layout_type', ['Island Setup', 'Straight Arrangement', 'Corner Setup', 'U Setup', 'Different Setup']); 
+            $table->foreignId('material_layout_category_id')
+                  ->constrained('material_layout_categories')
+                  ->onDelete('cascade');          
             $table->string('image')->nullable(); 
             $table->decimal('price', 10, 2)->default(0);
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');

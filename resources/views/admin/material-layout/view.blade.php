@@ -16,8 +16,8 @@
                     <td>{{ $layout->name }}</td>
                 </tr>
                 <tr>
-                    <th>Layout Type</th>
-                    <td>{{ $layout->layout_type }}</td>
+                    <th>Layout Category</th>
+                     <td>{{ $layout->category->name ?? '—' }}</td>
                 </tr>
                 <tr>
                     <th>Status</th>

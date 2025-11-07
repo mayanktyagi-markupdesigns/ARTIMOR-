@@ -29,8 +29,8 @@
 
                 <!-- Series Type -->
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Series Type:</label>
-                    <p>{{ $sink->series_type }}</p>
+                    <label class="form-label fw-bold">Sink Category:</label>
+                    <p>{{ $sink->category->name ?? '—' }}</p>
                 </div>
 
                 <!-- Internal Dimensions -->

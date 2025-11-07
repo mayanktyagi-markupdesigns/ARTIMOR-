@@ -8,6 +8,8 @@ use App\Models\CutOuts;
 use App\Models\CutOutsImage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use App\Models\CutOutsCategory;
+use Illuminate\Support\Facades\Storage;
 
 class CutOutsController extends Controller
 {
@@ -20,7 +22,8 @@ class CutOutsController extends Controller
 
     public function create()
     {
-        return view('admin.cut-outs.add');
+        $data['categories'] = CutOutsCategory::where('status', 1)->orderBy('name')->get();
+        return view('admin.cut-outs.add', $data); 
     }
 
     public function store(Request $request)
@@ -28,12 +31,7 @@ class CutOutsController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price'         => 'nullable|numeric|min:0',
-            'series_type' => ['required', Rule::in([
-                'Lorreine r series',
-                'LORREINE SUPERPLUG SERIES',
-                'LORREINE BLACK QUARTZ SERIES',
-                'LORREINE ROYAL SERIES',
-            ])],            
+            'cut_outs_category_id' => 'required|exists:cut_outs_categories,id',           
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
             'images' => 'required|array|min:1',
@@ -44,7 +42,7 @@ class CutOutsController extends Controller
         $outs = CutOuts::create([
             'name' => $validated['name'],
             'price' => $validated['price'],
-            'series_type' => $validated['series_type'],            
+            'cut_outs_category_id' => $validated['cut_outs_category_id'],            
             'description' => $validated['description'],
             'status' => $validated['status'],
         ]);
@@ -73,8 +71,10 @@ class CutOutsController extends Controller
     // Show edit form
     public function edit($id)
     {
-        $outs = CutOuts::with('images')->findOrFail($id);
-        return view('admin.cut-outs.edit', compact('outs'));
+       
+        $data['outs'] = CutOuts::with('images')->findOrFail($id);
+        $data['categories']   = CutOutsCategory::where('status', 1)->orderBy('name')->get();      
+        return view('admin.cut-outs.edit', $data);
     }
 
     // Update cut outs
@@ -85,13 +85,8 @@ class CutOutsController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price'         => 'nullable|numeric|min:0',
-            'series_type' => ['required', Rule::in([
-                'Lorreine r series',
-                'LORREINE SUPERPLUG SERIES',
-                'LORREINE BLACK QUARTZ SERIES',
-                'LORREINE ROYAL SERIES',
-            ])],
-           'description' => 'nullable|string',
+            'cut_outs_category_id' => 'required|exists:cut_outs_categories,id',
+            'description' => 'nullable|string',
             'status' => 'required|in:0,1',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:10240',
         ]);
@@ -99,7 +94,7 @@ class CutOutsController extends Controller
         $outs->update([
             'name' => $validated['name'],
             'price' => $validated['price'],
-            'series_type' => $validated['series_type'],            
+            'cut_outs_category_id' => $validated['cut_outs_category_id'],            
             'description' => $validated['description'],
             'status' => $validated['status'],
         ]);

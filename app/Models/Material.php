@@ -10,9 +10,14 @@ class Material extends Model
     
     protected $fillable = [
         'name',
-        'material_type',
+        'material_category_id',
         'price',
         'image',
         'status',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(MaterialCategory::class, 'material_category_id');
+    }
 }

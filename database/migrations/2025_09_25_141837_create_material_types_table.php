@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('material_types', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['Polished', 'Gray sanded', 'Dark honed', 'Leathano', 'Anticato']);
+            $table->foreignId('material_type_category_id')
+                  ->constrained('material_type_categories')
+                  ->onDelete('cascade');
             $table->string('image')->nullable(); 
             $table->decimal('price', 10, 2)->default(0); 
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');

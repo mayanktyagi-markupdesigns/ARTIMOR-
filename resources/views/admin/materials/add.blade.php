@@ -10,8 +10,8 @@
         </a>
     </div>
     <div class="card shadow-sm">
-        <div class="card-body">  
-            @include('admin.layouts.alerts')         
+        <div class="card-body">
+            @include('admin.layouts.alerts')
             <div class="">
                 <form action="{{ route('admin.material.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -19,27 +19,30 @@
                         <!-- Name -->
                         <div class="col-md-4 mb-3">
                             <label for="name">Name</label><span style="color:red;">*</span>
-                            <input type="text" class="form-control" name="name" id="name" 
-                                value="{{ old('name') }}" placeholder="Enter name">
+                            <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}"
+                                placeholder="Enter name">
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- Material Type -->
+                        <!-- Material Category -->
                         <div class="col-md-4 mb-3">
-                            <label for="material_type">Material Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="material_type" id="material_type">
-                                <option value="">Select Material Type</option>
-                                <option value="Natural Stone" {{ old('material_type') == 'Natural Stone' ? 'selected' : '' }}>Natural Stone</option>
-                                <option value="Ceramics" {{ old('material_type') == 'Ceramics' ? 'selected' : '' }}>Ceramics</option>
-                                <option value="Quartz" {{ old('material_type') == 'Quartz' ? 'selected' : '' }}>Quartz</option>
+                            <label for="material_category_id">Material Category</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_category_id" id="material_category_id">
+                                <option value="">Select Material Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('material_category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
                             </select>
-                            @error('material_type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('material_category_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Price -->
                         <div class="col-md-4 mb-3">
                             <label for="price">Per Sq/Price</label>
-                            <input type="number" step="0.01" class="form-control" name="price" id="price" 
+                            <input type="number" step="0.01" class="form-control" name="price" id="price"
                                 value="{{ old('price') }}" placeholder="Enter price">
                             @error('price') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>

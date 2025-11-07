@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('sinks', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
-            $table->enum('series_type', ['Lorreine r series', 'LORREINE SUPERPLUG SERIES', 'LORREINE BLACK QUARTZ SERIES', 'LORREINE ROYAL SERIES']);            
+            $table->foreignId('sink_categorie_id')
+                  ->constrained('sink_categories')
+                  ->onDelete('cascade');      
             $table->decimal('price', 10, 2)->default(0); 
             //Dimensions
             $table->string('internal_dimensions')->nullable(); // e.g., 170x400 mm

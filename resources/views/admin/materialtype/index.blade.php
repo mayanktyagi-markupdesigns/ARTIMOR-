@@ -27,7 +27,7 @@
                         @foreach($materialtype as $list)
                         <tr>
                             <td>{{ $loop->iteration }}</td>                            
-                            <td>{{ $list->type }}</td>
+                            <td>{{ $list->category->name ?? '—' }}</td>
                             <td>
                                 @if($list->image)
                                 <img src="{{ asset('uploads/materialtype/' . $list->image) }}" alt="material type Image"

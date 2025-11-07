@@ -13179,6 +13179,7 @@ textarea.form-control-lg {
   display: none;
   padding: 0;
   list-style: none;
+  padding-left: 1rem;
 }
 .nav-indent .sidebar-menu .nav-treeview {
   padding-left: 0.5rem;

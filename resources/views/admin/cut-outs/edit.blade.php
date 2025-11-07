@@ -20,20 +20,21 @@
                         <input type="text" class="form-control" name="name" value="{{ old('name', $outs->name) }}">
                         @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
-                    <!-- Series Type -->
+
+                   <!-- Cut Outs Category -->
                     <div class="col-md-4 mb-3">
-                        <label>Series Type</label><span class="text-danger">*</span>
-                        <select class="form-select" name="series_type">
-                            <option value="">Select Series Type</option>
-                            @foreach(['Lorreine r series','LORREINE SUPERPLUG SERIES','LORREINE BLACK QUARTZ
-                            SERIES','LORREINE ROYAL SERIES'] as $series)
-                            <option value="{{ $series }}"
-                                {{ old('series_type', $outs->series_type) == $series ? 'selected' : '' }}>{{ $series }}
+                        <label for="cut_outs_category_id">Material Type</label><span style="color:red;">*</span>
+                        <select class="form-select" name="cut_outs_category_id" id="cut_outs_category_id">
+                            @foreach(($categories ?? []) as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('cut_outs_category_id', $outs->cut_outs_category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
                             </option>
                             @endforeach
                         </select>
-                        @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>      
+                        @error('cut_outs_category_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>    
+
                     <!-- Price -->
                     <div class="col-md-4 mb-3">
                         <label for="price">Per Sq/Price</label>

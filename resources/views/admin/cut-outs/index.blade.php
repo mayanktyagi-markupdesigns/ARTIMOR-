@@ -18,7 +18,7 @@
                         <tr>
                             <th style="width: 50px; background-color: #f1f5f9;">SN.</th>
                             <th style="width: 250px; background-color: #f1f5f9;">Name</th>
-                            <th style="width: 200px; background-color: #f1f5f9;">Series Type</th>
+                            <th style="width: 200px; background-color: #f1f5f9;">Cut Outs Category</th>
                             <th style="width: 100px; background-color: #f1f5f9;">Status</th>
                             <th style="width: 250px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -28,7 +28,7 @@
                         <tr>
                             <td>1</td>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->series_type }}</td>
+                            <td>{{ $item->category->name ?? '—' }}</td>
                             <td>
                                 @if ($item->status == 1)
                                 <span class="badge bg-success">Active</span>
