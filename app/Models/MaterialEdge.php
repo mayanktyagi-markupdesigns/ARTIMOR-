@@ -11,6 +11,7 @@ class MaterialEdge extends Model
     protected $fillable = [
         'name',
         'price',
+        'user_price',
         'image',
         'status',
     ];

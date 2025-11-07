@@ -20,12 +20,20 @@ return new class extends Migration
             $table->unsignedBigInteger('material_type_id');
             $table->unsignedBigInteger('material_layout_id');
             $table->unsignedBigInteger('material_edge_id');
+            $table->unsignedBigInteger('back_wall_id');
+            $table->unsignedBigInteger('sink_id');
+            $table->unsignedBigInteger('cut_outs_id');
+            $table->unsignedBigInteger('color_id');
 
             // Foreign key constraints
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
             $table->foreign('material_type_id')->references('id')->on('material_types')->onDelete('cascade');
             $table->foreign('material_layout_id')->references('id')->on('material_layouts')->onDelete('cascade');
             $table->foreign('material_edge_id')->references('id')->on('material_edges')->onDelete('cascade'); 
+            $table->foreign('back_wall_id')->references('id')->on('back_walls')->onDelete('cascade'); 
+            $table->foreign('sink_id')->references('id')->on('sinks')->onDelete('cascade'); 
+            $table->foreign('cut_outs_id')->references('id')->on('cut_outs')->onDelete('cascade'); 
+            $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade'); 
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();
         });

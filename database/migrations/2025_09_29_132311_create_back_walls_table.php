@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name'); 
             $table->string('image')->nullable();
             $table->decimal('price', 10, 2)->default(0); 
+            $table->decimal('user_price', 10, 2)->default(0); 
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();
         });

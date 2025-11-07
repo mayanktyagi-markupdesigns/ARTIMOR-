@@ -12,6 +12,7 @@ class Material extends Model
         'name',
         'material_category_id',
         'price',
+        'user_price',
         'image',
         'status',
     ];

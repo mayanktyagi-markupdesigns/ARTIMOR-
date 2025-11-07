@@ -36,6 +36,7 @@ class MaterialLayoutController extends Controller
             'material_layout_category_id' => 'required|exists:material_layout_categories,id',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
 
@@ -65,6 +66,7 @@ class MaterialLayoutController extends Controller
         $layout->material_layout_category_id  = $request->material_layout_category_id;    
         $layout->image                        = $imageName;
         $layout->price                        = $request->price;
+        $layout->user_price                   = $request->user_price;
         $layout->status                       = $request->status;
         $layout->save();    
 
@@ -89,6 +91,7 @@ class MaterialLayoutController extends Controller
             'material_layout_category_id' => 'required|exists:material_layout_categories,id',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
         
@@ -116,6 +119,7 @@ class MaterialLayoutController extends Controller
         $layout->name                          = $request->name;
         $layout->material_layout_category_id   = $request->material_layout_category_id;
         $layout->price                         = $request->price;
+        $layout->user_price                    = $request->user_price;
         $layout->status                        = $request->status;
         $layout->save();
 

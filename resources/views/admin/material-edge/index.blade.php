@@ -17,6 +17,8 @@
                         <tr>
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Name</th>                            
+                            <th scope="col" style="width: 150px; background-color: #f1f5f9;">Per Sq/Price</th>
+                            <th scope="col" style="width: 150px; background-color: #f1f5f9;">Per Sq/User Price</th>
                             <th scope="col" style="width: 150px; background-color: #f1f5f9;">Image</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
@@ -27,6 +29,8 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $list->name }}</td>                           
+                            <td>{{ $list->price }}</td>                           
+                            <td>{{ $list->user_price }}</td>                           
                             <td>
                                 @if($list->image)
                                 <img src="{{ asset('uploads/material-edge/' . $list->image) }}" alt="edge Image"

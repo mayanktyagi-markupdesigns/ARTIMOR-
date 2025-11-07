@@ -11,6 +11,7 @@ class CutOuts extends Model
     protected $fillable = [        
         'name',
         'price',
+        'user_price',
         'cut_outs_category_id',
         'description',        
         'status',

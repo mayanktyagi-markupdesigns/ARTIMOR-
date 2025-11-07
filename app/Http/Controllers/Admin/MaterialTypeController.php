@@ -37,6 +37,7 @@ class MaterialTypeController extends Controller
             'material_type_category_id' => 'required|exists:material_type_categories,id', 
             'status' => 'required|in:0,1',
             'price' => 'required|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image' => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
 
@@ -61,6 +62,7 @@ class MaterialTypeController extends Controller
 
         $materialtype->name  = $request->name;
         $materialtype->price = $request->price;
+        $materialtype->user_price = $request->user_price;
         $materialtype->image = $imageName;
         $materialtype->status = $request->status;
         $materialtype->save();
@@ -86,6 +88,7 @@ class MaterialTypeController extends Controller
             'material_type_category_id' => 'required|exists:material_type_categories,id',
             'status' => 'required|in:0,1',
             'price' => 'required|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
         
@@ -113,6 +116,7 @@ class MaterialTypeController extends Controller
         $materialtype->material_type_category_id = $request->material_type_category_id;
         $materialtype->name                      = $request->name;
         $materialtype->price                     = $request->price;
+        $materialtype->user_price                = $request->user_price;
         $materialtype->status                    = $request->status;
         $materialtype->save();
 

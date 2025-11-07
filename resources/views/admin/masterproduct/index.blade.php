@@ -20,9 +20,13 @@
                             <th style="width: 50px; background-color: #f1f5f9;">SN.</th>
                             <th style="width: 250px; background-color: #f1f5f9;">Product Name</th>
                             <th style="width: 250px; background-color: #f1f5f9;">Material</th>
-                            <th style="width: 150px; background-color: #f1f5f9;">Type</th>
+                            <th style="width: 150px; background-color: #f1f5f9;">Material Type</th>
                             <th style="width: 150px; background-color: #f1f5f9;">Layout</th>
                             <th style="width: 150px; background-color: #f1f5f9;">Edge</th>
+                            <th style="width: 150px; background-color: #f1f5f9;">Back Wall</th>
+                            <th style="width: 150px; background-color: #f1f5f9;">Sink</th>
+                            <th style="width: 150px; background-color: #f1f5f9;">Cut Out</th>
+                            <th style="width: 150px; background-color: #f1f5f9;">Color</th>
                             <th style="width: 100px; background-color: #f1f5f9;">Status</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -33,9 +37,13 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $list->name }}</td>
                             <td>{{ $list->material->name ?? '—' }}</td>
-                            <td>{{ $list->materialType->id ?? '—' }}</td>
+                            <td>{{ $list->materialType->name ?? '—' }}</td>
                             <td>{{ $list->materialLayout->name ?? '—' }}</td>
                             <td>{{ $list->materialEdge->name ?? '—' }}</td>
+                            <td>{{ $list->backWall->name ?? '—' }}</td>
+                            <td>{{ $list->sink->name ?? '—' }}</td>
+                            <td>{{ $list->cutOut->name ?? '—' }}</td>
+                            <td>{{ $list->color->name ?? '—' }}</td>
                             <td>
                                 @if ($list->status == 1)
                                     <span class="badge bg-success">Active</span>

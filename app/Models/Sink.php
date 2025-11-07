@@ -11,6 +11,7 @@ class Sink extends Model
     protected $fillable = [        
         'name',
         'price',
+        'user_price',
         'sink_categorie_id',
         'internal_dimensions',
         'external_dimensions',

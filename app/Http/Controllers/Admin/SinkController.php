@@ -30,7 +30,8 @@ class SinkController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'nullable|numeric|min:0',
+            'price'         => 'required|numeric|min:0',
+            'user_price'         => 'required|numeric|min:0',
             'sink_categorie_id' => 'required|exists:sink_categories,id',
             'internal_dimensions' => 'nullable|string|max:255',
             'external_dimensions' => 'nullable|string|max:255',
@@ -45,6 +46,7 @@ class SinkController extends Controller
         $sink = Sink::create([
             'name' => $validated['name'],
             'price' => $validated['price'],
+            'user_price' => $validated['user_price'],
             'sink_categorie_id' => $validated['sink_categorie_id'],
             'internal_dimensions' => $validated['internal_dimensions'] ?? null,
             'external_dimensions' => $validated['external_dimensions'] ?? null,
@@ -89,7 +91,8 @@ class SinkController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'nullable|numeric|min:0',
+            'price'         => 'required|numeric|min:0',
+            'user_price'         => 'required|numeric|min:0',
             'sink_categorie_id' => 'required|exists:sink_categories,id',
             'internal_dimensions' => 'nullable|string|max:255',
             'external_dimensions' => 'nullable|string|max:255',
@@ -102,6 +105,7 @@ class SinkController extends Controller
         $sink->update([
             'name' => $validated['name'],
             'price' => $validated['price'],
+            'user_price' => $validated['user_price'],
             'sink_categorie_id' => $validated['sink_categorie_id'],
             'internal_dimensions' => $validated['internal_dimensions'] ?? null,
             'external_dimensions' => $validated['external_dimensions'] ?? null,

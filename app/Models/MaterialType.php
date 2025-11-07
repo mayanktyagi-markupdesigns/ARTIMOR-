@@ -13,6 +13,7 @@ class MaterialType extends Model
         'material_type_category_id',
         'image',
         'price',
+        'user_price',
         'status',
     ];
 

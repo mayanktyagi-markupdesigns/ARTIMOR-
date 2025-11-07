@@ -18,6 +18,7 @@ return new class extends Migration
                   ->constrained('sink_categories')
                   ->onDelete('cascade');      
             $table->decimal('price', 10, 2)->default(0); 
+            $table->decimal('user_price', 10, 2)->default(0); 
             //Dimensions
             $table->string('internal_dimensions')->nullable(); // e.g., 170x400 mm
             $table->string('external_dimensions')->nullable(); // e.g., 210x440 mm

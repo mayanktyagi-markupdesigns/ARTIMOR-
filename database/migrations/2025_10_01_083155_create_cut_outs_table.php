@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); 
             $table->decimal('price', 10, 2)->default(0); 
+            $table->decimal('user_price', 10, 2)->default(0); 
             $table->foreignId('cut_outs_category_id')
                   ->constrained('cut_outs_categories')
                   ->onDelete('cascade');        

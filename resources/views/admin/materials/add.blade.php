@@ -41,10 +41,18 @@
 
                         <!-- Price -->
                         <div class="col-md-4 mb-3">
-                            <label for="price">Per Sq/Price</label>
+                            <label for="price">Per Sq/Price</label><span style="color:red;">*</span>
                             <input type="number" step="0.01" class="form-control" name="price" id="price"
                                 value="{{ old('price') }}" placeholder="Enter price">
                             @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <!--User Price -->
+                        <div class="col-md-4 mb-3">
+                            <label for="user_price">Per Sq/User Price</label><span style="color:red;">*</span>
+                            <input type="number" step="0.01" class="form-control" name="user_price" id="user_price"
+                                value="{{ old('user_price') }}" placeholder="Enter price">
+                            @error('user_price') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Image -->

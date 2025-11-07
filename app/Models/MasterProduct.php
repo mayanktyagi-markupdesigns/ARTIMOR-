@@ -13,7 +13,11 @@ class MasterProduct extends Model
         'material_id',
         'material_type_id',
         'material_layout_id',
-        'material_edge_id',        
+        'material_edge_id',
+        'back_wall_id',
+        'sink_id',
+        'cut_outs_id',
+        'color_id',        
         'status',
     ];
 
@@ -38,6 +42,26 @@ class MasterProduct extends Model
         return $this->belongsTo(MaterialEdge::class);
     }
 
+    public function backWall()
+    {
+        return $this->belongsTo(BackWall::class);
+    }
+
+    public function sink()
+    {
+        return $this->belongsTo(Sink::class);
+    }
+
+    public function cutOut()
+    {
+        return $this->belongsTo(CutOuts::class, 'cut_outs_id');
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class);
+    }
+
     // Optional: Accessor for total price
     public function getTotalPriceAttribute()
     {
@@ -45,7 +69,10 @@ class MasterProduct extends Model
             ($this->material->price ?? 0) +
             ($this->materialType->price ?? 0) +
             ($this->materialLayout->price ?? 0) +
-            ($this->materialEdge->price ?? 0);
+            ($this->materialEdge->price ?? 0) +
+            ($this->backWall->price ?? 0) +
+            ($this->sink->price ?? 0) +
+            ($this->cutOut->price ?? 0);
     }
 
 }

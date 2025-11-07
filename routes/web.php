@@ -249,6 +249,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/ajax/materials/{category_id}', [MasterProductController::class, 'getMaterialsByCategory']);
         Route::get('/ajax/material-types/{category_id}', [MasterProductController::class, 'getMaterialTypesByCategory']);
         Route::get('/ajax/material-layouts/{category_id}', [MasterProductController::class, 'getMaterialLayoutsByCategory']);
+        Route::get('/ajax/sinks/{category_id}', [MasterProductController::class, 'getSinksByCategory']);
+        Route::get('/ajax/cut-outs/{category_id}', [MasterProductController::class, 'getCutOutsByCategory']);
     });
 
 }); 

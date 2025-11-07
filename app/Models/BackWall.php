@@ -12,6 +12,7 @@ class BackWall extends Model
         'name',
         'image',
         'price',
+        'user_price',
         'status',
     ];
 }

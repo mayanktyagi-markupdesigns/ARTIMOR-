@@ -43,6 +43,13 @@
                             @error('price') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
+                        <div class="col-md-4 mb-3">
+                            <label for="user_price">Per Sq/User Price</label>
+                            <input type="number" step="0.01" class="form-control" name="user_price" id="user_price"
+                                value="{{ old('user_price', $edge->user_price) }}" placeholder="Enter price">
+                            @error('user_price') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                         <!-- Status -->
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label>

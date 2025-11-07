@@ -31,7 +31,8 @@ class MaterialEdgeController extends Controller
         $validated = $request->validate([
             'name'          => 'required|string|max:255',            
             'status'        => 'required|in:0,1',
-            'price'         => 'nullable|numeric|min:0',
+            'price'         => 'required|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
 
@@ -59,6 +60,7 @@ class MaterialEdgeController extends Controller
 
         $edge->name               = $request->name; 
         $edge->price              = $request->price; 
+        $edge->user_price         = $request->user_price; 
         $edge->image              = $imageName;
         $edge->status             = $request->status;
         $edge->save();    
@@ -82,6 +84,7 @@ class MaterialEdgeController extends Controller
             'name'          => 'required|string|max:255',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
+            'user_price'    => 'nullable|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
         
@@ -108,6 +111,7 @@ class MaterialEdgeController extends Controller
               
         $edge->name          = $request->name;
         $edge->price         = $request->price;
+        $edge->user_price    = $request->user_price;
         $edge->status        = $request->status;
         $edge->save();
 

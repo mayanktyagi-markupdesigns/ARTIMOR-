@@ -32,6 +32,7 @@ class BackWallController extends Controller
             'name'          => 'required|string|max:255',            
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
 
@@ -59,6 +60,7 @@ class BackWallController extends Controller
 
         $wall->name               = $request->name; 
         $wall->price              = $request->price; 
+        $wall->user_price         = $request->user_price; 
         $wall->image              = $imageName;
         $wall->status             = $request->status;
         $wall->save();    
@@ -82,6 +84,7 @@ class BackWallController extends Controller
             'name'          => 'required|string|max:255',
             'status'        => 'required|in:0,1',
             'price'         => 'nullable|numeric|min:0',
+            'user_price'    => 'required|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
         ]);
         
@@ -108,6 +111,7 @@ class BackWallController extends Controller
               
         $wall->name          = $request->name;
         $wall->price         = $request->price;
+        $wall->user_price    = $request->user_price;
         $wall->status        = $request->status;
         $wall->save();
 
