@@ -13099,7 +13099,7 @@ textarea.form-control-lg {
 }
 .sidebar-wrapper .sidebar-menu > .nav-item > .nav-link.active:not(:hover) {
   color: var(--lte-sidebar-menu-active-color);
-  background-color: var(--lte-sidebar-menu-active-bg);
+  background-color: var(--bs-blue);
 }
 .sidebar-wrapper .sidebar-menu > .nav-item.menu-open > .nav-link, .sidebar-wrapper .sidebar-menu > .nav-item:hover > .nav-link,
 .sidebar-wrapper .sidebar-menu > .nav-item > .nav-link:focus {
