@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('material_types', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
             $table->foreignId('material_type_category_id')
                   ->constrained('material_type_categories')
                   ->onDelete('cascade');

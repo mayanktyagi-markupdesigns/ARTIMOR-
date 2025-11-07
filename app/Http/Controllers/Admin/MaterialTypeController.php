@@ -33,6 +33,7 @@ class MaterialTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'name'          => 'required|string|max:255', 
             'material_type_category_id' => 'required|exists:material_type_categories,id', 
             'status' => 'required|in:0,1',
             'price' => 'required|numeric|min:0',
@@ -58,6 +59,7 @@ class MaterialTypeController extends Controller
         // ✅ Place this line here
         $materialtype->material_type_category_id = $request->material_type_category_id;
 
+        $materialtype->name  = $request->name;
         $materialtype->price = $request->price;
         $materialtype->image = $imageName;
         $materialtype->status = $request->status;
@@ -80,7 +82,8 @@ class MaterialTypeController extends Controller
         $materialtype = MaterialType::findOrFail($id);
 
         $validated = $request->validate([
-            'material_type_category_id' => 'required|exists:material_type_categories,id', // ✅ no space
+            'name'          => 'required|string|max:255',
+            'material_type_category_id' => 'required|exists:material_type_categories,id',
             'status' => 'required|in:0,1',
             'price' => 'required|numeric|min:0',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
@@ -108,6 +111,7 @@ class MaterialTypeController extends Controller
         }        
 
         $materialtype->material_type_category_id = $request->material_type_category_id;
+        $materialtype->name                      = $request->name;
         $materialtype->price                     = $request->price;
         $materialtype->status                    = $request->status;
         $materialtype->save();

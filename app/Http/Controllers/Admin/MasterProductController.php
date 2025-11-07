@@ -15,7 +15,6 @@ use App\Models\MaterialCategory;
 use App\Models\MaterialTypeCategory;
 use App\Models\MaterialLayoutCategory;
 
-
 class MasterProductController extends Controller
 {
     public function index()
@@ -35,6 +34,26 @@ class MasterProductController extends Controller
 
         return response()->json($materials);
     }
+
+    public function getMaterialTypesByCategory($category_id)
+    {        
+        $types = MaterialType::where('material_type_category_id', $category_id)
+        ->where('status', 1)
+        ->orderBy('name')
+        ->get(['id', 'name']);
+
+        return response()->json($types);
+    }
+
+    public function getMaterialLayoutsByCategory($category_id)
+    {
+        $layouts = MaterialLayout::where('material_layout_category_id', $category_id)
+            ->where('status', 1)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($layouts);
+    }
     
     public function create()
     {
@@ -45,7 +64,6 @@ class MasterProductController extends Controller
             'edges' => MaterialEdge::where('status', 1)->get(),
         ]);
     }
-
 
     public function store(Request $request)
     {
@@ -60,7 +78,7 @@ class MasterProductController extends Controller
 
         MasterProduct::create($validated);
 
-        return redirect()->route('admin.masterproduct.index')->with('success', 'Master Product created successfully!');
+        return redirect()->route('admin.masterproduct.list')->with('success', 'Master Product created successfully!');
     }
 
 

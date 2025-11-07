@@ -14,7 +14,14 @@
             <div class="">
                 <form action="{{ route('admin.material.type.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <div class="row">                                            
+                    <div class="row"> 
+                        <!-- Name -->
+                        <div class="col-md-4 mb-3">
+                            <label for="name">Name</label><span style="color:red;">*</span>
+                            <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}"
+                                placeholder="Enter name">
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>                                           
                          <!-- Material Category -->
                         <div class="col-md-4 mb-3">
                             <label for="material_type_category_id">Material Type Category</label><span style="color:red;">*</span>

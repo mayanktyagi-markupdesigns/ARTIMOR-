@@ -247,6 +247,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
         /*---------------------------------End Master Product Controller---------------------------------------------*/
         Route::get('/ajax/materials/{category_id}', [MasterProductController::class, 'getMaterialsByCategory']);
+        Route::get('/ajax/material-types/{category_id}', [MasterProductController::class, 'getMaterialTypesByCategory']);
+        Route::get('/ajax/material-layouts/{category_id}', [MasterProductController::class, 'getMaterialLayoutsByCategory']);
     });
 
 }); 

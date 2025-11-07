@@ -16,7 +16,12 @@
                 <form action="{{ route('admin.material.type.update', $materialtype->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">                      
-                        <!-- Material Type -->
+                       <div class="col-md-4 mb-3">
+                            <label for="name">Name</label><span style="color:red;">*</span>
+                            <input type="text" class="form-control" name="name" id="name"
+                                value="{{ old('name', $materialtype->name) }}" placeholder="Enter name">
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
                         <!-- Material Type -->
                         <div class="col-md-4 mb-3">
                             <label for="material_type_category_id">Material Type</label><span style="color:red;">*</span>

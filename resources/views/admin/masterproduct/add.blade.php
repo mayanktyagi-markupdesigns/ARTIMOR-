@@ -107,15 +107,69 @@
     </div>
 </div>
 <script>
-$('#material_category').change(function() {
-    let id = $(this).val();
-    $('#material_id').html('<option>Loading...</option>');
-    $.get('/admin/ajax/materials/' + id, function(data) {
-        let options = '<option value="">Select Material</option>';
-        data.forEach(item => {
-            options += `<option value="${item.id}">${item.name}</option>`;
+document.addEventListener('DOMContentLoaded', function () {
+    const materialCategorySelect = document.getElementById('material_category');
+    const materialSelect = document.getElementById('material_id');
+    const materialEndpoint = "{{ url('admin/ajax/materials') }}";
+    const materialTypeCategorySelect = document.getElementById('type_category');
+    const materialTypeSelect = document.getElementById('material_type_id');
+    const materialTypeEndpoint = "{{ url('admin/ajax/material-types') }}";
+    const layoutCategorySelect = document.getElementById('layout_category');
+    const layoutSelect = document.getElementById('material_layout_id');
+    const layoutEndpoint = "{{ url('admin/ajax/material-layouts') }}";
+
+    const dependencies = [
+        {
+            trigger: materialCategorySelect,
+            target: materialSelect,
+            endpoint: materialEndpoint,
+            placeholder: 'Select Material',
+        },
+        {
+            trigger: materialTypeCategorySelect,
+            target: materialTypeSelect,
+            endpoint: materialTypeEndpoint,
+            placeholder: 'Select Type',
+        },
+        {
+            trigger: layoutCategorySelect,
+            target: layoutSelect,
+            endpoint: layoutEndpoint,
+            placeholder: 'Select Layout',
+        },
+    ];
+
+    dependencies.forEach(({ trigger, target, endpoint, placeholder }) => {
+        if (!trigger || !target) {
+            return;
+        }
+
+        trigger.addEventListener('change', function () {
+            const categoryId = this.value;
+
+            target.innerHTML = `<option value="">${placeholder}</option>`;
+
+            if (!categoryId) {
+                return;
+            }
+
+            target.innerHTML = '<option>Loading...</option>';
+
+            fetch(`${endpoint}/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let options = `<option value="">${placeholder}</option>`;
+
+                    data.forEach(item => {
+                        options += `<option value="${item.id}">${item.name}</option>`;
+                    });
+
+                    target.innerHTML = options;
+                })
+                .catch(() => {
+                    target.innerHTML = `<option value="">${placeholder}</option>`;
+                });
         });
-        $('#material_id').html(options);
     });
 });
 </script>
