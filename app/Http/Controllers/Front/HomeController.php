@@ -247,6 +247,30 @@ protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int 
     return $products->pluck('sink')->filter()->unique('id')->values();
 }
 
+protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
+{
+    if (!$materialId || !$materialTypeId || !$layoutId) {
+        return collect();
+    }
+
+    $products = MasterProduct::with([
+            'cutOut' => function ($query) {
+                $query->where('status', 1);
+            },
+            'cutOut.images',
+        ])
+        ->where('status', 1)
+        ->where('material_id', $materialId)
+        ->where('material_type_id', $materialTypeId)
+        ->where('material_layout_id', $layoutId)
+        ->whereHas('cutOut', function ($query) {
+            $query->where('status', 1);
+        })
+        ->get();
+
+    return $products->pluck('cutOut')->filter()->unique('id')->values();
+}
+
 public function selectMaterial(Request $request)
 {
     Session::put('selected_material_id', $request->material_id);
@@ -403,7 +427,10 @@ public function getCalculatorSteps(Request $request)
             $sinks = $this->getSinkStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.sink', compact('sinks'))->render();
         case 8:
-            $cutOuts = \App\Models\CutOuts::with('images')->where('status', 1)->get();
+            $selectedMaterialId = session('selected_material_id');
+            $selectedMaterialTypeId = session('selected_material_type_id');
+            $selectedLayoutId = session('selected_layout_id');
+            $cutOuts = $this->getCutOutsStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             $grouped = $cutOuts->groupBy('series_type');
             return view('front.cut-outs', compact('grouped'))->render();
         case 9:
