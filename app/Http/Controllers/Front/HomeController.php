@@ -46,8 +46,8 @@ protected function getMaterialPriceStepData(): array
 {
     $products = MasterProduct::with([
             'material.category',
-            'materialType',
-            'materialLayout',
+            'materialType.category',
+            'materialLayout.category',
         ])
         ->where('status', 1)
         ->whereHas('material', function ($query) {
@@ -141,7 +141,7 @@ protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): ar
                 $query->where('status', 1);
             },
             'materialLayout' => function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)->with('category');
             },
         ])
         ->where('status', 1)
@@ -162,7 +162,7 @@ protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): ar
 
     $layoutsByType = $layouts
         ->groupBy(function ($layout) {
-            return $layout->layout_type ?? 'Other';
+            return optional($layout->category)->name ?? 'Other';
         })
         ->sortKeys();
 
@@ -231,9 +231,8 @@ protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int 
 
     $products = MasterProduct::with([
             'sink' => function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)->with(['category', 'images']);
             },
-            'sink.images',
         ])
         ->where('status', 1)
         ->where('material_id', $materialId)
@@ -255,9 +254,8 @@ protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?i
 
     $products = MasterProduct::with([
             'cutOut' => function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)->with(['category', 'images']);
             },
-            'cutOut.images',
         ])
         ->where('status', 1)
         ->where('material_id', $materialId)
@@ -439,8 +437,8 @@ public function getCalculatorSteps(Request $request)
             $layout = session('selected_layout_id') ? \App\Models\MaterialLayout::find(session('selected_layout_id')) : null;
             $edge = session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
             $wall = session('back_wall.wall_id') ? \App\Models\BackWall::find(session('back_wall.wall_id')) : null;
-            $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with('images')->find(session('sink_selection.sink_id')) : null;
-            $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with('images')->find(session('cutout_selection.cutout_id')) : null;
+            $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
+            $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
             return view('front.overview', compact('material', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
         default:
             return response()->json(['error' => 'Invalid step'], 400);

@@ -411,6 +411,9 @@ $totalPrice = number_format($totalPrice, 3);
                                                 <strong>Model:</strong> {{ $sink->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Category:</strong> {{ optional($sink->category)->name ?? 'N/A' }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Type:</strong> {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
@@ -444,6 +447,9 @@ $totalPrice = number_format($totalPrice, 3);
                                         <div class="w-100">
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Kind:</strong> {{ $cutout->name ?? 'N/A' }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Category:</strong> {{ optional($cutout->category)->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Type:</strong> {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}
@@ -511,10 +517,10 @@ $totalPrice = number_format($totalPrice, 3);
                         <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: ₹{{ $priceDetails['wall'] ?? 'N/A' }})</li>
                         @endif
                         @if($sink)
-                        <li><strong>Sink:</strong> {{ $sink->name }} (Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: ₹{{ $priceDetails['sink'] ?? 'N/A' }})</li>
+                        <li><strong>Sink:</strong> {{ $sink->name }} (Category: {{ optional($sink->category)->name ?? 'N/A' }}, Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: ₹{{ $priceDetails['sink'] ?? 'N/A' }})</li>
                         @endif
                         @if($cutout)
-                        <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
+                        <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Category: {{ optional($cutout->category)->name ?? 'N/A' }}, Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
                         @endif
                         <li><strong>Total Price:</strong> €{{ $totalPrice }}</li>
                     </ul>

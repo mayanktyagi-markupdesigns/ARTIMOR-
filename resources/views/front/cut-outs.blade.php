@@ -45,6 +45,11 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                         <div>
                                             <span>{{ $item->id }}.</span> {{ $item->name }}
                                         </div>
+                                        @if(optional($item->category)->name)
+                                        <div class="mt-1">
+                                            <small class="text-uppercase">{{ $item->category->name }}</small>
+                                        </div>
+                                        @endif
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#cutoutModal-{{ $item->id }}" class="btn-link">Quick View</a>
                                     </div>
                                 </div>
@@ -69,6 +74,11 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                             <!-- Right: Product Info -->
                                             <div class="col-md-5">
                                                 <h2 class="fw-bold fs-3">{{ $item->name }}</h2>
+                                                @if(optional($item->category)->name)
+                                                <p class="small mb-2">
+                                                    <strong>Category:</strong> {{ $item->category->name }}
+                                                </p>
+                                                @endif
                                                 <p class="small">
                                                     <strong>Series:</strong> {{ $item->series_type }}<br />
                                                     <strong>Price:</strong> ₹{{ $item->price }}<br />

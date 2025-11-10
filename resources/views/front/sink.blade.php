@@ -14,7 +14,7 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
     </div>
 
     @php
-    $seriesList = $sinks->pluck('series_type')->unique();
+    $seriesList = $sinks->pluck('series_type')->unique()->values();
     @endphp
 
     <!-- Nav Tabs -->
@@ -53,6 +53,11 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                                 <div>
                                     <span>{{ $index + 1 }}</span> {{ $sink->name }}
                                 </div>
+                                @if(optional($sink->category)->name)
+                                <div class="mt-1">
+                                    <small class="text-uppercase">{{ $sink->category->name }}</small>
+                                </div>
+                                @endif
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#productModal-{{ $sink->id }}"
                                     class="btn-link">Quick View</a>
                             </div>
@@ -72,6 +77,11 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                                     </div>
                                     <div class="col-md-5">
                                         <h2 class="fw-bold fs-3">{{ $sink->name }}</h2>
+                                        @if(optional($sink->category)->name)
+                                        <p class="small mb-2">
+                                            <strong>Category:</strong> {{ $sink->category->name }}
+                                        </p>
+                                        @endif
                                         <p class="small">
                                             {{ $sink->radius ?? '' }} Radius<br />
                                             <strong>Internal Dimensions:</strong> {{ $sink->internal_dimensions ?? '' }}<br />
