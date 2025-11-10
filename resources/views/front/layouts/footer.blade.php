@@ -10,7 +10,7 @@
                         <a href="{{ get_setting('facebook', '') }}" target="_blank" class="mr-3">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="{{ get_setting('Instagram', '') }}" target="_blank" class="mr-3">
+                        <a href="{{ get_setting('instagram', '') }}" target="_blank" class="mr-3">
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="{{ get_setting('pinterest', '') }}" target="_blank" class="mr-3">
