@@ -2,7 +2,9 @@
 @section('content')
 
 @php
-$selectedMaterialId = session('selected_material_id');
+    $selectedMaterialId = $selectedMaterialId ?? session('selected_material_id');
+    $selectedMaterialTypeId = $selectedMaterialTypeId ?? session('selected_material_type_id');
+    $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 @endphp
 
 <div class="steps">
@@ -63,46 +65,13 @@ $selectedMaterialId = session('selected_material_id');
 </div>
 
 <div class="materials">
-    <!-- Nav Tabs -->
-    <div class="d-flex align-items-center justify-content-center materials-tab-div">
-        <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
-            @foreach(['Natural Stone', 'Ceramics', 'Quartz'] as $type)
-            <li class="nav-item" role="presentation">
-                <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ strtolower(str_replace(' ','', $type)) }}-tab"
-                    data-bs-toggle="tab" data-bs-target="#{{ strtolower(str_replace(' ', '', $type)) }}" type="button"
-                    role="tab">{{ $type }}</button>
-            </li>
-            @endforeach
-        </ul>
-    </div>
-
-    <!-- Tab Content -->
-    <div class="tab-content" id="materialsTabContent">
-        <div id="step1">
-            @foreach(['Natural Stone', 'Ceramics', 'Quartz'] as $type)
-            <div class="tab-pane fade {{ $loop->first ? 'show active' : 'hidden' }}"
-                id="{{ strtolower(str_replace(' ', '', $type)) }}" role="tabpanel">
-                <div class="row">
-                    @foreach($materials->where('material_type', $type) as $material)
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 rounded-0 position-relative product-col material-card {{ $selectedMaterialId == $material->id ? 'selected' : '' }}"
-                            data-id="{{ $material->id }}">
-                            <img src="{{ asset('uploads/materials/' . $material->image) }}" class="card-img-top"
-                                alt="{{ $material->name }}" />
-                            <div class="card-body text-center p-0">
-                                <div class="titleoverlay">
-                                    <div>
-                                        <span>{{ $loop->iteration }}.</span> {{ $material->name }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endforeach
-        </div>
+    <div id="step1" class="tab-content show active">
+        @include('front.partials.material-price', [
+            'materialCategories' => $materialCategories,
+            'materialsByCategory' => $materialsByCategory,
+            'productsByMaterial' => $productsByMaterial,
+            'selectedMaterialId' => $selectedMaterialId,
+        ])
     </div>
 
     <div id="step2" class="tab-content fade hidden">
@@ -145,27 +114,28 @@ $selectedMaterialId = session('selected_material_id');
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    $('#naturalstone-tab').on('click', function(){
-        $('#naturalstone').addClass('show active').removeClass('hidden');
-        $('#ceramics').removeClass('show active').addClass('hidden');
-        $('#quartz').removeClass('show active').addClass('hidden');
-    });
-
-    $('#ceramics-tab').on('click', function(){
-        $('#ceramics').addClass('show active').removeClass('hidden');
-        $('#naturalstone').removeClass('show active').addClass('hidden');
-        $('#quartz').removeClass('show active').addClass('hidden');
-    });
-
-    $('#quartz-tab').on('click', function(){
-        $('#quartz').addClass('show active').removeClass('hidden');
-        $('#naturalstone').removeClass('show active').addClass('hidden');
-        $('#ceramics').removeClass('show active').addClass('hidden');
-    });
-
     const nextStepBtn = document.getElementById('nextStepBtn');
-    let selectedMaterialId = "{{ session('selected_material_id', 'null') }}";
-    let selectedLayoutId = "{{ session('selected_layout_id', 'null') }}";
+    const materialTabButtons = document.querySelectorAll('#materialsTab button[data-bs-toggle="tab"]');
+
+    materialTabButtons.forEach((button) => {
+        button.addEventListener('shown.bs.tab', (event) => {
+            const targetSelector = event.target.getAttribute('data-bs-target');
+            document.querySelectorAll('#materialsTabContent .tab-pane').forEach((pane) => {
+                if ('#' + pane.id === targetSelector) {
+                    pane.classList.add('show', 'active');
+                } else {
+                    pane.classList.remove('show', 'active');
+                }
+            });
+        });
+    });
+
+    const initialMaterialId = @json($selectedMaterialId);
+    let selectedMaterialId = initialMaterialId ? String(initialMaterialId) : null;
+    const initialMaterialTypeId = @json($selectedMaterialTypeId);
+    let selectedMaterialTypeId = initialMaterialTypeId ? String(initialMaterialTypeId) : null;
+    const initialLayoutId = @json($selectedLayoutId);
+    let selectedLayoutId = initialLayoutId ? String(initialLayoutId) : null;
     let dimensions = {
         blad1: { width: null, height: null }
     };
@@ -217,7 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const materialCards = document.querySelectorAll('.material-card');
         materialCards.forEach(card => {
             card.addEventListener('click', function() {
-                selectedMaterialId = this.getAttribute('data-id');
+                const materialId = this.getAttribute('data-id');
+                selectedMaterialId = materialId ? String(materialId) : null;
+                selectedMaterialTypeId = null;
+                selectedLayoutId = null;
                 materialCards.forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
             });
@@ -227,14 +200,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to initialize layout card selection
     function initializeLayoutCards() {
         const layoutCards = document.querySelectorAll('.layout-card');
+        if (!layoutCards.length) {
+            selectedLayoutId = null;
+            return;
+        }
         layoutCards.forEach(card => {
             card.addEventListener('click', function() {
-                selectedLayoutId = this.getAttribute('data-id');
-                console.log('Selected Layout ID:', selectedLayoutId);
+                const layoutId = this.getAttribute('data-id');
+                selectedLayoutId = layoutId ? String(layoutId) : null;
                 layoutCards.forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
             });
         });
+        if (!selectedLayoutId) {
+            const activeLayoutCard = document.querySelector('.layout-card.selected');
+            if (activeLayoutCard) {
+                const layoutId = activeLayoutCard.getAttribute('data-id');
+                selectedLayoutId = layoutId ? String(layoutId) : null;
+            }
+        }
     }
 
     // Function to initialize dimension inputs
@@ -481,9 +465,21 @@ document.addEventListener('DOMContentLoaded', function() {
             $('.materials-tab-div').removeClass('hidden');
         }
         // Validate selections based on step
-        if (currentStep === 3 && !selectedMaterialId) {
-            alert("Please select a material before proceeding to the next step.");
-            return;
+        if (currentStep === 2) {
+            if (!selectedMaterialId) {
+                alert("Please select a material before proceeding to the next step.");
+                return;
+            }
+        }
+        if (currentStep === 3) {
+            if (!selectedMaterialId) {
+                alert("Please select a material before proceeding to the next step.");
+                return;
+            }
+            if (!selectedMaterialTypeId) {
+                alert("Please select a material type before proceeding to the next step.");
+                return;
+            }
         }
         if (currentStep === 4 && !selectedLayoutId) {
             alert("Please select a layout before proceeding to the next step.");
@@ -554,7 +550,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Prepare data for AJAX request
         const data = { step: currentStep };
-        if (currentStep === 3) data.material_id = selectedMaterialId;
+        if (currentStep === 2 || currentStep === 3) data.material_id = selectedMaterialId;
+        if ((currentStep === 2 || currentStep === 3) && selectedMaterialTypeId) {
+            data.material_type_id = selectedMaterialTypeId;
+        }
         if (currentStep === 4) data.layout_id = selectedLayoutId;
         if (currentStep === 5) data.dimensions = dimensions;
         if (currentStep === 6) data.edge_finishing = edgeFinishing;
@@ -633,17 +632,40 @@ document.addEventListener('DOMContentLoaded', function() {
             // Handle material type selection (for step 2)
             const materialTypeItems = document.querySelectorAll('.material-type-item');
             const materialImage = document.getElementById('material-image');
-            if (materialTypeItems && materialImage) {
+            if (materialTypeItems.length) {
                 materialTypeItems.forEach(item => {
                     item.addEventListener('click', function() {
                         materialTypeItems.forEach(i => i.classList.remove('active'));
                         this.classList.add('active');
-                        const newImage = this.getAttribute('data-image');
-                        if (newImage) {
-                            materialImage.setAttribute('src', newImage);
+                        const typeId = this.getAttribute('data-id');
+                        selectedMaterialTypeId = typeId ? String(typeId) : null;
+                        selectedLayoutId = null;
+                        if (materialImage) {
+                            const newImage = this.getAttribute('data-image');
+                            if (newImage) {
+                                materialImage.setAttribute('src', newImage);
+                            }
                         }
                     });
                 });
+
+                if (!selectedMaterialTypeId) {
+                    const activeItem = document.querySelector('.material-type-item.active');
+                    if (activeItem) {
+                        const defaultTypeId = activeItem.getAttribute('data-id');
+                        selectedMaterialTypeId = defaultTypeId ? String(defaultTypeId) : null;
+                        if (materialImage) {
+                            const defaultImage = activeItem.getAttribute('data-image');
+                            if (defaultImage) {
+                                materialImage.setAttribute('src', defaultImage);
+                            }
+                        }
+                    }
+                    selectedLayoutId = null;
+                }
+            } else {
+                selectedMaterialTypeId = null;
+                selectedLayoutId = null;
             }
 
             if(currentStep == 9){
@@ -710,6 +732,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .material-card:hover {
     transform: scale(1.02);
+}
+
+.material-meta p {
+    font-size: 14px;
+    color: #555;
+}
+
+.material-meta strong {
+    font-weight: 600;
 }
 </style>
 @endsection
