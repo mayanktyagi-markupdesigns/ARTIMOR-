@@ -96,7 +96,7 @@ protected function getMaterialTypeStepData(?int $materialId): array
 
     $products = MasterProduct::with([
             'materialType' => function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)->with('category');
             },
             'materialLayout' => function ($query) {
                 $query->where('status', 1);

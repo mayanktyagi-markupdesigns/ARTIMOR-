@@ -137,21 +137,21 @@ $totalPrice = number_format($totalPrice, 3);
                                     <div class="inputfild-box">
                                         <label class="form-label">First Name<sup>*</sup></label>
                                         <input type="text" id="firstName" name="first_name" class="form-control"
-                                            placeholder="e.g. Johan" value="" required />
+                                            placeholder="e.g. Johan" value="{{ auth()->check() ? (explode(' ', auth()->user()->name ?? '')[0] ?? '') : '' }}" required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Last Name<sup>*</sup></label>
                                         <input type="text" id="lastName" name="last_name" class="form-control"
-                                            placeholder="e.g. Sans" value="" required />
+                                            placeholder="e.g. Sans" value="{{ auth()->check() ? (trim(implode(' ', array_slice(explode(' ', auth()->user()->name ?? ''), 1))) ) : '' }}" required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Phone Number<sup>*</sup></label>
                                         <input type="text" id="phoneNumber" name="phone_number" class="form-control"
-                                            placeholder="e.g. +32 4 9720 4041" value=""
+                                            placeholder="e.g. +32 4 9720 4041" value="{{ auth()->check() ? (auth()->user()->phone_number ?? '') : '' }}"
                                             required />
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@ $totalPrice = number_format($totalPrice, 3);
                                     <div class="inputfild-box">
                                         <label class="form-label">Email ID<sup>*</sup></label>
                                         <input type="email" id="email" name="email" class="form-control"
-                                            placeholder="e.g. Johan@artimordesgns.com" value=""
+                                            placeholder="e.g. Johan@artimordesgns.com" value="{{ auth()->check() ? (auth()->user()->email ?? '') : '' }}"
                                             required />
                                     </div>
                                 </div>

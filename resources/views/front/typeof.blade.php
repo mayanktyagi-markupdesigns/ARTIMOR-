@@ -8,6 +8,9 @@
     $activeImage = $activeType && $activeType->image
         ? asset('uploads/materialtype/' . $activeType->image)
         : asset('assets/front/img/product-circle.jpg');
+    $activeTitle = $activeType
+        ? (optional($activeType->category)->name ?? $activeType->name ?? $activeType->type ?? 'Material Type')
+        : 'Material Type';
 @endphp
 
 <div class="materials pt-5">
@@ -19,7 +22,7 @@
                         <figure class="prod-box">
                             <img id="material-image" class="img-fluid"
                                 src="{{ $activeImage }}"
-                                alt="{{ $activeType->name ?? $activeType->type ?? 'Material Type' }}">
+                                alt="{{ $activeTitle }}">
                         </figure>
                     </div>
                     <div class="col-md-6">
@@ -27,17 +30,12 @@
                             <ul class="design-step">
                                 @foreach($materialTypes as $type)
                                     @php
-                                        $displayName = $type->name ?? $type->type ?? 'Material Type';
+                                        $displayName = optional($type->category)->name ?? $type->name ?? $type->type ?? 'Material Type';
                                         $imagePath = $type->image
                                             ? asset('uploads/materialtype/' . $type->image)
                                             : asset('assets/front/img/product-circle.jpg');
                                         $isActive = (string)($selectedMaterialTypeId ?? '') === (string)$type->id
                                             || (!$selectedMaterialTypeId && $loop->first);
-                                        $associatedLayouts = $productsByMaterialType->get($type->id, collect())
-                                            ->pluck('materialLayout.name')
-                                            ->filter()
-                                            ->unique()
-                                            ->values();
                                     @endphp
                                     <li class="d-flex flex-column material-type-item {{ $isActive ? 'active' : '' }}"
                                         data-id="{{ $type->id }}"
@@ -46,11 +44,6 @@
                                             <span class="cicle-t me-2"></span>
                                             <span class="tepr flex-grow-1">{{ $displayName }}</span>
                                         </div>
-                                        @if($associatedLayouts->isNotEmpty())
-                                            <p class="mb-0 ms-4 small text-muted">
-                                                Layouts: {{ $associatedLayouts->join(', ') }}
-                                            </p>
-                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
