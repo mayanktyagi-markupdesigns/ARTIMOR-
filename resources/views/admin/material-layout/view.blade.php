@@ -21,11 +21,11 @@
                 </tr>
                 <tr>
                     <th>Per Sq/Price</th>
-                     <td>{{ $layout->price }}</td>
+                     <td>€{{ $layout->price }}</td>
                 </tr>
                 <tr>
                     <th>Per Sq/User Price</th>
-                    <td>{{ $layout->user_price }}</td>
+                    <td>€{{ $layout->user_price }}</td>
                 </tr>
                 <tr>
                     <th>Status</th>

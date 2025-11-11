@@ -215,7 +215,7 @@
                     <a href="{{ route('admin.masterproduct.list') }}"
                         class="nav-link {{ request()->routeIs('admin.masterproduct.list') ? 'active' : '' }}">
                         <i class="nav-icon bi-cart"></i>
-                        <p> Master Product</p>
+                        <p> Add Product</p>
                     </a>
                 </li>
 

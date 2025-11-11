@@ -21,13 +21,13 @@
                 <!-- price -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Per Sq/Price:</label>
-                    <p>{{ $outs->price }}</p>
+                    <p>€{{ $outs->price }}</p>
                 </div>
 
                 <!-- User price -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Per Sq/User Price:</label>
-                    <p>{{ $outs->user_price }}</p>
+                    <p>€{{ $outs->user_price }}</p>
                 </div>
 
                 <!-- Cut Outs Category -->

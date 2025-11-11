@@ -29,8 +29,8 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $list->name }}</td>                           
-                            <td>{{ $list->price }}</td>                           
-                            <td>{{ $list->user_price }}</td>                           
+                            <td>€{{ $list->price }}</td>                           
+                            <td>€{{ $list->user_price }}</td>                           
                             <td>
                                 @if($list->image)
                                 <img src="{{ asset('uploads/material-edge/' . $list->image) }}" alt="edge Image"

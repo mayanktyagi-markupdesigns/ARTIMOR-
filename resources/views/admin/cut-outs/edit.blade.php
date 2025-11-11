@@ -97,7 +97,7 @@ const imageCount = document.getElementById('image-count');
 let selectedFiles = [];
 
 // Load existing images from server
-let existingImages = @json($outs - > images - > map(fn($img) => $img - > image));
+let existingImages = @json($existingImages);
 existingImages.forEach(img => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('position-relative');

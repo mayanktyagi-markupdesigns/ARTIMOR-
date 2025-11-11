@@ -151,7 +151,7 @@ $totalPrice = number_format($totalPrice, 3);
                                     <div class="inputfild-box">
                                         <label class="form-label">Phone Number<sup>*</sup></label>
                                         <input type="text" id="phoneNumber" name="phone_number" class="form-control"
-                                            placeholder="e.g. +32 4 9720 4041" value="{{ auth()->check() ? (auth()->user()->phone_number ?? '') : '' }}"
+                                            placeholder="e.g. +32 4 9720 4041" value="{{ auth()->check() ? (auth()->user()->mobile ?? '') : '' }}"
                                             required />
                                     </div>
                                 </div>
@@ -248,7 +248,7 @@ $totalPrice = number_format($totalPrice, 3);
                                     <div class="result-gride d-flex">
                                         @if($materialType->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/material-types/' . $materialType->image) }}"
+                                            <img width="160" src="{{ asset('uploads/materialtype/' . $materialType->image) }}"
                                                 alt="{{ $materialType->name }}" />
                                         </figure>
                                         @endif
@@ -502,7 +502,7 @@ $totalPrice = number_format($totalPrice, 3);
                             Color: {{ $material->color ?? 'N/A' }}, Price: €{{ $priceDetails['material'] ?? 'N/A' }})</li>
                         @endif
                         @if($materialType)
-                        <li><strong>Material Type:</strong> {{ $materialType->name }} (Price: ₹{{ $priceDetails['material_type'] ?? 'N/A' }})</li>
+                        <li><strong>Material Type:</strong> {{ $materialType->name }} (Price: €{{ $priceDetails['material_type'] ?? 'N/A' }})</li>
                         @endif
                         @if($layout)
                         <li><strong>Layout:</strong> {{ $layout->name }} (Price: €{{ $priceDetails['layout'] ?? 'N/A' }})</li>
@@ -511,13 +511,13 @@ $totalPrice = number_format($totalPrice, 3);
                         <li><strong>Dimensions:</strong> Width: {{ $blad1['width'] ?: 'N/A' }} cm, Height: {{ $blad1['height'] ?: 'N/A' }} cm, Area: {{ number_format($area, 2) }} m²</li>
                         @endif
                         @if($edge)
-                        <li><strong>Edge Finishing:</strong> {{ $edge->name }} (Thickness: {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm, Edges: {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}, Price: ₹{{ $priceDetails['edge'] ?? 'N/A' }})</li>
+                        <li><strong>Edge Finishing:</strong> {{ $edge->name }} (Thickness: {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm, Edges: {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['edge'] ?? 'N/A' }})</li>
                         @endif
                         @if($wall)
-                        <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: ₹{{ $priceDetails['wall'] ?? 'N/A' }})</li>
+                        <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['wall'] ?? 'N/A' }})</li>
                         @endif
                         @if($sink)
-                        <li><strong>Sink:</strong> {{ $sink->name }} (Category: {{ optional($sink->category)->name ?? 'N/A' }}, Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: ₹{{ $priceDetails['sink'] ?? 'N/A' }})</li>
+                        <li><strong>Sink:</strong> {{ $sink->name }} (Category: {{ optional($sink->category)->name ?? 'N/A' }}, Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: €{{ $priceDetails['sink'] ?? 'N/A' }})</li>
                         @endif
                         @if($cutout)
                         <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Category: {{ optional($cutout->category)->name ?? 'N/A' }}, Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>

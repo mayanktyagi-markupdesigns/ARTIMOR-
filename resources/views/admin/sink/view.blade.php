@@ -20,12 +20,12 @@
 
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Per Sq/Price:</label>
-                    <p>{{ $sink->price }}</p>
+                    <p>€{{ $sink->price }}</p>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Per Sq/User Price:</label>
-                    <p>{{ $sink->price }}</p>
+                    <p>€{{ $sink->price }}</p>
                 </div>
 
                 <div class="col-md-4 mb-3">

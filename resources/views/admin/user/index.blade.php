@@ -3,7 +3,7 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0 fw-bold">User List</h3>       
+        <h3 class="mb-0 fw-bold">User List</h3>
         <a href="{{ route('admin.user.create') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-plus-circle me-1"></i>Add New
         </a>
@@ -48,7 +48,7 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->mobile }}</td>
                             <td>
-                                <img src="{{ asset($user->photo ? 'uploads/users/' . $user->photo : 'uploads/users/no_icon.jpg') }}"
+                                <img src="{{ asset($user->photo ? 'uploads/users/' . $user->photo : 'uploads/users/user.png') }}"
                                     alt="Profile Photo" width="60" height="60"
                                     style="border-radius: 5px; object-fit: cover;">
                             </td>

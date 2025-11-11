@@ -23,11 +23,11 @@
                 </tr>
                 <tr>
                     <th>Per Sq/Price</th>
-                    <td>${{ number_format($materials->price, 2) }}</td>
+                    <td>€{{ number_format($materials->price, 2) }}</td>
                 </tr>
                 <tr>
                     <th>Per Sq/User Price</th>
-                    <td>${{ number_format($materials->user_price, 2) }}</td>
+                    <td>€{{ number_format($materials->user_price, 2) }}</td>
                 </tr>
                 <tr>
                     <th>Status</th>

@@ -72,12 +72,12 @@ class CutOutsController extends Controller
 
     // Show edit form
     public function edit($id)
-    {
-       
-        $data['outs'] = CutOuts::with('images')->findOrFail($id);
-        $data['categories']   = CutOutsCategory::where('status', 1)->orderBy('name')->get();      
-        return view('admin.cut-outs.edit', $data);
-    }
+{
+    $data['outs'] = CutOuts::with('images')->findOrFail($id);
+    $data['categories'] = CutOutsCategory::where('status', 1)->orderBy('name')->get();
+    $data['existingImages'] = $data['outs']->images->pluck('image')->toArray(); // ✅ Add this line
+    return view('admin.cut-outs.edit', $data);
+}
 
     // Update cut outs
     public function update(Request $request, $id)

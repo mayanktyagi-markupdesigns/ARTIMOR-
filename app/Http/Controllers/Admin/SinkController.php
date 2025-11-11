@@ -80,7 +80,8 @@ class SinkController extends Controller
     public function edit($id)
     {
         $data['sink'] = Sink::with('images')->findOrFail($id); 
-        $data['categories']   = SinkCategory::where('status', 1)->orderBy('name')->get();      
+        $data['categories'] = SinkCategory::where('status', 1)->orderBy('name')->get();      
+        $data['existingImages'] = $data['sink']->images->pluck('image')->toArray(); // ✅ Add this line
         return view('admin.sink.edit', $data);
     }
 

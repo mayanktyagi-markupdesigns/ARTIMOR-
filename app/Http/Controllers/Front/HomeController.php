@@ -10,6 +10,7 @@ use App\Models\MaterialLayout;
 use App\Models\Dimension;
 use App\Models\MaterialEdge;
 use App\Models\BackWall;
+use App\Models\SinkCategory;
 use App\Models\Sink;
 use App\Models\CutOuts;
 use App\Models\MasterProduct;
@@ -243,7 +244,13 @@ protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int 
         })
         ->get();
 
-    return $products->pluck('sink')->filter()->unique('id')->values();
+    $sinks = $products->pluck('sink')->filter()->unique('id')->values();
+    // Re-fetch unique sinks with relations to avoid losing eager loads after pluck/unique
+    if ($sinks->isEmpty()) {
+        return $sinks;
+    }
+    $uniqueSinkIds = $sinks->pluck('id')->filter()->unique()->values();
+    return Sink::with(['category', 'images'])->whereIn('id', $uniqueSinkIds)->get();
 }
 
 protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
@@ -429,7 +436,10 @@ public function getCalculatorSteps(Request $request)
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $cutOuts = $this->getCutOutsStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
-            $grouped = $cutOuts->groupBy('series_type');
+            // Group cut-outs by category name with fallback to 'Other'
+            $grouped = $cutOuts->groupBy(function ($cutout) {
+                return optional($cutout->category)->name ?: 'Other';
+            });
             return view('front.cut-outs', compact('grouped'))->render();
         case 9:
             // Fetch data for overview
