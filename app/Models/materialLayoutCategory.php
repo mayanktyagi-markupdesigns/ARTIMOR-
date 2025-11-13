@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class materialLayoutCategory extends Model
+class MaterialLayoutCategory extends Model
 {
     protected $table = 'material_layout_categories';
 

@@ -18,6 +18,6 @@ class MaterialLayout extends Model
 
     public function category()
     {
-        return $this->belongsTo(materialLayoutCategory::class, 'material_layout_category_id');
+        return $this->belongsTo(MaterialLayoutCategory::class, 'material_layout_category_id');
     }
 }

@@ -211,5 +211,16 @@ input::placeholder {color: #dbdada !important;}
     display: none !important;
 }
 
+.material-card .card-img-top {
+    width: 100%;
+}
+
+.card-body.text-center.p-0 {
+    position: absolute;
+    width: 100%;
+    display: block;
+    bottom: 0;
+    height: 100%;
+}
     
 

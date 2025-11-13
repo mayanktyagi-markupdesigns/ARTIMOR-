@@ -61,8 +61,11 @@
         @endif
         <form method="POST" action="{{ route('reset.password.submit') }}">
             @csrf
+            @php
+                $otpVerified = filter_var(session('otp_verified'), FILTER_VALIDATE_BOOLEAN);
+            @endphp
             <input type="hidden" name="email" value="{{ session('email') ?? old('email') }}">
-            <input type="hidden" name="otp_verified" value="{{ session('otp_verified') === true ? 'true' : 'false' }}">           
+            <input type="hidden" name="otp_verified" value="{{ $otpVerified ? 'true' : 'false' }}">           
 
             <div class="form-group text-start mb-3 position-relative">
                 <label for="password">Password</label><span style="color:red;">*</span>

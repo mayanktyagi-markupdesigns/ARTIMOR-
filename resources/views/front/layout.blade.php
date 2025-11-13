@@ -60,18 +60,7 @@
                                                 <span>{{ $loopIndex + 1 }}.</span> {{ $layout->name }}
                                             </div>
                                         </div>
-                                        <div class="px-3 py-3 text-start layout-meta">
-                                            @if($materialNames->isNotEmpty())
-                                                <p class="mb-1">
-                                                    <strong>Materials:</strong> {{ $materialNames->join(', ') }}
-                                                </p>
-                                            @endif
-                                            @if($typeNames->isNotEmpty())
-                                                <p class="mb-0">
-                                                    <strong>Types:</strong> {{ $typeNames->join(', ') }}
-                                                </p>
-                                            @endif
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>

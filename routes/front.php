@@ -4,11 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\UserController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\Front\LanguageController;
 
 
     
     Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
     Route::post('/select-material', [HomeController::class, 'selectMaterial'])->name('material.select');
 
     Route::get('/typeof', [HomeController::class, 'type'])->name('type');

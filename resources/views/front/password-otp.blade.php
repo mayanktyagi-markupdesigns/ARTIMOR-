@@ -82,7 +82,7 @@
             </div>
         </form>
         <a href="#" class="resend-link">Didn't Receive The Email? Click To Resend</a>
-        <a href="{{ route('login') }}" class="back-link">&lt;&lt; Back To Log In</a>
+        <a href="{{ route('login') }}" class="back-link"> <- Back To Log In</a>
     </div>
 
     <!-- Scripts -->

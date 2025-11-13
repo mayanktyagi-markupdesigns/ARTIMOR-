@@ -47,10 +47,16 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->mobile }}</td>
+                            @php
+                                $photoPath = 'uploads/users/' . $user->photo;
+                                $defaultPhoto = 'uploads/users/user.png';
+                                $finalPhoto = $user->photo && file_exists(public_path($photoPath)) ? $photoPath : $defaultPhoto;
+                            @endphp
+                            
                             <td>
-                                <img src="{{ asset($user->photo ? 'uploads/users/' . $user->photo : 'uploads/users/user.png') }}"
-                                    alt="Profile Photo" width="60" height="60"
-                                    style="border-radius: 5px; object-fit: cover;">
+                                <img src="{{ asset($finalPhoto) }}"
+                                     alt="Profile Photo" width="60" height="60"
+                                     style="border-radius: 5px; object-fit: cover;">
                             </td>
                             <td>
                                 @if ($user->status == 1)

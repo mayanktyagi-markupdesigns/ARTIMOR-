@@ -337,8 +337,13 @@ Swal.fire({
         <div class="account-container">
             <div class="sidebar">
                 <div class="user-info">
-                    <img src="{{ Auth::user()->photo ? asset('uploads/users/' . Auth::user()->photo) : asset('uploads/users/user.png') }}"
-                        alt="Profile Picture" class="profile-image-sidebar">
+                    @php
+                    $photo = Auth::user()->photo && file_exists(public_path('uploads/users/' . Auth::user()->photo))
+                        ? 'uploads/users/' . Auth::user()->photo
+                        : 'uploads/users/user.png';
+                    @endphp
+                
+                <img src="{{ asset($photo) }}" alt="Profile Picture" class="profile-image-sidebar">
                     <p class="user-name">{{ Auth::user()->name }}</p>
                     <p class="user-email">{{ Auth::user()->email }}</p>
                 </div>
@@ -373,8 +378,13 @@ Swal.fire({
                         @csrf
                         <h2>Profile</h2>
                         <div class="profile-image-upload">
-                            <img src="{{ Auth::user()->photo ? asset('uploads/users/'.Auth::user()->photo) :  asset('uploads/users/user.png') }}"
-                                alt="Profile Picture" class="profile-image-main">
+                           @php
+                                $photoPath = 'uploads/users/' . Auth::user()->photo;
+                                $defaultPhoto = 'uploads/users/user.png';
+                                $finalPhoto = Auth::user()->photo && file_exists(public_path($photoPath)) ? $photoPath : $defaultPhoto;
+                            @endphp
+                            
+                            <img src="{{ asset($finalPhoto) }}" alt="Profile Picture" class="profile-image-main">
                             <div class="file-upload">
                                 <span>Replace Image</span>
                                 <input type="file" name="photo" />

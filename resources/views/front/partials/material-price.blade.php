@@ -56,16 +56,7 @@
                                                 <span>{{ $loop->iteration }}.</span> {{ $material->name }}
                                             </div>
                                         </div>
-                                        @if($typeNames->isNotEmpty() || $layoutNames->isNotEmpty())
-                                            <div class="px-3 py-3 text-start material-meta">
-                                                @if($typeNames->isNotEmpty())
-                                                    <p class="mb-1"><strong>Types:</strong> {{ $typeNames->join(', ') }}</p>
-                                                @endif
-                                                @if($layoutNames->isNotEmpty())
-                                                    <p class="mb-0"><strong>Layouts:</strong> {{ $layoutNames->join(', ') }}</p>
-                                                @endif
-                                            </div>
-                                        @endif
+                                        
                                     </div>
                                 </div>
                             </div>

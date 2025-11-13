@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-
-
 class UserController extends Controller
 {
     public function index()
@@ -144,16 +142,19 @@ class UserController extends Controller
             return back()->withErrors(['otp' => 'The provided OTP is invalid or has expired.'])->onlyInput('otp');
         }
 
+        // Persist verification state in the session
+        $request->session()->put('email', $request->email);
+        $request->session()->put('otp_verified', true);
+
         // OTP is valid, redirect to reset password page
-        return redirect()->route('reset')->with([
-            'email' => $request->email,
-            'otp_verified' => true
-        ]);
+        return redirect()->route('reset');
     }
 
     public function reset(Request $request)
     {
-        if (!$request->session()->has('email') || $request->session()->get('otp_verified') !== true) {
+        $otpVerified = filter_var($request->session()->get('otp_verified'), FILTER_VALIDATE_BOOLEAN);
+
+        if (!$request->session()->has('email') || !$otpVerified) {
             return redirect()->route('login')->with('error', 'Please verify OTP before resetting password.');
         }
 
@@ -168,7 +169,9 @@ class UserController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        if (!$request->otp_verified) {
+        $otpVerified = filter_var($request->input('otp_verified'), FILTER_VALIDATE_BOOLEAN);
+
+        if (!$otpVerified) {
             return back()->withErrors(['otp' => 'OTP not verified. Please go through the OTP verification process.']);
         }
 
@@ -182,6 +185,8 @@ class UserController extends Controller
         $user->otp = null;
         $user->otp_expires_at = null;
         $user->save();
+
+        $request->session()->forget(['otp_verified', 'email']);
 
         return redirect()->route('login')->with('success', 'Your password has been reset successfully!');
     }

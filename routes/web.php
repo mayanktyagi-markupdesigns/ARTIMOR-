@@ -23,7 +23,12 @@ use App\Http\Controllers\Admin\PromoCodeController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\MasterProductController;
 use App\Http\Middleware\AdminAuthenticate;
+use Illuminate\Support\Facades\Artisan;
 
+// Route::get('/run-storage-link', function () {
+//     Artisan::call('storage:link');
+//     return 'Storage link created successfully!';
+// });
 
 Route::prefix('admin')->name('admin.')->group(function () {    
         Route::get('/login', [AuthController::class, 'index'])->name('login');

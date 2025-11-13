@@ -3,7 +3,7 @@
     <div class="top-header">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="addcol">
-                <div class="fs-5 fw-bold sitecolor">Visit Us Daily:</div>
+                <div class="fs-5 fw-bold sitecolor">{{ __('front.visit_us_daily') }}</div>
                 <p>
                     {!! get_setting('visit-us-daily', '') !!}
                 </p>
@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="addcol">
-                <div class="fs-5 fw-bold sitecolor">Connect With Us:</div>
+                <div class="fs-5 fw-bold sitecolor">{{ __('front.connect_with_us') }}</div>
                 <p><a href="{{ get_setting('phone', '') }}">{{ get_setting('phone', '') }}</a></p>
                 <p><a href="mailto:{{ get_setting('mail', '') }}">{{ get_setting('mail', '') }}</a></p>
             </div>
@@ -31,15 +31,14 @@
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <!-- Left Links -->
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://artimar.be/contact-opnemen" target="_blank">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">{{ __('front.home') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://artimar.be/contact-opnemen" target="_blank">{{ __('front.contact_us') }}</a></li>
                 </ul>
                 <!-- Right Icons -->
                 <ul class="navbar-nav">
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('login') }}"><i class="fa fa-user"></i></a>
                     </li> -->
-                    <li class="nav-item dropdown">
                     <li class="nav-item">
                         @auth
                         <!-- Agar user login hai -->
@@ -50,13 +49,33 @@
                         @endauth
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-globe"></i></a>
+                    <li class="nav-item dropdown">
+                        @php
+                            $supportedLocales = config('locales.supported', []);
+                            $currentLocale = app()->getLocale();
+                            $currentLocaleShort = strtoupper($supportedLocales[$currentLocale]['short'] ?? $currentLocale);
+                        @endphp
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="languageDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-globe"></i>
+                            <span>{{ $currentLocaleShort }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            @foreach ($supportedLocales as $localeCode => $locale)
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ $currentLocale === $localeCode ? 'active' : '' }}"
+                                        href="{{ route('language.switch', ['locale' => $localeCode, 'redirect' => request()->fullUrl()]) }}">
+                                        <span>{{ $locale['label'] }}</span>
+                                        <span class="badge bg-light text-dark border">{{ strtoupper($locale['short']) }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-search" id="openSearch"
-                                style="cursor: pointer;"></i></a>
-                    </li>
+                    <!--<li class="nav-item">-->
+                    <!--    <a class="nav-link" href="#"><i class="fa fa-search" id="openSearch"-->
+                    <!--            style="cursor: pointer;"></i></a>-->
+                    <!--</li>-->
                 </ul>
             </div>
         </div>
