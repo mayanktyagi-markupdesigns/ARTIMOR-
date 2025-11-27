@@ -1,12 +1,13 @@
 @extends('admin.layouts.app')
+
 @section('content')
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3 listing_name">
-        <h3 class="mb-0 fw-bold">Material Color List</h3>
-        <a href="{{ route('admin.color.create') }}" class="btn btn-primary btn-custom-add">
+        <h3 class="mb-0 fw-bold">Material Layout Shape</h3>       
+            <a href="{{ route('admin.material.layout.shape.create') }}"  class="btn btn-primary btn-custom-add">
             <i class="bi bi-plus-circle me-1"></i>Add New
-        </a>
+        </a>        
     </div>
     <div class="card shadow-sm">
         <div class="card-body">
@@ -17,19 +18,26 @@
                         <tr>
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Name</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Group</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Type</th>
+                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Layout Group</th>
+                            <th scope="col" style="width: 150px; background-color: #f1f5f9;">Image</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($color as $list)
+                        @foreach($shape as $list)
                         <tr>
-                            <td>{{ $loop->iteration + ($color->currentPage() - 1) * $color->perPage() }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $list->name }}</td>
-                            <td>{{ $list->materialGroup->name ?? '—' }}</td>
-                            <td>{{ $list->materialType->name ?? '—' }}</td> 
+                            <td>{{ $list->layoutGroup->name ?? '—' }}</td>
+                            <td>
+                                @if($list->image)
+                                <img src="{{ asset('uploads/layout-shapes/' . $list->image) }}" alt="material Image"
+                                    width="80">
+                                @else
+                                <span class="text-muted">No image</span>
+                                @endif
+                            </td>                            
                             <td>
                                 @if ($list->status == 1)
                                 <span class="badge bg-success">Active</span>
@@ -37,11 +45,12 @@
                                 <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </td>
-                            <td>
-                                <a href="{{ route('admin.color.edit', $list->id) }}"
-                                    class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Edit</a>
-                                <form action="{{ route('admin.color.destroy', $list->id) }}"
-                                    method="POST" style="display:inline-block;">
+                            
+                            <td>                                
+                                <a href="{{ route('admin.material.layout.shape.edit', $list->id) }}" class="btn btn-sm btn-primary"><i
+                                        class="bi bi-pencil"></i> Edit</a>
+                                <form action="{{ route('admin.material.layout.shape.destroy', $list->id) }}" method="POST"
+                                    style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i>
@@ -49,26 +58,22 @@
                                 </form>
                             </td>
                         </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center">No color found.</td>
-                        </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
                 <div class="mt-3">
-                    {{ $color->links('pagination::bootstrap-5') }}
+                    {{ $shape->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
     </div>
 </div>
 @if(session('success') || session('error'))
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-    modal.show();
-});
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+            modal.show();
+        });
+    </script>
 @endif
 @endsection

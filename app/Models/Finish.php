@@ -10,18 +10,13 @@ class Finish extends Model
 
     protected $fillable = [
         'finish_name',
-        'material_group_id',
-        'material_type_id',
+        'color_id',
         'status',
     ];
 
-    public function materialGroup()
+    public function color()
     {
-        return $this->belongsTo(MaterialGroup::class, 'material_group_id');
+        return $this->belongsTo(Color::class, 'color_id');
     }
 
-    public function materialType()
-    {
-        return $this->belongsTo(MaterialType::class, 'material_type_id');
-    }
 }
