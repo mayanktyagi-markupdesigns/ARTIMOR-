@@ -5,141 +5,80 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MaterialType;
-use Illuminate\Support\Facades\File;
-use Illuminate\Validation\Rule;
-use App\Models\MaterialTypeCategory;
-use Illuminate\Support\Facades\Storage;
+use App\Models\MaterialGroup;
 
 class MaterialTypeController extends Controller
 {
-    //listing Material Type with pagination
+    //listing MaterialType  with pagination
     public function index(Request $request)
     {        
         $query = MaterialType::orderBy('id', 'desc');
         // Paginate the Location, retain the search query on pagination
-        $data['materialtype'] = $query->paginate(10)->withQueryString();     
-        return view('admin.materialtype.index', $data);   
+        $data['types'] = $query->paginate(10)->withQueryString();     
+        return view('admin.material-type.index', $data);   
     }
 
     //Add material type
     public function create()
     {        
-        $data['categories'] = MaterialTypeCategory::where('status', 1)->orderBy('name')->get();
-        return view('admin.materialtype.add', $data);
-        
+        $data['group'] = MaterialGroup::where('status', 1)->orderBy('name')->get();
+        return view('admin.material-type.add', $data);
     }
     
     //Insert material type
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'          => 'required|string|max:255', 
-            'material_type_category_id' => 'required|exists:material_type_categories,id', 
-            'status' => 'required|in:0,1',
-            'price' => 'required|numeric|min:0',
-            'user_price'    => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
-        ]);
+            'name'          => 'required|string|max:255',            
+            'material_group_id' => 'required|exists:material_groups,id',
+            'status'        => 'required|in:0,1',           
+        ]);        
 
-        $imageName = null;
+        $type = new MaterialType();
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $folderPath = public_path('uploads/materialtype');
+        $type->name                = $request->name;
+        $type->material_group_id   = $request->material_group_id;    
+        $type->status              = $request->status;
+        $type->save();    
 
-            if (!file_exists($folderPath)) {
-                mkdir($folderPath, 0755, true);
-            }
-
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move($folderPath, $imageName);
-        }
-
-        $materialtype = new MaterialType();
-
-        // ✅ Place this line here
-        $materialtype->material_type_category_id = $request->material_type_category_id;
-
-        $materialtype->name  = $request->name;
-        $materialtype->price = $request->price;
-        $materialtype->user_price = $request->user_price;
-        $materialtype->image = $imageName;
-        $materialtype->status = $request->status;
-        $materialtype->save();
-
-        return redirect()->route('admin.material.type.list')->with('success', 'Material Type added successfully!');
+        return redirect()->route('admin.material.type.list')->with('success', 'Material type added successfully!');
     }
-
+    
     //Edit material type
     public function edit($id)
     {
-        $data['materialtype'] = MaterialType::findOrFail($id); 
-        $data['categories']   = MaterialTypeCategory::where('status', 1)->orderBy('name')->get();       
-        return view('admin.materialtype.edit', $data);
+        $data['type'] = MaterialType::findOrFail($id);
+        $data['group'] = MaterialGroup::where('status', 1)->orderBy('name')->get();
+        return view('admin.material-type.edit', $data);
     }
 
     //Update material type
     public function update(Request $request, $id)
     {
-        $materialtype = MaterialType::findOrFail($id);
+        $material = MaterialType::findOrFail($id);
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
-            'material_type_category_id' => 'required|exists:material_type_categories,id',
-            'status' => 'required|in:0,1',
-            'price' => 'required|numeric|min:0',
-            'user_price'    => 'required|numeric|min:0',
-            'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
+            'material_group_id' => 'required|exists:material_groups,id',
+            'status'        => 'required|in:0,1',
         ]);
         
-        $imageName = $materialtype->image;
+        $material = MaterialType::findOrFail($id);
+        
+        $material->name                  = $request->name;
+        $material->material_group_id     = $request->material_group_id; 
+        $material->status                = $request->status;
+        $material->save();
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            $folderPath = public_path('uploads/materialtype');
-            if (!file_exists($folderPath)) {
-                mkdir($folderPath, 0755, true);
-            }
-
-            // Delete old image if exists
-            if ($materialtype->image && file_exists($folderPath . '/' . $materialtype->image)) {
-                unlink($folderPath . '/' . $materialtype->image);
-            }
-
-            // Upload new image
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move($folderPath, $imageName);
-            $materialtype->image = $imageName;
-        }        
-
-        $materialtype->material_type_category_id = $request->material_type_category_id;
-        $materialtype->name                      = $request->name;
-        $materialtype->price                     = $request->price;
-        $materialtype->user_price                = $request->user_price;
-        $materialtype->status                    = $request->status;
-        $materialtype->save();
-
-        return redirect()->route('admin.material.type.list')->with('success', 'Material Type updated successfully!');
+        return redirect()->route('admin.material.type.list')->with('success', 'Material type updated successfully!');
     }
     
-    //Delete material type
+    //Delete Material Type
     public function destroy($id)
     {
-        $materialtype = MaterialType::findOrFail($id);
-
-        // Delete image from folder
-        if ($materialtype->image) {
-            $imagePath = public_path('uploads/materialtype/' . $materialtype->image);
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
-        }
-        // Soft delete the banner
-        $materialtype->save();
-        $materialtype->delete();
-
-        return redirect()->route('admin.material.type.list')->with('success', 'Material Type deleted successfully.');
-    }   
+        $type = MaterialType::findOrFail($id);        
+        $type->delete();
+        return redirect()->route('admin.material.type.list')->with('success', 'Material type deleted successfully.');
+    }
     
 }

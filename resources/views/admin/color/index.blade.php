@@ -3,7 +3,7 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3 listing_name">
-        <h3 class="mb-0 fw-bold">Color List</h3>
+        <h3 class="mb-0 fw-bold">Material Color List</h3>
         <a href="{{ route('admin.color.create') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-plus-circle me-1"></i>Add New
         </a>
@@ -17,28 +17,28 @@
                         <tr>
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Name</th>
-                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Color Code</th>
+                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Material Type</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($color as $category)
+                        @forelse($color as $list)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>{{ $category->code }}</td>
+                            <td>{{ $list->name }}</td>
+                            <td>{{ $list->type->name ?? '—' }}</td> 
                             <td>
-                                @if ($category->status == 1)
+                                @if ($list->status == 1)
                                 <span class="badge bg-success">Active</span>
                                 @else
                                 <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.color.edit', $category->id) }}"
+                                <a href="{{ route('admin.color.edit', $list->id) }}"
                                     class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Edit</a>
-                                <form action="{{ route('admin.color.destroy', $category->id) }}"
+                                <form action="{{ route('admin.color.destroy', $list->id) }}"
                                     method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
@@ -49,7 +49,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center">No categories found.</td>
+                            <td colspan="4" class="text-center">No color found.</td>
                         </tr>
                         @endforelse
                     </tbody>

@@ -10,7 +10,12 @@ class Color extends Model
 
     protected $fillable = [
         'name',
-        'code',
+        'material_type_id',
         'status',
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(MaterialType::class, 'material_type_id');
+    }
 }

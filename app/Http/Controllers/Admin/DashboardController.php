@@ -12,11 +12,7 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {     
-        $data['totalActiveProducts'] = MasterProduct::where('status', 1)->count();
-        $data['totalActiveUsers'] = User::where('status', 1)->count();
-        $data['totalInactiveUsers'] = User::where('status', 0)->count();
-        $data['totalActiveQuotations'] = Quotation::count();
-
+        $data['totalActiveUsers'] = User::count();
         return view('admin.dashboard', $data);
     }
 }

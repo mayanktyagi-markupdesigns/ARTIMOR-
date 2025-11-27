@@ -3,7 +3,7 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0 fw-bold">Add Color</h3>
+        <h3 class="mb-0 fw-bold">Add Material Color</h3>
         <a href="{{ route('admin.color.list') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-arrow-left me-1"></i>Back to List
         </a>
@@ -20,11 +20,20 @@
                         @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label for="code">Color Code</label>
-                        <input type="text" class="form-control" name="code" id="color" value="{{ old('color') }}" placeholder="Enter name">
-                        
-                    </div>
+                    <!-- Material Type -->
+                        <div class="col-md-4 mb-3">
+                            <label for="material_type_id">Material Type</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_type_id" id="material_type_id">
+                                <option value="">Select Material Type</option>
+                                @foreach($type as $type)
+                                <option value="{{ $type->id }}"
+                                    {{ old('material_type_id') == $type->id ? 'selected' : '' }}>
+                                    {{ $type->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div> 
 
                     <div class="col-md-4 mb-3">
                         <label for="status">Status</label>

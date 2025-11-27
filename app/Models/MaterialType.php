@@ -10,16 +10,12 @@ class MaterialType extends Model
 
     protected $fillable = [
         'name',
-        'material_type_category_id',
-        'image',
-        'price',
-        'user_price',
+        'material_group_id',
         'status',
     ];
 
-    // ✅ Correct relationship
-    public function category()
+    public function group()
     {
-        return $this->belongsTo(MaterialTypeCategory::class, 'material_type_category_id');
+        return $this->belongsTo(MaterialGroup::class, 'material_group_id');
     }
 }
