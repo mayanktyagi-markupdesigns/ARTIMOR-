@@ -31,7 +31,7 @@
                     <a href="#" class="nav-link {{ request()->is('admin/material*') ? 'active' : '' }}">
                         <i class="nav-icon bi-box-seam"></i>
                         <p>
-                            Material
+                            Material Management
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
@@ -40,28 +40,28 @@
                             <a href="{{ route('admin.material.group.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.material.group.list') ? 'active' : '' }}">
                                 <i class="bi-diagram-3 nav-icon"></i>
-                                <p>Material Group</p>
+                                <p>Material Groups</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.material.type.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.material.type.list') ? 'active' : '' }}">
                                 <i class="bi-layers nav-icon"></i>
-                                <p>Material Type</p>
+                                <p>Material Types</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.color.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.color.list') ? 'active' : '' }}">
                                 <i class="bi-palette nav-icon text-red"></i>
-                                <p class="text-red">Color(Material)</p>
+                                <p class="text-red">Materials / Colors</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.finish.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.finish.list') ? 'active' : '' }}">
                                 <i class="bi-brush nav-icon text-orange"></i>
-                                <p class="text-orange">Finish Variants</p>
+                                <p class="text-orange">Material Finishes</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -78,7 +78,7 @@
                     <a href="#" class="nav-link {{ request()->is('admin/material-layout*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-columns-gap"></i>
                         <p>
-                            Material Layout
+                            Layout Configuration
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
@@ -88,7 +88,7 @@
                             <a href="{{ route('admin.material.layout.category.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.material.layout.category.list') ? 'active' : '' }}">
                                 <i class="bi bi-tags nav-icon"></i>
-                                <p>Layout Category</p>
+                                <p>Layout Categories</p>
                             </a>
                         </li>
                         {{-- Material Layout List --}}
@@ -96,7 +96,7 @@
                             <a href="{{ route('admin.material.layout.group.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.material.layout.group.list') ? 'active' : '' }} ">
                                 <i class="bi bi-list-ul nav-icon"></i>
-                                <p>Layout Group</p>
+                                <p>Layout Groups</p>
                             </a>
                         </li>
 
@@ -105,18 +105,46 @@
                             <a href="{{ route('admin.material.layout.shape.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.material.layout.shape.list') ? 'active' : '' }}">
                                 <i class="bi bi-layout-text-sidebar nav-icon"></i>
-                                <p>Layout Shape</p>
+                                <p>Layout Shapes</p>
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li>               
 
-                <li class="nav-item">
-                    <a href="{{ route('admin.edge.profile.list') }}"
-                        class="nav-link {{ request()->routeIs('admin.edge.profile.list') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-card-list"></i>
-                        <p>Edge Profile</p>
+                <li class="nav-item has-treeview {{ request()->is('admin/edge-profile*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/edge-profile*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-columns-gap"></i>
+                        <p>
+                            Edge Management
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        {{-- Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.edge.profile.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.edge.profile.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Edge Profiles</p>
+                            </a>
+                        </li>    
+                        {{-- Edge Profile Thickness Rules --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.edge.profile.thickness.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.edge.profile.thickness.list') ? 'active' : '' }}">
+                                <i class="bi bi-rules nav-icon"></i>
+                                <p>Edge Profile Rules</p>
+                            </a>
+                        </li>     
+                        {{-- Material Color Edge Exceptions --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.color.edge.exception.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.color.edge.exception.list') ? 'active' : '' }}">
+                                <i class="bi bi-exclamation-triangle nav-icon"></i>
+                                <p>Edge Pricing</p>
+                            </a>
+                        </li>               
+                    </ul>
                 </li>
 
                 {{-- User Management --}}

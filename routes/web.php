@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\MaterialLayoutCaterogyController;
 use App\Http\Controllers\Admin\MaterialLayoutGroupController;
 use App\Http\Controllers\Admin\MaterialLayoutShapeController;
 use App\Http\Controllers\Admin\EdgeProfileController;
+use App\Http\Controllers\Admin\EdgeProfileThicknessController;
+use App\Http\Controllers\Admin\MaterialColorEdgeExceptionController;
 use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -155,7 +157,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [EdgeProfileController::class, 'destroy'])->name('destroy');
         });
         /*---------------------------------End Edge Profile Controller--------------------------------------*/
-        
+
+        /*---------------------------------Edge Profile Thickness Controller------------------------------------------*/
+        Route::prefix('edge-profile-thickness')->name('edge.profile.thickness.')->group(function () {
+            Route::get('/list', [EdgeProfileThicknessController::class, 'index'])->name('list');
+            Route::get('/add', [EdgeProfileThicknessController::class, 'create'])->name('create');
+            Route::post('/create', [EdgeProfileThicknessController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [EdgeProfileThicknessController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [EdgeProfileThicknessController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [EdgeProfileThicknessController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Edge Profile Thickness Controller--------------------------------------*/
+
+        /*---------------------------------Material Color Edge Exception Controller------------------------------------------*/
+        Route::prefix('color-edge-exception')->name('color.edge.exception.')->group(function () {
+            Route::get('/list', [MaterialColorEdgeExceptionController::class, 'index'])->name('list');
+            Route::get('/add', [MaterialColorEdgeExceptionController::class, 'create'])->name('create');
+            Route::post('/create', [MaterialColorEdgeExceptionController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [MaterialColorEdgeExceptionController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [MaterialColorEdgeExceptionController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [MaterialColorEdgeExceptionController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Material Color Edge Exception Controller--------------------------------------*/
     });
 
 }); 
