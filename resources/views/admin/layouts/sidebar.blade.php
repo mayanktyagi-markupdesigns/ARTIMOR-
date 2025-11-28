@@ -156,12 +156,29 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- Category List --}}
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.shapes.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.backsplash.shapes.list') ? 'active' : '' }}">
                                 <i class="bi bi-tags nav-icon"></i>
                                 <p>Backsplash Shapes</p>
+                            </a>
+                        </li>            
+                    </ul>
+                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.backsplash.shapes.sides.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.backsplash.shapes.sides.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Backsplash Shape Sides</p>
+                            </a>
+                        </li>            
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.backsplash.price.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.backsplash.price.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Backsplash Pricing</p>
                             </a>
                         </li>            
                     </ul>

@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\EdgeProfileController;
 use App\Http\Controllers\Admin\EdgeProfileThicknessController;
 use App\Http\Controllers\Admin\MaterialColorEdgeExceptionController;
 use App\Http\Controllers\Admin\BacksplashShapesController;
+use App\Http\Controllers\Admin\BacksplashShapeSidesController;
+use App\Http\Controllers\Admin\BacksplashPriceController;
 use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -192,6 +194,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [BacksplashShapesController::class, 'destroy'])->name('destroy');
         });
         /*---------------------------------End Backsplash Shapes Controller------------------------------------------*/
+
+        /*---------------------------------Backsplash Shapes sides Controller----------------------------------------*/
+        Route::prefix('backsplash-shapes-sides')->name('backsplash.shapes.sides.')->group(function () {
+            Route::get('/list', [BacksplashShapeSidesController::class, 'index'])->name('list');
+            Route::get('/add', [BacksplashShapeSidesController::class, 'create'])->name('create');
+            Route::post('/create', [BacksplashShapeSidesController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [BacksplashShapeSidesController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [BacksplashShapeSidesController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [BacksplashShapeSidesController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Backsplash Shapes sides Controller------------------------------------*/
+
+        /*---------------------------------Back splash Price Controller----------------------------------------------*/
+        Route::prefix('backsplash-price')->name('backsplash.price.')->group(function () {
+            Route::get('/list', [BacksplashPriceController::class, 'index'])->name('list');
+            Route::get('/add', [BacksplashPriceController::class, 'create'])->name('create');
+            Route::post('/create', [BacksplashPriceController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [BacksplashPriceController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [BacksplashPriceController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [BacksplashPriceController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Backsplash Price Controller Controller---------------------------------*/
 
         
     });
