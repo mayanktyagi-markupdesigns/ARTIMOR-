@@ -1,13 +1,12 @@
 @extends('admin.layouts.app')
-
 @section('content')
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3 listing_name">
-        <h3 class="mb-0 fw-bold">Material Layout Shape</h3>       
-            <a href="{{ route('admin.material.layout.shape.create') }}"  class="btn btn-primary btn-custom-add">
+        <h3 class="mb-0 fw-bold">Material Layout Shape</h3>
+        <a href="{{ route('admin.material.layout.shape.create') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-plus-circle me-1"></i>Add New
-        </a>        
+        </a>
     </div>
     <div class="card shadow-sm">
         <div class="card-body">
@@ -37,7 +36,7 @@
                                 @else
                                 <span class="text-muted">No image</span>
                                 @endif
-                            </td>                            
+                            </td>
                             <td>
                                 @if ($list->status == 1)
                                 <span class="badge bg-success">Active</span>
@@ -45,12 +44,16 @@
                                 <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </td>
-                            
-                            <td>                                
-                                <a href="{{ route('admin.material.layout.shape.edit', $list->id) }}" class="btn btn-sm btn-primary"><i
-                                        class="bi bi-pencil"></i> Edit</a>
-                                <form action="{{ route('admin.material.layout.shape.destroy', $list->id) }}" method="POST"
-                                    style="display:inline-block;">
+                            <td>
+                                <a href="{{ route('admin.material.layout.shape.view', $list->id) }}"
+                                    class="btn btn-sm btn-info text-white">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+
+                                <a href="{{ route('admin.material.layout.shape.edit', $list->id) }}"
+                                    class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Edit</a>
+                                <form action="{{ route('admin.material.layout.shape.destroy', $list->id) }}"
+                                    method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i>
@@ -69,11 +72,11 @@
     </div>
 </div>
 @if(session('success') || session('error'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-            modal.show();
-        });
-    </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+    modal.show();
+});
+</script>
 @endif
 @endsection

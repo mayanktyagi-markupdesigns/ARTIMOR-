@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('material_color_edge_exceptions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('material_type_id')
+                  ->constrained('material_types')
+                  ->onDelete('cascade'); 
+
             $table->foreignId('color_id')
                   ->constrained('colors')
-                  ->onDelete('cascade');
+                  ->onDelete('cascade');                  
 
             $table->foreignId('edge_profile_id')
                   ->constrained('edge_profiles')
@@ -25,7 +29,8 @@ return new class extends Migration
                   ->constrained('thicknesses')
                   ->onDelete('cascade');
             $table->boolean('is_allowed')->default(true);
-             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
+            $table->decimal('override_price_per_lm', 12, 2)->nullable();
+            $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();
         });
     }

@@ -37,6 +37,10 @@ class MaterialLayoutShapeController extends Controller
             'layout_group_id' => 'required|exists:material_layout_groups,id',
             'status'        => 'required|in:0,1',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
+            'dimension_sides' => 'nullable|array',
+            'dimension_sides.*.name' => 'required_with:dimension_sides|string',
+            'dimension_sides.*.min' => 'required_with:dimension_sides|numeric',
+            'dimension_sides.*.max' => 'required_with:dimension_sides|numeric',
         ]);
 
         $imageName = null;
@@ -65,6 +69,8 @@ class MaterialLayoutShapeController extends Controller
         $shape->layout_group_id        = $request->layout_group_id;    
         $shape->image                  = $imageName;
         $shape->status                 = $request->status;
+        $shape->dimension_sides        = $request->dimension_sides;
+
         $shape->save();    
 
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape added successfully!');
@@ -88,6 +94,10 @@ class MaterialLayoutShapeController extends Controller
             'layout_group_id' => 'required|exists:material_layout_groups,id',
             'status'        => 'required|in:0,1',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
+            'dimension_sides' => 'nullable|array',
+            'dimension_sides.*.name' => 'required_with:dimension_sides|string',
+            'dimension_sides.*.min' => 'required_with:dimension_sides|numeric',
+            'dimension_sides.*.max' => 'required_with:dimension_sides|numeric',
         ]);
         
         $imageName = $shape->image;
@@ -115,6 +125,7 @@ class MaterialLayoutShapeController extends Controller
         $shape->layout_group_id       = $request->layout_group_id; 
         $shape->image                 = $imageName;
         $shape->status                = $request->status;
+        $shape->dimension_sides       = $request->dimension_sides;
         $shape->save();
 
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape updated successfully!');
@@ -138,5 +149,13 @@ class MaterialLayoutShapeController extends Controller
 
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape deleted successfully.');
     }
+
+    //view
+    public function view($id)
+    {
+        $shape = MaterialLayoutShape::with('layoutGroup')->findOrFail($id);
+        return view('admin.material_layout_shapes.view', compact('shape'));
+    }
+
 
 }

@@ -17,6 +17,10 @@ return new class extends Migration
                   ->constrained('edge_profiles')
                   ->onDelete('cascade');
 
+            $table->foreignId('material_type_id')
+                  ->constrained('material_types')
+                  ->onDelete('cascade'); 
+
             $table->foreignId('thickness_id')
                   ->constrained('thicknesses')
                   ->onDelete('cascade');

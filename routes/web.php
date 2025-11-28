@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MaterialLayoutShapeController;
 use App\Http\Controllers\Admin\EdgeProfileController;
 use App\Http\Controllers\Admin\EdgeProfileThicknessController;
 use App\Http\Controllers\Admin\MaterialColorEdgeExceptionController;
+use App\Http\Controllers\Admin\BacksplashShapesController;
 use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -143,11 +144,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/edit/{id}', [MaterialLayoutShapeController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [MaterialLayoutShapeController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [MaterialLayoutShapeController::class, 'destroy'])->name('destroy');
+            Route::get('/view/{id}', [MaterialLayoutShapeController::class, 'view'])->name('view');    
 
         });
         /*---------------------------------End Material Layout Shape Controller--------------------------------------*/
 
-        /*---------------------------------Edge Profile Controller------------------------------------------*/
+        /*---------------------------------Edge Profile Controller---------------------------------------------------*/
         Route::prefix('edge-profile')->name('edge.profile.')->group(function () {
             Route::get('/list', [EdgeProfileController::class, 'index'])->name('list');
             Route::get('/add', [EdgeProfileController::class, 'create'])->name('create');
@@ -156,9 +158,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [EdgeProfileController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [EdgeProfileController::class, 'destroy'])->name('destroy');
         });
-        /*---------------------------------End Edge Profile Controller--------------------------------------*/
+        /*---------------------------------End Edge Profile Controller-----------------------------------------------*/
 
-        /*---------------------------------Edge Profile Thickness Controller------------------------------------------*/
+        /*---------------------------------Edge Profile Thickness Controller-----------------------------------------*/
         Route::prefix('edge-profile-thickness')->name('edge.profile.thickness.')->group(function () {
             Route::get('/list', [EdgeProfileThicknessController::class, 'index'])->name('list');
             Route::get('/add', [EdgeProfileThicknessController::class, 'create'])->name('create');
@@ -167,9 +169,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [EdgeProfileThicknessController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [EdgeProfileThicknessController::class, 'destroy'])->name('destroy');
         });
-        /*---------------------------------End Edge Profile Thickness Controller--------------------------------------*/
+        /*---------------------------------End Edge Profile Thickness Controller-------------------------------------*/
 
-        /*---------------------------------Material Color Edge Exception Controller------------------------------------------*/
+        /*---------------------------------Material Color Edge Exception Controller----------------------------------*/
         Route::prefix('color-edge-exception')->name('color.edge.exception.')->group(function () {
             Route::get('/list', [MaterialColorEdgeExceptionController::class, 'index'])->name('list');
             Route::get('/add', [MaterialColorEdgeExceptionController::class, 'create'])->name('create');
@@ -178,7 +180,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [MaterialColorEdgeExceptionController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [MaterialColorEdgeExceptionController::class, 'destroy'])->name('destroy');
         });
-        /*---------------------------------End Material Color Edge Exception Controller--------------------------------------*/
+        /*---------------------------------End Material Color Edge Exception Controller------------------------------*/
+
+        /*---------------------------------Backsplash Shapes Controller----------------------------------------------*/
+        Route::prefix('backsplash-shapes')->name('backsplash.shapes.')->group(function () {
+            Route::get('/list', [BacksplashShapesController::class, 'index'])->name('list');
+            Route::get('/add', [BacksplashShapesController::class, 'create'])->name('create');
+            Route::post('/create', [BacksplashShapesController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [BacksplashShapesController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [BacksplashShapesController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [BacksplashShapesController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Backsplash Shapes Controller------------------------------------------*/
+
+        
     });
 
 }); 

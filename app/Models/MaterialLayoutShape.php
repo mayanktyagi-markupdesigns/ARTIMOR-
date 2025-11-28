@@ -13,6 +13,11 @@ class MaterialLayoutShape extends Model
         'layout_group_id',
         'image',
         'status',
+        'dimension_sides',
+    ];
+
+    protected $casts = [
+        'dimension_sides' => 'array',
     ];
 
     public function layoutGroup()

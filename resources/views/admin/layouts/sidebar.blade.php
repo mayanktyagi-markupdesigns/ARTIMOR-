@@ -113,7 +113,7 @@
 
                 <li class="nav-item has-treeview {{ request()->is('admin/edge-profile*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/edge-profile*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-columns-gap"></i>
+                        <i class="nav-icon bi bi-diagram-3"></i>
                         <p>
                             Edge Management
                             <i class="nav-arrow bi bi-chevron-right"></i>
@@ -132,7 +132,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.edge.profile.thickness.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.edge.profile.thickness.list') ? 'active' : '' }}">
-                                <i class="bi bi-rules nav-icon"></i>
+                                <i class="bi bi-journal-text nav-icon"></i>
                                 <p>Edge Profile Rules</p>
                             </a>
                         </li>     
@@ -144,6 +144,26 @@
                                 <p>Edge Pricing</p>
                             </a>
                         </li>               
+                    </ul>
+                </li>
+
+                <li class="nav-item has-treeview {{ request()->is('admin/backsplash-shapes*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/backsplash-shapes*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-diagram-3"></i>
+                        <p>
+                            Backsplash Management
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.backsplash.shapes.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.backsplash.shapes.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Backsplash Shapes</p>
+                            </a>
+                        </li>            
                     </ul>
                 </li>
 

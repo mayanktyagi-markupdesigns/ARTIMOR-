@@ -14,6 +14,19 @@
             <form action="{{ route('admin.color.edge.exception.store') }}" method="POST">
                 @csrf
                 <div class="row">
+                    <!-- Material type -->
+                    <div class="col-md-4 mb-3">
+                        <label for="material_type_id">Material Type<span class="text-danger">*</span></label>
+                        <select name="material_type_id" class="form-select">
+                            <option value="">SelectMaterial Type</option>
+                            @foreach($type as $e)
+                            <option value="{{ $e->id }}" {{ old('material_type_id') == $e->id ? 'selected' : '' }}>
+                                {{ $e->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
 
                     <div class="col-md-4 mb-3">
                         <label for="color_id">Material Color</label><span style="color:red;">*</span>
@@ -65,6 +78,15 @@
                         </select>
                         @error('is_allowed') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
+
+                    <!--override_price_per_lm-->
+                    <div class="col-md-4 mb-3">
+                        <label>Override Price Per lm</label>
+                        <input type="number" min="0" step="0.01" name="override_price_per_lm"
+                               class="form-control" value="{{ old('override_price_per_lm') }}">
+                        @error('override_price_per_lm') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
                     <!-- Status -->
                     <div class="col-md-4 mb-3">
                         <label>Status</label>

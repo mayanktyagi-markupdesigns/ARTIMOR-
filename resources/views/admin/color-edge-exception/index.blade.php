@@ -17,6 +17,7 @@
                     <thead class="text-uppercase">
                         <tr>
                             <th style="width: 50px; background-color: #f1f5f9;">SN.</th>
+                            <th style="width: 200px; background-color: #f1f5f9;">Material Type</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Material Color</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Edge Profile</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Thickness</th>
@@ -26,10 +27,10 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach($color_edge_exception as $list)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{ $list->materialType->name ?? '—' }}</td>
                             <td>{{ $list->color->name ?? '—' }}</td>
                             <td>{{ $list->edgeProfile->name ?? '—' }}</td>
                             <td>{{ $list->thickness->thickness_value ?? '—' }}</td>
@@ -72,4 +73,12 @@
         </div>
     </div>
 </div>
+@if(session('success') || session('error'))
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+    modal.show();
+});
+</script>
+@endif
 @endsection
