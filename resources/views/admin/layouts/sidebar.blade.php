@@ -184,6 +184,25 @@
                     </ul>
                 </li>
 
+                <li class="nav-item has-treeview {{ request()->is('admin/sink-cutout-type*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/sink-cutout-type*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-diagram-3"></i>
+                        <p>
+                            Sink Management
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sink.cutout.type.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.sink.cutout.type.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Sink Cutout Types</p>
+                            </a>
+                        </li>            
+                    </ul>                    
+                </li>
+
                 {{-- User Management --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.user.list') }}"

@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\MaterialColorEdgeExceptionController;
 use App\Http\Controllers\Admin\BacksplashShapesController;
 use App\Http\Controllers\Admin\BacksplashShapeSidesController;
 use App\Http\Controllers\Admin\BacksplashPriceController;
+use App\Http\Controllers\Admin\SinkCutoutTypeController;
 use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -216,6 +217,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [BacksplashPriceController::class, 'destroy'])->name('destroy');
         });
         /*---------------------------------End Backsplash Price Controller Controller---------------------------------*/
+
+        /*---------------------------------Sink Cutout Type Controller------------------------------------------------*/
+        Route::prefix('sink-cutout-type')->name('sink.cutout.type.')->group(function () {
+            Route::get('/list', [SinkCutoutTypeController::class, 'index'])->name('list');
+            Route::get('/add', [SinkCutoutTypeController::class, 'create'])->name('create');
+            Route::post('/create', [SinkCutoutTypeController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [SinkCutoutTypeController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [SinkCutoutTypeController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [SinkCutoutTypeController::class, 'destroy'])->name('destroy');
+        });
+        /*---------------------------------End Sink Cutout Type Controller-------------------------------------------*/
 
         
     });
