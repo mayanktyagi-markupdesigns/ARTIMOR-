@@ -1,5 +1,4 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-
     <div class="sidebar-brand">
         <!--begin::Brand Link-->
         <a href="{{ route('admin.dashboard') }}" class="brand-link">
@@ -13,7 +12,6 @@
         </a>
         <!--end::Brand Link-->
     </div>
-
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
@@ -27,6 +25,7 @@
                     </a>
                 </li>
 
+                {{-- Material Management --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/material*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/material*') ? 'active' : '' }}">
                         <i class="nav-icon bi-box-seam"></i>
@@ -74,6 +73,7 @@
                     </ul>
                 </li>
 
+                {{-- Layout Configuration --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/material-layout*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/material-layout*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-columns-gap"></i>
@@ -111,6 +111,7 @@
                     </ul>
                 </li>               
 
+                {{-- Edge Management --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/edge-profile*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/edge-profile*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-diagram-3"></i>
@@ -147,11 +148,13 @@
                     </ul>
                 </li>
 
+                {{-- Backsplash Management --}}
                 <li class="nav-item has-treeview {{ request()->is('admin/backsplash-shapes*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/backsplash-shapes*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-diagram-3"></i>
+                       <i class="nav-icon bi bi-view-stacked"></i>
+
                         <p>
-                            Backsplash Management
+                            Backsplash
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
@@ -159,7 +162,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.shapes.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.backsplash.shapes.list') ? 'active' : '' }}">
-                                <i class="bi bi-tags nav-icon"></i>
+                                <i class="nav-icon bi bi-bounding-box-circles"></i>
                                 <p>Backsplash Shapes</p>
                             </a>
                         </li>            
@@ -168,8 +171,8 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.shapes.sides.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.backsplash.shapes.sides.list') ? 'active' : '' }}">
-                                <i class="bi bi-tags nav-icon"></i>
-                                <p>Backsplash Shape Sides</p>
+                                <i class="nav-icon bi bi-arrows-fullscreen"></i>
+                                <p>Shape Sides</p>
                             </a>
                         </li>            
                     </ul>
@@ -177,30 +180,78 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.price.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.backsplash.price.list') ? 'active' : '' }}">
-                                <i class="bi bi-tags nav-icon"></i>
+                                <i class="nav-icon bi bi-cash-stack"></i>
                                 <p>Backsplash Pricing</p>
                             </a>
                         </li>            
                     </ul>
                 </li>
 
-                <li class="nav-item has-treeview {{ request()->is('admin/sink-cutout-type*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('admin/sink-cutout-type*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-diagram-3"></i>
+                {{-- Sink Menu --}}
+                <li class="nav-item has-treeview {{ request()->is('admin/sink*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/sink*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-droplet-half"></i>
                         <p>
-                            Sink Management
+                            Sink
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Category List --}}
                         <li class="nav-item">
-                            <a href="{{ route('admin.sink.cutout.type.list') }}"
-                                class="nav-link {{ request()->routeIs('admin.sink.cutout.type.list') ? 'active' : '' }}">
+                            <a href="{{ route('admin.sink.category.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.sink.category.list') ? 'active' : '' }}">
                                 <i class="bi bi-tags nav-icon"></i>
-                                <p>Sink Cutout Types</p>
+                                <p>Category List</p>
                             </a>
-                        </li>            
-                    </ul>                    
+                        </li>
+                        {{-- Sink List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sink.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.sink.list') ? 'active' : '' }}">
+                                <i class="bi bi-list-ul nav-icon"></i>
+                                <p>Sink List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {{-- Cut Outs Menu --}}
+                <li class="nav-item has-treeview {{ request()->is('admin/cut-outs*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/cut-outs*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-scissors"></i>
+                        <p>
+                            Cut Outs
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- Cut Outs Category List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.cutouts.category.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.cutouts.category.list') ? 'active' : '' }}">
+                                <i class="bi bi-tags nav-icon"></i>
+                                <p>Category List</p>
+                            </a>
+                        </li>
+                        {{-- Cut Outs List --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.cut.outs.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.cut.outs.list') ? 'active' : '' }}">
+                                <i class="bi bi-list-ul nav-icon"></i>
+                                <p>Cut Outs List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {{-- Promo Code Menu --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.promo.code.list') }}"
+                        class="nav-link {{ request()->routeIs('admin.promo.code.list') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-ticket-perforated"></i>
+                        <p>Promo Code</p>
+                    </a>
                 </li>
 
                 {{-- User Management --}}

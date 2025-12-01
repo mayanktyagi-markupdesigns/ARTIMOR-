@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sink_cutout_types', function (Blueprint $table) {
+        Schema::create('cut_outs_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); 
+            $table->foreignId('cut_out_id')->constrained('cut_outs')->onDelete('cascade');
+            $table->string('image')->nullable(); 
             $table->boolean('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();
         });
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sink_cutout_types');
+        Schema::dropIfExists('cut_outs_images');
     }
 };

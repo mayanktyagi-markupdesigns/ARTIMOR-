@@ -3,15 +3,15 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0 fw-bold">Add Sink Cutout Type</h3>
-        <a href="{{ route('admin.sink.cutout.type.list') }}" class="btn btn-primary btn-custom-add">
+        <h3 class="mb-0 fw-bold">Add Cut Outs Category</h3>
+        <a href="{{ route('admin.cutouts.category.list') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-arrow-left me-1"></i>Back to List
         </a>
     </div>
     <div class="card shadow-sm">
         <div class="card-body">
             @include('admin.layouts.alerts')
-            <form action="{{ route('admin.sink.cutout.type.store') }}" method="POST">
+            <form action="{{ route('admin.cutouts.category.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -30,7 +30,7 @@
                 </div>
                 <div class="mt-4 text-end">
                     <button type="submit" class="btn btn-success">Submit</button>
-                    <a href="{{ route('admin.sink.cutout.type.list') }}" class="btn btn-danger ms-2">Cancel</a>
+                    <a href="{{ route('admin.cutouts.category.list') }}" class="btn btn-danger ms-2">Cancel</a>
                 </div>
             </form>
         </div>

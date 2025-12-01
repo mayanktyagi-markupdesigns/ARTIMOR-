@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
 <div class="container mt-4">
     <h3 class="mb-3">Website Settings</h3>

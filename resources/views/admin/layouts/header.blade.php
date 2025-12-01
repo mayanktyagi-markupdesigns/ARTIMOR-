@@ -22,7 +22,7 @@
             <!--end::Fullscreen Toggle-->
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
 
                     @php
                     $image = auth('admin')->user()->image;
@@ -32,12 +32,17 @@
                     @endphp
 
                     <img src="{{ $logoPath }}" class="user-image rounded-circle shadow" alt="User Image" />
-                    <span class="d-none d-md-inline">{{ Auth::guard('admin')->user()->name }}</span>
+
+                    <span class="d-none d-md-inline position-relative">
+                        {{ Auth::guard('admin')->user()->name }}
+                        <span class="online-dot"></span>
+                    </span>
                 </a>
+
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
                     <li class="user-header text-bg-dark">
-                       
+
                         @php
                         $image = auth('admin')->user()->image;
                         $logoPath = $image

@@ -3,8 +3,8 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3 listing_name">
-        <h3 class="mb-0 fw-bold">Sink Cutout Type List</h3>
-        <a href="{{ route('admin.sink.cutout.type.create') }}" class="btn btn-primary btn-custom-add">
+        <h3 class="mb-0 fw-bold">Cut Outs Categories</h3>
+        <a href="{{ route('admin.cutouts.category.create') }}" class="btn btn-primary btn-custom-add">
             <i class="bi bi-plus-circle me-1"></i>Add New
         </a>
     </div>
@@ -22,21 +22,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($sinksType as $list)
+                        @forelse($categories as $category)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $list->name }}</td>
+                            <td>{{ $category->name }}</td>
                             <td>
-                                @if ($list->status == 1)
+                                @if ($category->status == 1)
                                 <span class="badge bg-success">Active</span>
                                 @else
                                 <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.sink.cutout.type.edit', $list->id) }}"
+                                <a href="{{ route('admin.cutouts.category.edit', $category->id) }}"
                                     class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Edit</a>
-                                <form action="{{ route('admin.sink.cutout.type.destroy', $list->id) }}"
+                                <form action="{{ route('admin.cutouts.category.destroy', $category->id) }}"
                                     method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
@@ -47,13 +47,13 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center">No sink cutout types found.</td>
+                            <td colspan="4" class="text-center">No categories found.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
                 <div class="mt-3">
-                    {{ $sinksType->links('pagination::bootstrap-5') }}
+                    {{ $categories->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
