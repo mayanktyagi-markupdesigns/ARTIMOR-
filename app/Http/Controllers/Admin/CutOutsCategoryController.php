@@ -23,7 +23,7 @@ class CutOutsCategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:material_categories,name',
+            'name' => 'required|string|max:255|unique:cut_outs_categories,name',
             'status' => 'required|in:0,1',
         ]);
 

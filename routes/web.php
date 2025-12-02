@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\SinkController;
 use App\Http\Controllers\Admin\CutOutsCategoryController;
 use App\Http\Controllers\Admin\CutOutsController;
 use App\Http\Controllers\Admin\PromoCodeController;
+use App\Http\Controllers\Admin\CutoutMaterialThicknessPriceController;
 use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -278,6 +279,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/destroy/{id}', [PromoCodeController::class, 'destroy'])->name('destroy');
             Route::get('/view/{id}', [PromoCodeController::class, 'view'])->name('view');
         });
-        /*---------------------------------End Promo Code Controller---------------------------------------------*/      
+        /*---------------------------------End Promo Code Controller---------------------------------------------*/  
+ 
+        /*---------------------------------Cutout Material Thickness Price Controller----------------------------*/
+        Route::prefix('cutout-material-thickness-price-controller')->name('cutout.material.thickness.price.controller.')->group(function () {
+            Route::get('/list', [CutoutMaterialThicknessPriceController::class, 'index'])->name('list');          
+            Route::get('/add', [CutoutMaterialThicknessPriceController::class, 'create'])->name('create');        
+            Route::post('/create', [CutoutMaterialThicknessPriceController::class, 'store'])->name('store');     
+            Route::get('/edit/{id}', [CutoutMaterialThicknessPriceController::class, 'edit'])->name('edit');      
+            Route::post('/update/{id}', [CutoutMaterialThicknessPriceController::class, 'update'])->name('update'); 
+            Route::delete('/destroy/{id}', [CutoutMaterialThicknessPriceController::class, 'destroy'])->name('destroy');
+            Route::get('/view/{id}', [CutoutMaterialThicknessPriceController::class, 'view'])->name('view');
+        });
+        /*---------------------------------End Cutout Material Thickness Price Controller-------------------------*/      
     });
 }); 

@@ -242,6 +242,14 @@
                                 <p>Cut Outs List</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.cutout.material.thickness.price.controller.list') }}"
+                                class="nav-link {{ request()->routeIs('admin.cutout.material.thickness.price.controller.list') ? 'active' : '' }}">
+                                <i class="bi bi-list-ul nav-icon"></i>
+                                <p>Cut Material Thikness</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
