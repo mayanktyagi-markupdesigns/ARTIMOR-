@@ -97,8 +97,8 @@ class MaterialTypeController extends Controller
             }
 
             // Delete old image if exists
-            if ($shape->image && file_exists($folderPath . '/' . $shape->image)) {
-                unlink($folderPath . '/' . $shape->image);
+            if ($material->image && file_exists($folderPath . '/' . $material->image)) {
+                unlink($folderPath . '/' . $material->image);
             }
 
             // Upload new image
