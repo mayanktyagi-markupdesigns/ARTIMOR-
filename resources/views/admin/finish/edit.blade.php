@@ -12,9 +12,40 @@
         <div class="card-body">
             @include('admin.layouts.alerts')
             <div class="">
-                <form action="{{ route('admin.finish.update', $finish->id) }}" method="POST" enctype="multipart/form-data" id="finishForm">
+                <form action="{{ route('admin.finish.update', $finish->id) }}" method="POST"
+                    enctype="multipart/form-data" id="finishForm">
                     @csrf
                     <div class="row">
+                        <!-- Material Group -->
+                        <div class="col-md-4 mb-3">
+                            <label for="material_group_id">Material Group</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_group_id" id="material_group_id" required>
+                                <option value="">Select Material Group</option>
+                                @foreach($groups as $group)
+                                <option value="{{ $group->id }}"
+                                    {{ old('material_group_id', $finish->material_group_id) == $group->id ? 'selected' : '' }}>
+                                    {{ $group->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('material_group_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <!-- Material Type -->
+                        <div class="col-md-4 mb-3">
+                            <label for="material_type_id">Material Type</label><span style="color:red;">*</span>
+                            <select class="form-select" name="material_type_id" id="material_type_id" required>
+                                <option value="">Select Material Type</option>
+                                @foreach($types as $type)
+                                <option value="{{ $type->id }}"
+                                    {{ old('material_type_id', $finish->material_type_id) == $type->id ? 'selected' : '' }}>
+                                    {{ $type->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                         <div class="col-md-4 mb-3">
                             <label for="color_id">Material Color</label><span style="color:red;">*</span>
                             <select class="form-select" name="color_id" id="color_id">
@@ -31,8 +62,9 @@
                         <!-- Finish Name -->
                         <div class="col-md-4 mb-3">
                             <label for="finish_name">Finish Name</label><span style="color:red;">*</span>
-                            <input type="text" class="form-control" name="finish_name" id="finish_name" 
-                                value="{{ old('finish_name', $finish->finish_name) }}" placeholder="Enter finish name" required>
+                            <input type="text" class="form-control" name="finish_name" id="finish_name"
+                                value="{{ old('finish_name', $finish->finish_name) }}" placeholder="Enter finish name"
+                                required>
                             @error('finish_name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
@@ -40,8 +72,10 @@
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label><span style="color:red;">*</span>
                             <select class="form-select" name="status" id="status" required>
-                                <option value="1" {{ old('status', $finish->status) == '1' ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ old('status', $finish->status) == '0' ? 'selected' : '' }}>Inactive</option>
+                                <option value="1" {{ old('status', $finish->status) == '1' ? 'selected' : '' }}>Active
+                                </option>
+                                <option value="0" {{ old('status', $finish->status) == '0' ? 'selected' : '' }}>Inactive
+                                </option>
                             </select>
                             @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
@@ -57,5 +91,63 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
 
+    // Safe JSON variables (no syntax error)
+    let currentMaterialTypeId = {!! json_encode(old('material_type_id', $finish->material_type_id)) !!};
+    let currentMaterialGroupId = {!! json_encode(old('material_group_id', $finish->material_group_id)) !!};
 
+    // Auto-load types if group is selected
+    if (currentMaterialGroupId) {
+        loadMaterialTypes(currentMaterialGroupId, currentMaterialTypeId);
+    }
+
+    // On material group change
+    $('#material_group_id').on('change', function() {
+        let groupId = $(this).val();
+        loadMaterialTypes(groupId, null);
+    });
+
+    // Function to fetch material types
+    function loadMaterialTypes(groupId, selectedId = null) {
+        let typeSelect = $('#material_type_id');
+
+        typeSelect.html('<option value="">Loading...</option>');
+
+        if (!groupId) {
+            typeSelect.html('<option value="">Select Material Group First</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ route("admin.color.getMaterialTypes") }}',
+            type: 'GET',
+            data: { material_group_id: groupId },
+            success: function(response) {
+                typeSelect.html('<option value="">Select Material Type</option>');
+
+                if (response.types && response.types.length > 0) {
+                    $.each(response.types, function(index, type) {
+                        typeSelect.append(
+                            `<option value="${type.id}">${type.name}</option>`
+                        );
+                    });
+
+                    if (selectedId) {
+                        typeSelect.val(selectedId);
+                    }
+                } else {
+                    typeSelect.html('<option value="">No Material Types Available</option>');
+                }
+            },
+            error: function() {
+                typeSelect.html('<option value="">Error loading material types</option>');
+            }
+        });
+    }
+
+});
+</script>
+@endpush

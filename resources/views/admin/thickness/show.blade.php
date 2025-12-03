@@ -15,6 +15,16 @@
             <div class="row">
 
                 <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Material Group</label>
+                    <p>{{ $thickness->materialGroup->name ?? '—' }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Material Type</label>
+                    <p>{{ $thickness->materialType->name ?? '—' }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label class="fw-bold">Finish</label>
                     <p>{{ $thickness->finish->finish_name ?? '—' }}</p>
                 </div>

@@ -12,11 +12,38 @@
     <div class="card shadow-sm">
         <div class="card-body">
             @include('admin.layouts.alerts')
-
             <form action="{{ route('admin.thickness.update', $thickness->id) }}" method="POST" id="thicknessForm">
                 @csrf
-
                 <div class="row">
+                    <!-- Material Group -->
+                    <div class="col-md-4 mb-3">
+                        <label for="material_group_id">Material Group</label><span style="color:red;">*</span>
+                        <select class="form-select" name="material_group_id" id="material_group_id" required>
+                            <option value="">Select Material Group</option>
+                            @foreach($groups as $group)
+                            <option value="{{ $group->id }}"
+                                {{ old('material_group_id', $thickness->material_group_id) == $group->id ? 'selected' : '' }}>
+                                {{ $group->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('material_group_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <!-- Material Type -->
+                    <div class="col-md-4 mb-3">
+                        <label for="material_type_id">Material Type</label><span style="color:red;">*</span>
+                        <select class="form-select" name="material_type_id" id="material_type_id" required>
+                            <option value="">Select Material Type</option>
+                            @foreach($types as $type)
+                            <option value="{{ $type->id }}"
+                                {{ old('material_type_id', $thickness->material_type_id) == $type->id ? 'selected' : '' }}>
+                                {{ $type->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
 
                     <!-- Finish -->
                     <div class="col-md-4 mb-3">
@@ -24,7 +51,7 @@
                         <select name="finish_id" id="finish_id" class="form-select" required>
                             <option value="">Select Finish</option>
                             @foreach($finishes as $finish)
-                            <option value="{{ $finish->id }}" 
+                            <option value="{{ $finish->id }}"
                                 {{ old('finish_id', $thickness->finish_id) == $finish->id ? 'selected' : '' }}>
                                 {{ $finish->finish_name }}
                             </option>
@@ -36,10 +63,8 @@
                     <!-- Thickness -->
                     <div class="col-md-4 mb-3">
                         <label for="thickness_value">Thickness (mm)</label><span class="text-danger">*</span>
-                        <input type="text" name="thickness_value" id="thickness_value" 
-                            class="form-control"
-                            value="{{ old('thickness_value', $thickness->thickness_value) }}"
-                            required>
+                        <input type="text" name="thickness_value" id="thickness_value" class="form-control"
+                            value="{{ old('thickness_value', $thickness->thickness_value) }}" required>
                         @error('thickness_value')<small class="text-danger">{{ $message }}</small>@enderror
                     </div>
 
@@ -47,8 +72,10 @@
                     <div class="col-md-4 mb-3">
                         <label>Is Massive?</label>
                         <select name="is_massive" class="form-select">
-                            <option value="0" {{ old('is_massive', $thickness->is_massive) == 0 ? 'selected' : '' }}>No</option>
-                            <option value="1" {{ old('is_massive', $thickness->is_massive) == 1 ? 'selected' : '' }}>Yes</option>
+                            <option value="0" {{ old('is_massive', $thickness->is_massive) == 0 ? 'selected' : '' }}>No
+                            </option>
+                            <option value="1" {{ old('is_massive', $thickness->is_massive) == 1 ? 'selected' : '' }}>Yes
+                            </option>
                         </select>
                     </div>
 
@@ -56,16 +83,19 @@
                     <div class="col-md-4 mb-3">
                         <label>Can Be Laminated?</label>
                         <select name="can_be_laminated" id="can_be_laminated" class="form-select">
-                            <option value="0" {{ old('can_be_laminated', $thickness->can_be_laminated) == 0 ? 'selected' : '' }}>No</option>
-                            <option value="1" {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? 'selected' : '' }}>Yes</option>
+                            <option value="0"
+                                {{ old('can_be_laminated', $thickness->can_be_laminated) == 0 ? 'selected' : '' }}>No
+                            </option>
+                            <option value="1"
+                                {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? 'selected' : '' }}>Yes
+                            </option>
                         </select>
                     </div>
 
                     <!-- Laminate Min -->
                     <div class="col-md-4 mb-3">
                         <label>Lamination Min (mm)</label>
-                        <input type="number" name="laminate_min" id="laminate_min"
-                            class="form-control"
+                        <input type="number" name="laminate_min" id="laminate_min" class="form-control"
                             value="{{ old('laminate_min', $thickness->laminate_min) }}"
                             {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? '' : 'disabled' }}>
                     </div>
@@ -73,8 +103,7 @@
                     <!-- Laminate Max -->
                     <div class="col-md-4 mb-3">
                         <label>Lamination Max (mm)</label>
-                        <input type="number" name="laminate_max" id="laminate_max"
-                            class="form-control"
+                        <input type="number" name="laminate_max" id="laminate_max" class="form-control"
                             value="{{ old('laminate_max', $thickness->laminate_max) }}"
                             {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? '' : 'disabled' }}>
                     </div>
@@ -119,12 +148,70 @@
 
 @push('scripts')
 <script>
-    $('#can_be_laminated').on('change', function() {
-        if ($(this).val() == 1) {
-            $('#laminate_min, #laminate_max').removeAttr('disabled');
-        } else {
-            $('#laminate_min, #laminate_max').attr('disabled', true).val('');
-        }
+$('#can_be_laminated').on('change', function() {
+    if ($(this).val() == 1) {
+        $('#laminate_min, #laminate_max').removeAttr('disabled');
+    } else {
+        $('#laminate_min, #laminate_max').attr('disabled', true).val('');
+    }
+});
+
+//Dependecy Dropdown
+
+$(document).ready(function() {
+
+    // Safe JSON variables (no syntax error)
+    let currentMaterialTypeId = {!! json_encode(old('material_type_id', $finish->material_type_id)) !!};
+    let currentMaterialGroupId = {!! json_encode(old('material_group_id', $finish->material_group_id)) !!};
+
+    // Auto-load types if group is selected
+    if (currentMaterialGroupId) {
+        loadMaterialTypes(currentMaterialGroupId, currentMaterialTypeId);
+    }
+
+    // On material group change
+    $('#material_group_id').on('change', function() {
+        let groupId = $(this).val();
+        loadMaterialTypes(groupId, null);
     });
+
+    // Function to fetch material types
+    function loadMaterialTypes(groupId, selectedId = null) {
+        let typeSelect = $('#material_type_id');
+
+        typeSelect.html('<option value="">Loading...</option>');
+
+        if (!groupId) {
+            typeSelect.html('<option value="">Select Material Group First</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ route("admin.thickness.getMaterialTypes") }}',
+            type: 'GET',
+            data: { material_group_id: groupId },
+            success: function(response) {
+                typeSelect.html('<option value="">Select Material Type</option>');
+
+                if (response.types && response.types.length > 0) {
+                    $.each(response.types, function(index, type) {
+                        typeSelect.append(
+                            `<option value="${type.id}">${type.name}</option>`
+                        );
+                    });
+
+                    if (selectedId) {
+                        typeSelect.val(selectedId);
+                    }
+                } else {
+                    typeSelect.html('<option value="">No Material Types Available</option>');
+                }
+            },
+            error: function() {
+                typeSelect.html('<option value="">Error loading material types</option>');
+            }
+        });
+    }
+});
 </script>
 @endpush

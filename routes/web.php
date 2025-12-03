@@ -105,7 +105,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/create', [FinishController::class, 'store'])->name('store');
             Route::get('/edit/{id}', [FinishController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [FinishController::class, 'update'])->name('update');
-            Route::delete('/destroy/{id}', [FinishController::class, 'destroy'])->name('destroy');           
+            Route::delete('/destroy/{id}', [FinishController::class, 'destroy'])->name('destroy'); 
+            Route::get('/get-material-types', [FinishController::class, 'getMaterialTypes'])->name('getMaterialTypes');          
         });
         /*---------------------------------End Finish Controller------------------------------------------------*/
 
@@ -118,7 +119,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [ThicknessController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [ThicknessController::class, 'destroy'])->name('destroy');
             Route::get('/thickness/{id}/view', [ThicknessController::class, 'show'])->name('show');
-
+            Route::get('/get-material-types', [ThicknessController::class, 'getMaterialTypes'])->name('getMaterialTypes');
         });
         /*---------------------------------End Thickness Controller---------------------------------------------*/ 
         
