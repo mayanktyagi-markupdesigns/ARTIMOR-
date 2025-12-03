@@ -10,6 +10,7 @@ class MaterialType extends Model
 
     protected $fillable = [
         'name',
+        'image',
         'material_group_id',
         'status',
     ];

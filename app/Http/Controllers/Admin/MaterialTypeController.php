@@ -29,15 +29,37 @@ class MaterialTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'          => 'required|string|max:255',            
+            'name'              => 'required|string|max:255',            
             'material_group_id' => 'required|exists:material_groups,id',
-            'status'        => 'required|in:0,1',           
-        ]);        
+            'image'             => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
+            'status'            => 'required|in:0,1',           
+        ]);     
+        
+        $imageName = null;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+
+            // Folder path
+            $folderPath = public_path('uploads/material-type');
+
+            // Check if folder exists, if not then create it
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0755, true); // recursive = true
+            }
+
+            // Unique image name
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            // Move image to folder
+            $image->move($folderPath, $imageName);
+        }
 
         $type = new MaterialType();
 
         $type->name                = $request->name;
-        $type->material_group_id   = $request->material_group_id;    
+        $type->material_group_id   = $request->material_group_id; 
+        $type->image               = $imageName;   
         $type->status              = $request->status;
         $type->save();    
 
@@ -58,14 +80,36 @@ class MaterialTypeController extends Controller
         $material = MaterialType::findOrFail($id);
 
         $validated = $request->validate([
-            'name'          => 'required|string|max:255',
+            'name'              => 'required|string|max:255',
             'material_group_id' => 'required|exists:material_groups,id',
-            'status'        => 'required|in:0,1',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
+            'status'            => 'required|in:0,1',
         ]);
+
+        $imageName = $material->image;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+
+            $folderPath = public_path('uploads/material-type');
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0755, true);
+            }
+
+            // Delete old image if exists
+            if ($shape->image && file_exists($folderPath . '/' . $shape->image)) {
+                unlink($folderPath . '/' . $shape->image);
+            }
+
+            // Upload new image
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move($folderPath, $imageName);
+        }
         
         $material = MaterialType::findOrFail($id);
         
         $material->name                  = $request->name;
+        $material->image                 = $imageName;
         $material->material_group_id     = $request->material_group_id; 
         $material->status                = $request->status;
         $material->save();
@@ -76,7 +120,17 @@ class MaterialTypeController extends Controller
     //Delete Material Type
     public function destroy($id)
     {
-        $type = MaterialType::findOrFail($id);        
+        $type = MaterialType::findOrFail($id);
+
+        // Delete image from folder
+        if ($type->image) {
+            $imagePath = public_path('uploads/material-type/' . $type->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+        // Soft delete the Material Layout Shape
+        $type->save();
         $type->delete();
         return redirect()->route('admin.material.type.list')->with('success', 'Material type deleted successfully.');
     }

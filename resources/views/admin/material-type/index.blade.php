@@ -18,6 +18,7 @@
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Name</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Material Group</th>
+                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Image</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -27,7 +28,15 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $list->name }}</td>
-                            <td>{{ $list->group->name ?? '—' }}</td>                                                      
+                            <td>{{ $list->group->name ?? '—' }}</td> 
+                            <td>
+                                @if($list->image)
+                                <img src="{{ asset('uploads/material-type/' . $list->image) }}" alt="material type Image"
+                                    width="80">
+                                @else
+                                <span class="text-muted">No image</span>
+                                @endif
+                            </td>                                                     
                             <td>
                                 @if ($list->status == 1)
                                 <span class="badge bg-success">Active</span>

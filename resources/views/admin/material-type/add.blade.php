@@ -36,7 +36,15 @@
                                 @endforeach
                             </select>
                             @error('material_group_id') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>                       
+                        </div>
+
+                        <!-- Image -->
+                        <div class="col-md-4 mb-3">
+                            <label for="image">Image</label><span style="color:red;">*</span>
+                            <input type="file" class="form-control" name="image" id="image"
+                                accept=".jpg,.jpeg,.png,.JPG,.PNG,.svg">
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
 
                         <!-- Status -->
                         <div class="col-md-4 mb-3">

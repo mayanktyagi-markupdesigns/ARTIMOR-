@@ -38,6 +38,18 @@
                             @error('material_group_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
+                        <!-- Image -->
+                        <div class="col-md-4 mb-3">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control" name="image" id="image"
+                                accept=".jpg,.jpeg,.png,.svg">
+                            @if($type->image)
+                            <img src="{{ asset('uploads/material-type/' . $type->image) }}"
+                                class="img-thumbnail mt-2" width="120">
+                            @endif
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                         <!-- Status -->
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label>
