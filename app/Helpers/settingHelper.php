@@ -12,9 +12,9 @@ if (!function_exists('get_setting')) {
     }
 }
 
-if (!function_exists('get_banners')) {
-    function get_banners()
-    {
-        return Banner::where('status', 1)->get();  // active banners
-    }
-}
+// if (!function_exists('get_banners')) {
+//     function get_banners()
+//     {
+//         return Banner::where('status', 1)->get();  // active banners
+//     }
+// }

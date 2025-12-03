@@ -12,4 +12,10 @@ class MaterialGroup extends Model
         'name',
         'status',
     ];
+
+    public function types()
+    {
+        return $this->hasMany(MaterialType::class, 'material_group_id');
+    }
+
 }

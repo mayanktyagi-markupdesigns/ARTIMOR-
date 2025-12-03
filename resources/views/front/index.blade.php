@@ -12,7 +12,7 @@
         <div class="icon"><span>01</span>
             <img src="{{ asset('assets/front/img/01.png') }}" width="28" height="28">
         </div>
-        <p>Material Price</p>
+        <p>Material</p>
     </div>
     <div class="step stepper2">
         <div class="icon"><span>02</span>
@@ -67,11 +67,12 @@
 <div class="materials">
     <div id="step1" class="tab-content show active">
         @include('front.partials.material-price', [
-            'materialCategories' => $materialCategories,
-            'materialsByCategory' => $materialsByCategory,
-            'productsByMaterial' => $productsByMaterial,
-            'selectedMaterialId' => $selectedMaterialId,
-        ])
+        'materialGroups' => $materialGroups,
+        'materialTypesByGroup' => $materialTypesByGroup,
+        'selectedGroupId' => $selectedGroupId ?? null,
+        'selectedTypeId' => $selectedTypeId ?? null,
+    ])
+
     </div>
 
     <div id="step2" class="tab-content fade hidden">

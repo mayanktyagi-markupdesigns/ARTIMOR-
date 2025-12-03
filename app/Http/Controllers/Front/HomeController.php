@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Material;
+use App\Models\MaterialGroup;
 use App\Models\MaterialType;
 use App\Models\MaterialLayout;
 use App\Models\Dimension;
@@ -43,42 +44,67 @@ public function index()
     return view('front.index', $materialStepData);
 }
 
+// protected function getMaterialPriceStepData(): array
+// {
+//     $products = MasterProduct::with([
+//             'material.category',
+//             'materialType.category',
+//             'materialLayout.category',
+//         ])
+//         ->where('status', 1)
+//         ->whereHas('material', function ($query) {
+//             $query->where('status', 1);
+//         })
+//         ->get();
+
+//     $materialsByCategory = $products
+//         ->filter(function ($product) {
+//             return $product->material && $product->material->status == 1;
+//         })
+//         ->groupBy(function ($product) {
+//             return optional(optional($product->material)->category)->name ?? 'Other';
+//         })
+//         ->map(function ($group) {
+//             return $group->pluck('material')->filter()->unique('id')->values();
+//         })
+//         ->filter(function ($materials) {
+//             return $materials->isNotEmpty();
+//         });
+
+//     $materialCategories = $materialsByCategory->keys();
+//     $productsByMaterial = $products->groupBy('material_id');
+
+//     return [
+//         'materialsByCategory' => $materialsByCategory,
+//         'materialCategories' => $materialCategories,
+//         'productsByMaterial' => $productsByMaterial,
+//         'selectedMaterialId' => session('selected_material_id'),
+//         'selectedMaterialTypeId' => session('selected_material_type_id'),
+//     ];
+// }
+
 protected function getMaterialPriceStepData(): array
 {
-    $products = MasterProduct::with([
-            'material.category',
-            'materialType.category',
-            'materialLayout.category',
-        ])
-        ->where('status', 1)
-        ->whereHas('material', function ($query) {
-            $query->where('status', 1);
-        })
+    // 1. Get all active groups
+    $groups = MaterialGroup::where('status', 1)
+        ->with(['types' => function ($q) {
+            $q->where('status', 1);
+        }])
         ->get();
 
-    $materialsByCategory = $products
-        ->filter(function ($product) {
-            return $product->material && $product->material->status == 1;
-        })
-        ->groupBy(function ($product) {
-            return optional(optional($product->material)->category)->name ?? 'Other';
-        })
-        ->map(function ($group) {
-            return $group->pluck('material')->filter()->unique('id')->values();
-        })
-        ->filter(function ($materials) {
-            return $materials->isNotEmpty();
-        });
-
-    $materialCategories = $materialsByCategory->keys();
-    $productsByMaterial = $products->groupBy('material_id');
+    // 2. Prepare arrays
+    $materialGroups = $groups;
+    $materialTypesByGroup = $groups->mapWithKeys(function ($group) {
+        return [
+            $group->id => $group->types
+        ];
+    });
 
     return [
-        'materialsByCategory' => $materialsByCategory,
-        'materialCategories' => $materialCategories,
-        'productsByMaterial' => $productsByMaterial,
-        'selectedMaterialId' => session('selected_material_id'),
-        'selectedMaterialTypeId' => session('selected_material_type_id'),
+        'materialGroups' => $materialGroups,
+        'materialTypesByGroup' => $materialTypesByGroup,
+        'selectedGroupId' => session('selected_group_id'),
+        'selectedTypeId' => session('selected_type_id'),
     ];
 }
 
