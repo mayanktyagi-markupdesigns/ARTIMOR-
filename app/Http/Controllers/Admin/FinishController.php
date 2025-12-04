@@ -22,7 +22,7 @@ class FinishController extends Controller
     // Add Finish
     public function create()
     {
-        $data['color'] = Color::where('status', 1)->orderBy('name')->get();
+        // $data['color'] = Color::where('status', 1)->orderBy('name')->get();
         $data['groups'] = MaterialGroup::where('status', 1)->orderBy('name')->get();
         return view('admin.finish.add', $data);
     }
@@ -32,7 +32,7 @@ class FinishController extends Controller
     {
         $validated = $request->validate([
             'finish_name' => 'required|string|max:255',
-            'color_id' => 'required|exists:colors,id',
+            // 'color_id' => 'required|exists:colors,id',
             'material_group_id' => 'required|exists:material_groups,id',
             'material_type_id' => 'required|exists:material_types,id',
             'status' => 'required|in:0,1',
@@ -40,7 +40,7 @@ class FinishController extends Controller
 
         $finish = new Finish();
         $finish->finish_name = $request->finish_name;
-        $finish->color_id = $request->color_id;
+        // $finish->color_id = $request->color_id;
         $finish->material_group_id  = $request->material_group_id;       
         $finish->material_type_id   = $request->material_type_id; 
         $finish->status = $request->status;
@@ -52,7 +52,7 @@ class FinishController extends Controller
     public function edit($id)
     {
         $data['finish'] = Finish::findOrFail($id);
-        $data['color'] = Color::where('status', 1)->orderBy('name')->get();
+        // $data['color'] = Color::where('status', 1)->orderBy('name')->get();
         $data['groups'] = MaterialGroup::where('status', 1)->orderBy('name')->get();
         $data['types'] = MaterialType::where('material_group_id', $data['finish']->material_group_id)
             ->where('status', 1)
@@ -67,7 +67,7 @@ class FinishController extends Controller
 
         $validated = $request->validate([
             'finish_name' => 'required|string|max:255',
-            'color_id'    => 'required|exists:colors,id',
+            // 'color_id'    => 'required|exists:colors,id',
             'material_group_id' => 'required|exists:material_groups,id',
             'material_type_id' => 'required|exists:material_types,id',
             'status'        => 'required|in:0,1',
@@ -75,7 +75,7 @@ class FinishController extends Controller
         ]);
         
         $finish->finish_name          = $request->finish_name;
-        $finish->color_id             = $request->color_id;
+        // $finish->color_id             = $request->color_id;
         $finish->material_group_id    = $request->material_group_id;
         $finish->material_type_id     = $request->material_type_id; 
         $finish->status               = $request->status;

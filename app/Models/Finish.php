@@ -12,14 +12,14 @@ class Finish extends Model
         'finish_name',
         'material_group_id',
         'material_type_id',
-        'color_id',
+        // 'color_id',
         'status',
     ];
 
-    public function color()
-    {
-        return $this->belongsTo(Color::class, 'color_id');
-    }
+    // public function color()
+    // {
+    //     return $this->belongsTo(Color::class, 'color_id');
+    // }
 
     public function materialGroup()
     {

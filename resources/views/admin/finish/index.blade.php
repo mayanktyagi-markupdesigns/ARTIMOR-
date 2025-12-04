@@ -17,7 +17,8 @@
                         <tr>
                             <th scope="col" style="width: 50px; background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Finish Name</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Color</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Group</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Type</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -27,7 +28,9 @@
                         <tr>
                             <td>{{ $loop->iteration + ($finishes->currentPage() - 1) * $finishes->perPage() }}</td>
                             <td>{{ $finish->finish_name }}</td>
-                            <td>{{ $finish->color->name ?? '—' }}</td>
+                            <td>{{ $finish->materialGroup->name ?? '—' }}</td>
+                            <td>{{ $finish->materialType->name ?? '—' }}</td>
+                            <!-- <td>{{ $finish->color->name ?? '—' }}</td> -->
                             <td>
                                 @if ($finish->status == 1)
                                 <span class="badge bg-success">Active</span>

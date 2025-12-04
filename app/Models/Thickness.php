@@ -11,7 +11,6 @@ class Thickness extends Model
     protected $fillable = [
         'material_group_id',
         'material_type_id',
-        'finish_id',
         'thickness_value',
         'is_massive',
         'can_be_laminated',
@@ -32,9 +31,9 @@ class Thickness extends Model
         return $this->belongsTo(MaterialType::class, 'material_type_id');
     }
 
-    public function finish()
-    {
-        return $this->belongsTo(Finish::class, 'finish_id');
-    }    
+    // public function finish()
+    // {
+    //     return $this->belongsTo(Finish::class, 'finish_id');
+    // }    
 
 }

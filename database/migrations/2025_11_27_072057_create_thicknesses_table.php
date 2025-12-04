@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::create('thicknesses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('finish_id')
-                  ->constrained('finishes')
+            $table->foreignId('material_group_id')
+                  ->constrained('material_groups')
                   ->onDelete('cascade');
+
+            $table->foreignId('material_type_id')
+                  ->constrained('material_types')
+                  ->onDelete('cascade');
+
             $table->string('thickness_value'); // "12mm", "20mm", "30mm", etc.
             $table->boolean('is_massive')->default(false);
             $table->boolean('can_be_laminated')->default(false);

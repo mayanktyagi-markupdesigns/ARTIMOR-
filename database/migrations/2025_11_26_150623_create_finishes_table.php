@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('finishes', function (Blueprint $table) {
             $table->id();
             $table->string('finish_name');
-            $table->foreignId('color_id')
-                  ->constrained('colors')
+            $table->foreignId('material_group_id')
+                  ->constrained('material_groups')
                   ->onDelete('cascade');
+
+            $table->foreignId('material_type_id')
+                    ->constrained('material_types')
+                    ->onDelete('cascade');
+            
             $table->tinyInteger('status')->default(1)->comment('1 = Active, 0 = Inactive');
             $table->timestamps();
         });
