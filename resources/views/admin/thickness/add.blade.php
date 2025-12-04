@@ -38,20 +38,6 @@
                         @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Finish Dropdown -->
-                    <div class="col-md-4 mb-3">
-                        <label for="finish_id">Finish</label><span class="text-danger">*</span>
-                        <select name="finish_id" id="finish_id" class="form-select" required>
-                            <option value="">Select Finish</option>
-                            @foreach($finishes as $finish)
-                            <option value="{{ $finish->id }}" {{ old('finish_id') == $finish->id ? 'selected' : '' }}>
-                                {{ $finish->finish_name }}
-                            </option>
-                            @endforeach
-                        </select>
-                        @error('finish_id')<small class="text-danger">{{ $message }}</small>@enderror
-                    </div>
-
                     <!-- Thickness Value -->
                     <div class="col-md-4 mb-3">
                         <label for="thickness_value">Thickness (mm)</label><span class="text-danger">*</span>

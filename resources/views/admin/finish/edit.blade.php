@@ -46,7 +46,7 @@
                             @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <!-- <div class="col-md-4 mb-3">
                             <label for="color_id">Material Color</label><span style="color:red;">*</span>
                             <select class="form-select" name="color_id" id="color_id">
                                 @foreach(($color ?? []) as $color)
@@ -57,7 +57,7 @@
                                 @endforeach
                             </select>
                             @error('color_id') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
+                        </div> -->
 
                         <!-- Finish Name -->
                         <div class="col-md-4 mb-3">
