@@ -14,23 +14,19 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
     <!-- GROUP TABS -->
     <div class="d-flex align-items-center justify-content-center materials-tab-div">
         @if($materialGroups->isNotEmpty())
-
         <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
             @foreach($materialGroups as $index => $group)
             @php
             $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
             @endphp
-
             <li class="nav-item" role="presentation">
                 <button class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $tabId }}-tab" data-bs-toggle="tab"
-                    data-bs-target="#{{ $tabId }}" data-group-id="{{ $group->id }}" ✅✅✅ type="button" role="tab">
+                    data-bs-target="#{{ $tabId }}" type="button" role="tab">
                     {{ $group->name }}
                 </button>
             </li>
             @endforeach
         </ul>
-
-
         @endif
     </div>
 
