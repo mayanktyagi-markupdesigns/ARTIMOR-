@@ -1,110 +1,176 @@
+@php
+$materialConfig = session('material_config', [
+'material_type_id' => null,
+'color' => null,
+'finish' => null,
+'thickness' => null,
+]);
+
+$selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
+@endphp
+
 <div class="materials-tab-wrapper">
+
+    <!-- GROUP TABS -->
     <div class="d-flex align-items-center justify-content-center materials-tab-div">
         @if($materialGroups->isNotEmpty())
-            <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
-                @foreach($materialGroups as $index => $group)
-                    @php
-                        $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
-                    @endphp
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $index === 0 ? 'active' : '' }}"
-                            id="{{ $tabId }}-tab"
-                            data-bs-toggle="tab"
-                            data-bs-target="#{{ $tabId }}"
-                            type="button"
-                            role="tab"
-                            data-group-id="{{ $group->id }}">
-                            {{ $group->name }}
-                        </button>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <div class="py-5 text-center w-100">
-                <p class="mb-0">No material groups available.</p>
-            </div>
+        <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
+            @foreach($materialGroups as $index => $group)
+            @php
+            $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
+            @endphp
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $tabId }}-tab" data-bs-toggle="tab"
+                    data-bs-target="#{{ $tabId }}" type="button" role="tab">
+                    {{ $group->name }}
+                </button>
+            </li>
+            @endforeach
+        </ul>
         @endif
     </div>
 
-    @if($materialGroups->isNotEmpty())
-        <div class="tab-content" id="materialsTabContent">
-            @foreach($materialGroups as $index => $group)
+    <!-- TAB CONTENT -->
+    <div class="tab-content" id="materialsTabContent">
+        @foreach($materialGroups as $index => $group)
+        @php
+        $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
+        $types = $materialTypesByGroup[$group->id] ?? collect();
+        @endphp
+
+        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel">
+            <div class="row">
+
+                @forelse($types as $i => $type)
                 @php
-                    $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
-                    $types = $materialTypesByGroup[$group->id] ?? collect();
+                $typeImage = $type->image
+                ? asset('uploads/material-type/' . $type->image)
+                : asset('assets/front/img/product-circle.jpg');
                 @endphp
-                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel"
-                    aria-labelledby="{{ $tabId }}-tab">
-                    <div class="row">
-                        @forelse($types as $type)
-                            @php
-                                $typeImage = $type->image 
-                                    ? asset('uploads/material-type/' . $type->image) 
-                                    : asset('assets/front/img/product-circle.jpg');
-                            @endphp
-                            <div class="col-md-4 mb-4">
-                                <div class="card border-0 rounded-0 position-relative product-col material-type-card {{ (string)($selectedMaterialTypeId ?? '') === (string)$type->id ? 'selected' : '' }}"
-                                    data-id="{{ $type->id }}">
-                                    <img src="{{ $typeImage }}" class="card-img-top" alt="{{ $type->name }}">
-                                    <div class="card-body text-center p-0">
-                                        <div class="titleoverlay">
-                                            <div>{{ $type->name }}</div>
+
+                <!-- MATERIAL CARD -->
+                <div class="col-md-4 mb-4">
+                    <div class="p-0 card border-0 rounded-0 position-relative product-col material-type-card
+                                {{ (string)$selectedMaterialTypeId === (string)$type->id ? 'selected' : '' }}"
+                        data-id="{{ $type->id }}">
+
+                        <img src="{{ $typeImage }}" class="card-img-top" alt="{{ $type->name }}">
+
+                        <div class="p-0 card-body text-center">
+                            <div class="titleoverlay">
+                                <div>
+                                    <span>{{ $i + 1 }}.</span> {{ $type->name }}
+                                </div>
+
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#materialModal-{{ $type->id }}"
+                                    class="btn-link">
+                                    Quick View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK VIEW MODAL -->
+                <div class="modal fade" id="materialModal-{{ $type->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+
+                                    <div class="col-md-6 text-center">
+                                        <img src="{{ $typeImage }}" class="product-main-img" alt="{{ $type->name }}">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h2 class="fw-bold fs-3">{{ $type->name }}</h2>
+
+                                        <!-- STATIC COLOR -->
+                                        <div class="inputfild-box mt-3">
+                                            <label class="form-label">Color<sup>*</sup></label>
+                                            <select class="form-select mat-color" data-id="{{ $type->id }}">
+                                                <option value="">Select Color</option>
+                                                @foreach($type->colors as $color)
+                                                <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                                @endforeach
+                                            </select>
+
                                         </div>
+
+                                        <!-- STATIC FINISH -->
+                                        <div class="inputfild-box mt-3">
+                                            <label class="form-label">Finish<sup>*</sup></label>
+                                            <select class="form-select mat-finish" data-id="{{ $type->id }}">
+                                                <option value="">Select Finish</option>
+                                                @foreach($type->finishes as $finish)
+                                                <option value="{{ $finish->id }}">{{ $finish->finish_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- STATIC THICKNESS -->
+                                        <div class="inputfild-box mt-3">
+                                            <label class="form-label">Thickness<sup>*</sup></label>
+                                            <select class="form-select mat-thickness" data-id="{{ $type->id }}">
+                                                <option value="">Select Thickness</option>
+                                                @foreach($type->thicknesses as $thickness)
+                                                <option value="{{ $thickness->id }}">
+                                                    {{ $thickness->thickness_value }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="d-flex gap-4 mt-5">
+                                            <button class="btn btn-secondary cancel-btn" data-bs-dismiss="modal">
+                                                Cancel
+                                            </button>
+
+                                            <button class="btn btn-primary red-btn confirm-material"
+                                                data-id="{{ $type->id }}">
+                                                Confirm
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                        @empty
-                            <div class="col-12 text-center py-5">
-                                <p class="mb-0">No material types available for this group.</p>
-                            </div>
-                        @endforelse
+
+                            <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                                data-bs-dismiss="modal"></button>
+                        </div>
                     </div>
                 </div>
-            @endforeach
+
+                @empty
+                <div class="col-12 text-center py-5">
+                    <p>No material types available for this group.</p>
+                </div>
+                @endforelse
+
+            </div>
         </div>
-    @endif
+        @endforeach
+    </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let selectedMaterialTypeId = @json($selectedMaterialTypeId ?? null);
-
-    function initTypeSelection() {
-        document.querySelectorAll('.material-type-card').forEach(card => {
-            card.addEventListener('click', function() {
-                selectedMaterialTypeId = this.dataset.id;
-
-                document.querySelectorAll('.material-type-card').forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-    }
-
-    initTypeSelection();
-
-    // Re-initialize when tab is shown
-    const tabButtons = document.querySelectorAll('#materialsTab button[data-bs-toggle="tab"]');
-    tabButtons.forEach(button => {
-        button.addEventListener('shown.bs.tab', () => {
-            initTypeSelection();
-        });
-    });
-});
-</script>
-
+<!-- ✅ STYLES -->
 <style>
 .material-type-card {
     cursor: pointer;
     transition: transform 0.2s ease;
 }
+
 .material-type-card:hover {
     transform: scale(1.02);
 }
+
 .material-type-card.selected {
     border: 3px solid #28a745;
     box-shadow: 0 0 12px rgba(40, 167, 69, 0.6);
     position: relative;
 }
+
 .material-type-card.selected::after {
     content: "✔ Selected";
     position: absolute;
