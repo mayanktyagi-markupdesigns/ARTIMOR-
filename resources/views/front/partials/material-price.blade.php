@@ -154,6 +154,118 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
     </div>
 </div>
 
+<script>
+let selectedMaterialTypeId = "{{ $selectedMaterialTypeId }}";
+let materialSelection = {};
+
+console.log('✅ Final Material script loaded');
+
+/* =================================
+   ✅ SAFE MATERIAL CARD SELECTION
+================================= */
+document.addEventListener('click', function(e) {
+
+    if (e.target.closest('.modal')) return;
+    // if (e.target.closest('[data-bs-toggle="modal"]')) return;
+
+    /* ✅ If click is on Quick View button → LET BOOTSTRAP HANDLE IT */
+
+    const quickViewBtn = e.target.closest('[data-bs-toggle="modal"]');
+
+    if (quickViewBtn) {
+
+        return; // ✅ DO NOT touch selection, DO NOT stop event
+
+    }
+
+    const card = e.target.closest('.material-type-card');
+    if (!card) return;
+
+    const clickedId = card.dataset.id;
+
+    if (card.classList.contains('selected')) {
+        card.classList.remove('selected');
+        selectedMaterialTypeId = null;
+        materialSelection = {};
+        console.log('Material unselected');
+    } else {
+        document.querySelectorAll('.material-type-card')
+            .forEach(c => c.classList.remove('selected'));
+
+        card.classList.add('selected');
+        selectedMaterialTypeId = clickedId;
+        materialSelection.material_type_id = clickedId;
+
+        console.log('Material selected:', clickedId);
+    }
+});
+
+
+/* =================================
+   ✅ CONFIRM BUTTON (ARIA SAFE)
+================================= */
+document.addEventListener('click', function(e) {
+
+    const button = e.target.closest('.confirm-material');
+    if (!button) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const materialTypeId = button.dataset.id;
+    const modal = button.closest('.modal');
+
+    if (!modal) return;
+
+    const color = modal.querySelector('.mat-color')?.value;
+    const finish = modal.querySelector('.mat-finish')?.value;
+    const thickness = modal.querySelector('.mat-thickness')?.value;
+
+    if (!color) return alert('Please select color');
+    if (!finish) return alert('Please select finish');
+    if (!thickness) return alert('Please select thickness');
+
+    /* ✅ SAVE MATERIAL */
+    selectedMaterialTypeId = materialTypeId;
+    materialSelection = {
+        material_type_id: materialTypeId,
+        color,
+        finish,
+        thickness
+    };
+
+    console.log('✅ Material Saved:', materialSelection);
+
+    /* ✅ UPDATE UI */
+    document.querySelectorAll('.material-type-card')
+        .forEach(c => c.classList.remove('selected'));
+
+    const selectedCard = document.querySelector(
+        `.material-type-card[data-id="${materialTypeId}"]`
+    );
+    if (selectedCard) selectedCard.classList.add('selected');
+
+    /* ✅ MOVE FOCUS OUT BEFORE HIDING MODAL (ARIA FIX) */
+    button.blur();
+    document.body.focus();
+
+    /* ✅ PROPER BOOTSTRAP MODAL CLOSE (NO MANUAL BACKDROP HACKS) */
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
+    modalInstance.hide();
+});
+
+
+/* =================================
+   ✅ HARD BACKDROP SAFETY NET
+   (runs only if Bootstrap fails)
+================================= */
+document.addEventListener('hidden.bs.modal', function() {
+    document.querySelectorAll('.modal-backdrop').forEach(bg => bg.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('padding-right');
+});
+</script>
+
 <!-- ✅ STYLES -->
 <style>
 .material-type-card {
