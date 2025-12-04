@@ -19,4 +19,17 @@ class MaterialType extends Model
     {
         return $this->belongsTo(MaterialGroup::class, 'material_group_id');
     }
+
+    public function colors() {
+    return $this->hasMany(Color::class);
+    }
+
+    public function finishes() {
+        return $this->hasMany(Finish::class);
+    }
+
+    public function thicknesses() {
+        return $this->hasMany(Thickness::class);
+    }
+
 }
