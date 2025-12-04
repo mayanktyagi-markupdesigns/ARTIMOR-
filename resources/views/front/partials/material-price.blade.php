@@ -39,7 +39,7 @@
                         @forelse($types as $type)
                             @php
                                 $typeImage = $type->image 
-                                    ? asset('uploads/material-types/' . $type->image) 
+                                    ? asset('uploads/material-type/' . $type->image) 
                                     : asset('assets/front/img/product-circle.jpg');
                             @endphp
                             <div class="col-md-4 mb-4">
