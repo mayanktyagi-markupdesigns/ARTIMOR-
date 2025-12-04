@@ -86,12 +86,14 @@ public function index()
 protected function getMaterialPriceStepData(): array
 {
     // 1. Get all active groups
-    $groups = MaterialGroup::where('status', 1)
-        ->with(['types' => function ($q) {
-            $q->where('status', 1);
-        }])
-        ->get();
-
+   $groups = MaterialGroup::where('status', 1)
+    ->with([
+        'types' => function ($q) {
+            $q->where('status', 1)
+              ->with(['colors', 'finishes', 'thicknesses']);
+        }
+    ])
+    ->get();
     // 2. Prepare arrays
     $materialGroups = $groups;
     $materialTypesByGroup = $groups->mapWithKeys(function ($group) {
