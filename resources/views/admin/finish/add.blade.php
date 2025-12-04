@@ -40,19 +40,6 @@
                             @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label for="color_id">Material Color</label><span style="color:red;">*</span>
-                            <select class="form-select" name="color_id" id="color_id">
-                                <option value="">Select Material Color</option>
-                                @foreach($color as $color)
-                                <option value="{{ $color->id }}" {{ old('color_id') == $color->id ? 'selected' : '' }}>
-                                    {{ $color->name }}
-                                </option>
-                                @endforeach
-                            </select>
-                            @error('material_group_id') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-
                         <!-- Finish Name -->
                         <div class="col-md-4 mb-3">
                             <label for="finish_name">Finish Name</label><span style="color:red;">*</span>

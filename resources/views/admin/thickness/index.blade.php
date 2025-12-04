@@ -17,7 +17,8 @@
                         <tr>
                             <th scope="col" style="width: 50px; background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Thickness (mm)</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finish</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Gropup</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Material Type</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -28,8 +29,8 @@
                             <td>{{ $loop->iteration + ($thicknesses->currentPage() - 1) * $thicknesses->perPage() }}
                             </td>
                             <td>{{$thickness->thickness_value}}</td>
-                            <td>{{ $thickness->finish->finish_name ?? '—' }}</td>
-
+                            <td>{{ $thickness->materialGroup->name ?? '—' }}</td>
+                            <td>{{ $thickness->materialType->name ?? '—' }}</td>
                             <td>
                                 @if ($thickness->status == 1)
                                 <span class="badge bg-success">Active</span>

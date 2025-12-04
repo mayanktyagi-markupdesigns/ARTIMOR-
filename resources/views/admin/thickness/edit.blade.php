@@ -45,21 +45,6 @@
                         @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Finish -->
-                    <div class="col-md-4 mb-3">
-                        <label for="finish_id">Finish</label><span class="text-danger">*</span>
-                        <select name="finish_id" id="finish_id" class="form-select" required>
-                            <option value="">Select Finish</option>
-                            @foreach($finishes as $finish)
-                            <option value="{{ $finish->id }}"
-                                {{ old('finish_id', $thickness->finish_id) == $finish->id ? 'selected' : '' }}>
-                                {{ $finish->finish_name }}
-                            </option>
-                            @endforeach
-                        </select>
-                        @error('finish_id')<small class="text-danger">{{ $message }}</small>@enderror
-                    </div>
-
                     <!-- Thickness -->
                     <div class="col-md-4 mb-3">
                         <label for="thickness_value">Thickness (mm)</label><span class="text-danger">*</span>
@@ -139,7 +124,6 @@
                 </div>
 
             </form>
-
         </div>
     </div>
 </div>
@@ -161,8 +145,8 @@ $('#can_be_laminated').on('change', function() {
 $(document).ready(function() {
 
     // Safe JSON variables (no syntax error)
-    let currentMaterialTypeId = {!! json_encode(old('material_type_id', $finish->material_type_id)) !!};
-    let currentMaterialGroupId = {!! json_encode(old('material_group_id', $finish->material_group_id)) !!};
+    let currentMaterialTypeId = {!! json_encode(old('material_type_id', $thickness->material_type_id)) !!};
+    let currentMaterialGroupId = {!! json_encode(old('material_group_id', $thickness->material_group_id)) !!};
 
     // Auto-load types if group is selected
     if (currentMaterialGroupId) {

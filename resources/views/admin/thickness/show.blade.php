@@ -25,11 +25,6 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="fw-bold">Finish</label>
-                    <p>{{ $thickness->finish->finish_name ?? '—' }}</p>
-                </div>
-
-                <div class="col-md-6 mb-3">
                     <label class="fw-bold">Thickness Value</label>
                     <p>{{ $thickness->thickness_value }}</p>
                 </div>
