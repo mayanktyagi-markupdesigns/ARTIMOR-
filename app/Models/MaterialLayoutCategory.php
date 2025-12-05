@@ -12,4 +12,13 @@ class MaterialLayoutCategory extends Model
         'name',
         'status',
     ];
+
+    // ✅ THIS WAS MISSING (CAUSE OF YOUR ERROR)
+    public function groups()
+    {
+        return $this->hasMany(
+            MaterialLayoutGroup::class,
+            'layout_category_id'
+        );
+    }
 }
