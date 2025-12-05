@@ -15,43 +15,43 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
         <p>Material Price</p>
     </div>
     <div class="step stepper2 step-click" data-step="2">
-        <div class="icon"><span>03</span>
+        <div class="icon"><span>02</span>
             <img src="{{ asset('assets/front/img/03.png') }}" width="28" height="28">
         </div>
         <p>Choose Layout</p>
     </div>
     <div class="step stepper3 step-click" data-step="3">
-        <div class="icon"><span>04</span>
+        <div class="icon"><span>03</span>
             <img src="{{ asset('assets/front/img/04.png') }}" width="28" height="28">
         </div>
         <p>Dimensions</p>
     </div>
     <div class="step stepper4 step-click" data-step="4">
-        <div class="icon"><span>05</span>
+        <div class="icon"><span>04</span>
             <img src="{{ asset('assets/front/img/05.png') }}" width="28" height="28">
         </div>
         <p>Edge Finishing</p>
     </div>
     <div class="step stepper5 step-click" data-step="5">
-        <div class="icon"><span>06</span>
+        <div class="icon"><span>05</span>
             <img src="{{ asset('assets/front/img/06.png') }}" width="28" height="28">
         </div>
         <p>Back Wall</p>
     </div>
     <div class="step stepper6 step-click" data-step="6">
-        <div class="icon"><span>07</span>
+        <div class="icon"><span>06</span>
             <img src="{{ asset('assets/front/img/07.png') }}" width="28" height="28">
         </div>
         <p>Sink</p>
     </div>
     <div class="step stepper7 step-click" data-step="7">
-        <div class="icon"><span>08</span>
+        <div class="icon"><span>07</span>
             <img src="{{ asset('assets/front/img/08.png') }}" width="28" height="28">
         </div>
         <p>Cut Outs</p>
     </div>
     <div class="step stepper8 step-click" data-step="8">
-        <div class="icon"><span>09</span>
+        <div class="icon"><span>08</span>
             <img src="{{ asset('assets/front/img/09.png') }}" width="28" height="28">
         </div>
         <p>Overview</p>

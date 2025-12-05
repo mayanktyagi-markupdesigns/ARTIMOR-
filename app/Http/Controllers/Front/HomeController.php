@@ -425,40 +425,40 @@ public function getCalculatorSteps(Request $request)
         case 1:
             $materialStepData = $this->getMaterialPriceStepData();
             return view('front.partials.material-price', $materialStepData)->render();
+        // case 2:
+        //     $selectedMaterialId = session('selected_material_id');
+        //     $typeStepData = $this->getMaterialTypeStepData($selectedMaterialId);
+        //     return view('front.typeof', $typeStepData)->render();
         case 2:
-            $selectedMaterialId = session('selected_material_id');
-            $typeStepData = $this->getMaterialTypeStepData($selectedMaterialId);
-            return view('front.typeof', $typeStepData)->render();
-        case 3:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $layoutStepData = $this->getLayoutStepData($selectedMaterialId, $selectedMaterialTypeId);
             return view('front.layout', $layoutStepData)->render();
-        case 4:
+        case 3:
             // Initialize dimensions in session if not set
             if (!session()->has('dimensions')) {
                 session(['dimensions' => ['blad1' => ['width' => '', 'height' => '']]]);
             }
             return view('front.dimensions')->render();
-        case 5:
+        case 4:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $edge = $this->getEdgeStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.edge-finishing', compact('edge'))->render();
-        case 6:
+        case 5:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $wall = $this->getBackWallStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.back-wall', compact('wall'))->render();
-        case 7:
+        case 6:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $sinks = $this->getSinkStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.sink', compact('sinks'))->render();
-        case 8:
+        case 7:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
@@ -468,7 +468,7 @@ public function getCalculatorSteps(Request $request)
                 return optional($cutout->category)->name ?: 'Other';
             });
             return view('front.cut-outs', compact('grouped'))->render();
-        case 9:
+        case 8:
             // Fetch data for overview
             $material = session('selected_material_id') ? \App\Models\Material::find(session('selected_material_id')) : null;
             $layout = session('selected_layout_id') ? \App\Models\MaterialLayout::find(session('selected_layout_id')) : null;
