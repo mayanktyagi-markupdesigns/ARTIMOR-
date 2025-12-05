@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Material;
 use App\Models\MaterialGroup;
 use App\Models\MaterialType;
 use App\Models\MaterialLayout;
+use App\Models\MaterialLayoutCategory;
+use App\Models\MaterialLayoutGroup;
 use App\Models\Dimension;
 use App\Models\MaterialEdge;
 use App\Models\BackWall;
@@ -148,59 +151,80 @@ protected function getMaterialTypeStepData(?int $materialId): array
     ];
 }
 
-protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): array
+// protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): array
+// {
+//     $selectedLayoutId = session('selected_layout_id');
+
+//     if (!$materialId || !$materialTypeId) {
+//         return [
+//             'layoutsByType' => collect(),
+//             'layoutTypes' => collect(),
+//             'productsByLayout' => collect(),
+//             'selectedLayoutId' => $selectedLayoutId,
+//         ];
+//     }
+
+//     $products = MasterProduct::with([
+//             'material' => function ($query) {
+//                 $query->where('status', 1);
+//             },
+//             'materialType' => function ($query) {
+//                 $query->where('status', 1);
+//             },
+//             'materialLayout' => function ($query) {
+//                 $query->where('status', 1)->with('category');
+//             },
+//         ])
+//         ->where('status', 1)
+//         ->where('material_id', $materialId)
+//         ->where('material_type_id', $materialTypeId)
+//         ->whereHas('material', function ($query) {
+//             $query->where('status', 1);
+//         })
+//         ->whereHas('materialType', function ($query) {
+//             $query->where('status', 1);
+//         })
+//         ->whereHas('materialLayout', function ($query) {
+//             $query->where('status', 1);
+//         })
+//         ->get();
+
+//     $layouts = $products->pluck('materialLayout')->filter()->unique('id')->values();
+
+//     $layoutsByType = $layouts
+//         ->groupBy(function ($layout) {
+//             return optional($layout->category)->name ?? 'Other';
+//         })
+//         ->sortKeys();
+
+//     $layoutTypes = $layoutsByType->keys();
+//     $productsByLayout = $products->groupBy('material_layout_id');
+
+//     return [
+//         'layoutsByType' => $layoutsByType,
+//         'layoutTypes' => $layoutTypes,
+//         'productsByLayout' => $productsByLayout,
+//         'selectedLayoutId' => $selectedLayoutId,
+//     ];
+// }
+
+protected function getLayoutStepData(): array
 {
     $selectedLayoutId = session('selected_layout_id');
 
-    if (!$materialId || !$materialTypeId) {
-        return [
-            'layoutsByType' => collect(),
-            'layoutTypes' => collect(),
-            'productsByLayout' => collect(),
-            'selectedLayoutId' => $selectedLayoutId,
-        ];
-    }
-
-    $products = MasterProduct::with([
-            'material' => function ($query) {
-                $query->where('status', 1);
-            },
-            'materialType' => function ($query) {
-                $query->where('status', 1);
-            },
-            'materialLayout' => function ($query) {
-                $query->where('status', 1)->with('category');
-            },
+    // ✅ Load active categories with active groups & shapes
+    $layoutCategories = MaterialLayoutCategory::with([
+            'groups' => function ($q) {
+                $q->where('status', 1)->with([
+                    'shapes' => fn ($s) => $s->where('status', 1)
+                ]);
+            }
         ])
         ->where('status', 1)
-        ->where('material_id', $materialId)
-        ->where('material_type_id', $materialTypeId)
-        ->whereHas('material', function ($query) {
-            $query->where('status', 1);
-        })
-        ->whereHas('materialType', function ($query) {
-            $query->where('status', 1);
-        })
-        ->whereHas('materialLayout', function ($query) {
-            $query->where('status', 1);
-        })
         ->get();
-
-    $layouts = $products->pluck('materialLayout')->filter()->unique('id')->values();
-
-    $layoutsByType = $layouts
-        ->groupBy(function ($layout) {
-            return optional($layout->category)->name ?? 'Other';
-        })
-        ->sortKeys();
-
-    $layoutTypes = $layoutsByType->keys();
-    $productsByLayout = $products->groupBy('material_layout_id');
-
+   
     return [
-        'layoutsByType' => $layoutsByType,
-        'layoutTypes' => $layoutTypes,
-        'productsByLayout' => $productsByLayout,
+        'layoutCategories'  => $layoutCategories,
         'selectedLayoutId' => $selectedLayoutId,
     ];
 }
@@ -351,9 +375,8 @@ public function getMaterials(Request $request)
 public function getCalculatorSteps(Request $request)
 {
     $step = $request->input('step');
-
     // Store material_id in session if provided
-    if ($request->has('material_id')) {
+    if ($request->has('material_type_id')) {
         $newMaterialId = $request->input('material_id');
         $previousMaterialId = session('selected_material_id');
         if ($previousMaterialId && (string)$previousMaterialId !== (string)$newMaterialId) {
@@ -427,38 +450,34 @@ public function getCalculatorSteps(Request $request)
             return view('front.partials.material-price', $materialStepData)->render();
         case 2:
             $selectedMaterialId = session('selected_material_id');
-            $typeStepData = $this->getMaterialTypeStepData($selectedMaterialId);
-            return view('front.typeof', $typeStepData)->render();
-        case 3:
-            $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $layoutStepData = $this->getLayoutStepData($selectedMaterialId, $selectedMaterialTypeId);
             return view('front.layout', $layoutStepData)->render();
-        case 4:
+        case 3:
             // Initialize dimensions in session if not set
             if (!session()->has('dimensions')) {
                 session(['dimensions' => ['blad1' => ['width' => '', 'height' => '']]]);
             }
             return view('front.dimensions')->render();
-        case 5:
+        case 4:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $edge = $this->getEdgeStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.edge-finishing', compact('edge'))->render();
-        case 6:
+        case 5:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $wall = $this->getBackWallStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.back-wall', compact('wall'))->render();
-        case 7:
+        case 6:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $sinks = $this->getSinkStepData($selectedMaterialId, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.sink', compact('sinks'))->render();
-        case 8:
+        case 7:
             $selectedMaterialId = session('selected_material_id');
             $selectedMaterialTypeId = session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
@@ -468,7 +487,7 @@ public function getCalculatorSteps(Request $request)
                 return optional($cutout->category)->name ?: 'Other';
             });
             return view('front.cut-outs', compact('grouped'))->render();
-        case 9:
+        case 8:
             // Fetch data for overview
             $material = session('selected_material_id') ? \App\Models\Material::find(session('selected_material_id')) : null;
             $layout = session('selected_layout_id') ? \App\Models\MaterialLayout::find(session('selected_layout_id')) : null;

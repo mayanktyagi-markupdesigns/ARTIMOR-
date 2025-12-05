@@ -23,13 +23,12 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
             <li class="nav-item" role="presentation">
                 <button class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $tabId }}-tab" data-bs-toggle="tab"
-                    data-bs-target="#{{ $tabId }}" data-group-id="{{ $group->id }}" ✅✅✅ type="button" role="tab">
+                    data-bs-target="#{{ $tabId }}" data-group-id="{{ $group->id }}" type="button" role="tab">
                     {{ $group->name }}
                 </button>
             </li>
             @endforeach
         </ul>
-
 
         @endif
     </div>
@@ -89,7 +88,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                     <div class="col-md-6">
                                         <h2 class="fw-bold fs-3">{{ $type->name }}</h2>
 
-                                        <!-- STATIC COLOR -->
+                                        <!-- COLOR -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Color<sup>*</sup></label>
                                             <select class="form-select mat-color" data-id="{{ $type->id }}">
@@ -101,7 +100,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
                                         </div>
 
-                                        <!-- STATIC FINISH -->
+                                        <!-- FINISH -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Finish<sup>*</sup></label>
                                             <select class="form-select mat-finish" data-id="{{ $type->id }}">
@@ -112,7 +111,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                             </select>
                                         </div>
 
-                                        <!-- STATIC THICKNESS -->
+                                        <!-- THICKNESS -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Thickness<sup>*</sup></label>
                                             <select class="form-select mat-thickness" data-id="{{ $type->id }}">
@@ -159,26 +158,26 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 </div>
 
 <script>
-let selectedMaterialTypeId = "{{ $selectedMaterialTypeId }}";
+//let selectedMaterialTypeId = "{{ $selectedMaterialTypeId }}";
 let materialSelection = {};
 
-console.log('✅ Final Material script loaded');
+console.log('Final Material script loaded');
 
 /* =================================
-   ✅ SAFE MATERIAL CARD SELECTION
+   SAFE MATERIAL CARD SELECTION
 ================================= */
 document.addEventListener('click', function(e) {
 
     if (e.target.closest('.modal')) return;
     // if (e.target.closest('[data-bs-toggle="modal"]')) return;
 
-    /* ✅ If click is on Quick View button → LET BOOTSTRAP HANDLE IT */
+    /* If click is on Quick View button → LET BOOTSTRAP HANDLE IT */
 
     const quickViewBtn = e.target.closest('[data-bs-toggle="modal"]');
 
     if (quickViewBtn) {
 
-        return; // ✅ DO NOT touch selection, DO NOT stop event
+        return; // DO NOT touch selection, DO NOT stop event
 
     }
 
@@ -204,9 +203,8 @@ document.addEventListener('click', function(e) {
     }
 });
 
-
 /* =================================
-   ✅ CONFIRM BUTTON (ARIA SAFE)
+   CONFIRM BUTTON (ARIA SAFE)
 ================================= */
 document.addEventListener('click', function(e) {
 
@@ -219,8 +217,6 @@ document.addEventListener('click', function(e) {
     const materialTypeId = button.dataset.id;
     const modal = button.closest('.modal');
 
-    if (!modal) return;
-
     const color = modal.querySelector('.mat-color')?.value;
     const finish = modal.querySelector('.mat-finish')?.value;
     const thickness = modal.querySelector('.mat-thickness')?.value;
@@ -229,8 +225,8 @@ document.addEventListener('click', function(e) {
     if (!finish) return alert('Please select finish');
     if (!thickness) return alert('Please select thickness');
 
-    /* ✅ SAVE MATERIAL */
-    selectedMaterialTypeId = materialTypeId;
+    /* ✅ CORRECT GLOBAL SAVE */
+    window.selectedMaterialTypeId = materialTypeId; // ✅ ONLY TYPE
     materialSelection = {
         material_type_id: materialTypeId,
         color,
@@ -238,9 +234,9 @@ document.addEventListener('click', function(e) {
         thickness
     };
 
-    console.log('✅ Material Saved:', materialSelection);
+    console.log('Material Saved:', materialSelection);
 
-    /* ✅ UPDATE UI */
+    /* ✅ UI UPDATE */
     document.querySelectorAll('.material-type-card')
         .forEach(c => c.classList.remove('selected'));
 
@@ -249,18 +245,14 @@ document.addEventListener('click', function(e) {
     );
     if (selectedCard) selectedCard.classList.add('selected');
 
-    /* ✅ MOVE FOCUS OUT BEFORE HIDING MODAL (ARIA FIX) */
-    button.blur();
-    document.body.focus();
-
-    /* ✅ PROPER BOOTSTRAP MODAL CLOSE (NO MANUAL BACKDROP HACKS) */
+    /* ✅ SAFE MODAL CLOSE */
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
     modalInstance.hide();
 });
 
 
 /* =================================
-   ✅ HARD BACKDROP SAFETY NET
+   HARD BACKDROP SAFETY NET
    (runs only if Bootstrap fails)
 ================================= */
 document.addEventListener('hidden.bs.modal', function() {
@@ -270,7 +262,7 @@ document.addEventListener('hidden.bs.modal', function() {
 });
 </script>
 
-<!-- ✅ STYLES -->
+<!-- STYLES -->
 <style>
 .material-type-card {
     cursor: pointer;
