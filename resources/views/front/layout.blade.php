@@ -5,6 +5,10 @@
     $selectedLayoutId = (string)($selectedLayoutId ?? session('selected_layout_id'));
 @endphp
 
+<pre>
+{{ print_r(session()->all(), true) }}
+</pre>
+
 <div class="materials">
     @if($layoutTypes->isNotEmpty())
         <!-- Nav Tabs -->
