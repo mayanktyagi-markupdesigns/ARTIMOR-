@@ -2,67 +2,62 @@
 @section('content')
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="fw-bold mb-0">Add Cutout Material Thickness Prices</h3>
-        <a href="{{ route('admin.cutout.material.thickness.price.controller.list') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-left"></i> Back to List
-        </a>
-    </div>
-    <div class="card shadow-sm">
+    <h3>Add Cutout Material Thickness Prices</h3>
+    <div class="card mt-3">
         <div class="card-body">
             @include('admin.layouts.alerts')
             <form action="{{ route('admin.cutout.material.thickness.price.controller.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <!-- Material type -->
+
+                    <!-- Material Type -->
                     <div class="col-md-4 mb-3">
-                        <label for="material_type_id">Material Type<span class="text-danger">*</span></label>
+                        <label>Material Type <span class="text-danger">*</span></label>
                         <select name="material_type_id" class="form-select">
-                            <option value="">SelectMaterial Type</option>
-                            @foreach($type as $e)
-                            <option value="{{ $e->id }}" {{ old('material_type_id') == $e->id ? 'selected' : '' }}>
-                                {{ $e->name }}
-                            </option>
+                            <option value="">Select Material Type</option>
+                            @foreach($type as $t)
+                                <option value="{{ $t->id }}" {{ old('material_type_id') == $t->id ? 'selected' : '' }}>
+                                    {{ $t->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('material_type_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Edge Profile -->
+                    <!-- Thickness Dropdown -->
                     <div class="col-md-4 mb-3">
-                        <label for="cut_out_id">Select Cut Outs <span class="text-danger">*</span></label>
+                        <label>Thickness <span class="text-danger">*</span></label>
+                        <select name="thickness_value" id="thicknessDropdown" class="form-select">
+                            <option value="">Select Thickness</option>
+                        </select>
+                        @error('thickness_value') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <!-- Cutouts -->
+                    <div class="col-md-4 mb-3">
+                        <label>Cutouts <span class="text-danger">*</span></label>
                         <select name="cut_out_id" class="form-select">
-                            <option value="">Select cutouts</option>
-                            @foreach($cutouts as $e)
-                            <option value="{{ $e->id }}" {{ old('cut_out_id') == $e->id ? 'selected' : '' }}>
-                                {{ $e->name }}
-                            </option>
+                            <option value="">Select Cutout</option>
+                            @foreach($cutouts as $c)
+                                <option value="{{ $c->id }}" {{ old('cut_out_id') == $c->id ? 'selected' : '' }}>
+                                    {{ $c->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('cut_out_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- thickness_value -->
-                    <div class="col-md-4 mb-3">
-                        <label for="thickness_value">Thickness Value</label><span style="color:red;">*</span>
-                        <input type="text" class="form-control" name="thickness_value" id="thickness_value"
-                            value="{{ old('thickness_value') }}" placeholder="Enter thickness value">
-                        @error('thickness_value') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
-
-                    <!-- Guest Price -->
+                    <!-- Price Guest -->
                     <div class="col-md-4 mb-3">
                         <label>Price Guest <span class="text-danger">*</span></label>
-                        <input type="number" min="0" step="0.01" name="price_guest" class="form-control"
-                            value="{{ old('price_guest') }}">
+                        <input type="number" step="0.01" name="price_guest" class="form-control" value="{{ old('price_guest') }}">
                         @error('price_guest') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Business Price -->
+                    <!-- Price Business -->
                     <div class="col-md-4 mb-3">
                         <label>Price Business <span class="text-danger">*</span></label>
-                        <input type="number" min="0" step="0.01" name="price_business" class="form-control"
-                            value="{{ old('price_business') }}">
+                        <input type="number" step="0.01" name="price_business" class="form-control" value="{{ old('price_business') }}">
                         @error('price_business') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
@@ -70,20 +65,51 @@
                     <div class="col-md-4 mb-3">
                         <label>Status</label>
                         <select name="status" class="form-select">
-                            <option value="1" {{ old('status', 1) == '1' ? 'selected' : '' }}>Active</option>
-                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
+                            <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
                         </select>
-                        @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
+
                 </div>
 
-                <div class="text-end mt-4">
-                    <button class="btn btn-success">Submit</button>
-                    <a href="{{ route('admin.cutout.material.thickness.price.controller.list') }}"
-                        class="btn btn-danger ms-2">Cancel</a>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Submit</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    $('select[name="material_type_id"]').on('change', function () {
+        let typeId = $(this).val();
+        let dropdown = $('#thicknessDropdown');
+        dropdown.html('<option value="">Loading...</option>');
+
+        if (typeId) {
+            $.ajax({
+                url: "{{ route('admin.cutout.material.thickness.price.controller.getThicknessByType') }}",
+                type: "GET",
+                data: { material_type_id: typeId },
+                success: function(response) {
+                    dropdown.empty();
+                    dropdown.append('<option value="">Select Thickness</option>');
+                    if(response.data.length > 0){
+                        $.each(response.data, function(key, val){
+                            dropdown.append('<option value="'+val.thickness_value+'">'+val.thickness_value+'</option>');
+                        });
+                    } else {
+                        dropdown.append('<option value="">No Thickness Found</option>');
+                    }
+                }
+            });
+        } else {
+            dropdown.html('<option value="">Select Thickness</option>');
+        }
+    });
+});
+</script>
+
 @endsection
