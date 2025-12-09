@@ -14,19 +14,22 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
     <!-- GROUP TABS -->
     <div class="d-flex align-items-center justify-content-center materials-tab-div">
         @if($materialGroups->isNotEmpty())
+
         <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
             @foreach($materialGroups as $index => $group)
             @php
             $tabId = \Illuminate\Support\Str::slug($group->name ?: 'Other');
             @endphp
+
             <li class="nav-item" role="presentation">
                 <button class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $tabId }}-tab" data-bs-toggle="tab"
-                    data-bs-target="#{{ $tabId }}" type="button" role="tab">
+                    data-bs-target="#{{ $tabId }}" data-group-id="{{ $group->id }}" type="button" role="tab">
                     {{ $group->name }}
                 </button>
             </li>
             @endforeach
         </ul>
+
         @endif
     </div>
 
@@ -85,7 +88,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                     <div class="col-md-6">
                                         <h2 class="fw-bold fs-3">{{ $type->name }}</h2>
 
-                                        <!-- STATIC COLOR -->
+                                        <!-- COLOR -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Color<sup>*</sup></label>
                                             <select class="form-select mat-color" data-id="{{ $type->id }}">
@@ -97,7 +100,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
                                         </div>
 
-                                        <!-- STATIC FINISH -->
+                                        <!-- FINISH -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Finish<sup>*</sup></label>
                                             <select class="form-select mat-finish" data-id="{{ $type->id }}">
@@ -108,7 +111,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                             </select>
                                         </div>
 
-                                        <!-- STATIC THICKNESS -->
+                                        <!-- THICKNESS -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Thickness<sup>*</sup></label>
                                             <select class="form-select mat-thickness" data-id="{{ $type->id }}">
@@ -154,7 +157,112 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
     </div>
 </div>
 
-<!-- ✅ STYLES -->
+<script>
+//let selectedMaterialTypeId = "{{ $selectedMaterialTypeId }}";
+let materialSelection = {};
+
+console.log('Final Material script loaded');
+
+/* =================================
+   SAFE MATERIAL CARD SELECTION
+================================= */
+document.addEventListener('click', function(e) {
+
+    if (e.target.closest('.modal')) return;
+    // if (e.target.closest('[data-bs-toggle="modal"]')) return;
+
+    /* If click is on Quick View button → LET BOOTSTRAP HANDLE IT */
+
+    const quickViewBtn = e.target.closest('[data-bs-toggle="modal"]');
+
+    if (quickViewBtn) {
+
+        return; // DO NOT touch selection, DO NOT stop event
+
+    }
+
+    const card = e.target.closest('.material-type-card');
+    if (!card) return;
+
+    const clickedId = card.dataset.id;
+
+    if (card.classList.contains('selected')) {
+        card.classList.remove('selected');
+        selectedMaterialTypeId = null;
+        materialSelection = {};
+        console.log('Material unselected');
+    } else {
+        document.querySelectorAll('.material-type-card')
+            .forEach(c => c.classList.remove('selected'));
+
+        card.classList.add('selected');
+        selectedMaterialTypeId = clickedId;
+        materialSelection.material_type_id = clickedId;
+
+        console.log('Material selected:', clickedId);
+    }
+});
+
+/* =================================
+   CONFIRM BUTTON (ARIA SAFE)
+================================= */
+document.addEventListener('click', function(e) {
+
+    const button = e.target.closest('.confirm-material');
+    if (!button) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const materialTypeId = button.dataset.id;
+    const modal = button.closest('.modal');
+
+    const color = modal.querySelector('.mat-color')?.value;
+    const finish = modal.querySelector('.mat-finish')?.value;
+    const thickness = modal.querySelector('.mat-thickness')?.value;
+
+    if (!color) return alert('Please select color');
+    if (!finish) return alert('Please select finish');
+    if (!thickness) return alert('Please select thickness');
+
+    /* CORRECT GLOBAL SAVE */
+    window.selectedMaterialTypeId = materialTypeId; // ONLY TYPE
+    materialSelection = {
+        material_type_id: materialTypeId,
+        color,
+        finish,
+        thickness
+    };
+
+    console.log('Material Saved:', materialSelection);
+
+    /* UI UPDATE */
+    document.querySelectorAll('.material-type-card')
+        .forEach(c => c.classList.remove('selected'));
+
+    const selectedCard = document.querySelector(
+        `.material-type-card[data-id="${materialTypeId}"]`
+    );
+    if (selectedCard) selectedCard.classList.add('selected');
+
+    /* SAFE MODAL CLOSE */
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
+    modalInstance.hide();
+});
+
+
+/* =================================
+   HARD BACKDROP SAFETY NET
+   (runs only if Bootstrap fails)
+================================= */
+document.addEventListener('hidden.bs.modal', function() {
+    document.querySelectorAll('.modal-backdrop').forEach(bg => bg.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('padding-right');
+});
+</script>
+
+<!-- STYLES -->
 <style>
 .material-type-card {
     cursor: pointer;

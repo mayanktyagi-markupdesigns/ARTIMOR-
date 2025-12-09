@@ -34,8 +34,8 @@ class BacksplashPriceController extends Controller
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
             'price_lm_business' => 'required|numeric|min:0',
             'finished_side_price_lm_business' => 'nullable|numeric|min:0',
-            'min_height_mm' => 'nullable|integer|min:0',
-            'max_height_mm' => 'nullable|integer|min:0',
+            //'min_height_mm' => 'nullable|integer|min:0',
+            //'max_height_mm' => 'nullable|integer|min:0',
             'status' => 'required|in:0,1'
         ]);
 
@@ -46,8 +46,8 @@ class BacksplashPriceController extends Controller
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;
         $price->price_lm_business                 = $request->price_lm_business;
         $price->finished_side_price_lm_business   = $request->finished_side_price_lm_business;
-        $price->min_height_mm                     = $request->min_height_mm;
-        $price->max_height_mm                     = $request->max_height_mm;
+        //$price->min_height_mm                     = $request->min_height_mm;
+        //$price->max_height_mm                     = $request->max_height_mm;
         $price->status                            = $request->status;
 
         $price->save();
@@ -73,8 +73,8 @@ class BacksplashPriceController extends Controller
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
             'price_lm_business' => 'required|numeric|min:0',
             'finished_side_price_lm_business' => 'nullable|numeric|min:0',
-            'min_height_mm' => 'nullable|integer|min:0',
-            'max_height_mm' => 'nullable|integer|min:0',
+           // 'min_height_mm' => 'nullable|integer|min:0',
+            //'max_height_mm' => 'nullable|integer|min:0',
             'status' => 'required|in:0,1'
         ]);
 
@@ -83,8 +83,8 @@ class BacksplashPriceController extends Controller
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;
         $price->price_lm_business                 = $request->price_lm_business;
         $price->finished_side_price_lm_business   = $request->finished_side_price_lm_business;
-        $price->min_height_mm                     = $request->min_height_mm;
-        $price->max_height_mm                     = $request->max_height_mm;
+        //$price->min_height_mm                     = $request->min_height_mm;
+        //$price->max_height_mm                     = $request->max_height_mm;
         $price->status                            = $request->status;
 
         $price->save();

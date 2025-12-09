@@ -73,7 +73,7 @@
             </div>
 
             <!-- Dimension Sides -->
-            <div class="mt-4">
+            <!-- <div class="mt-4">
                 <h5 class="fw-bold mb-3">
                     <i class="bi bi-rulers text-primary me-2"></i> Dimension Sides
                 </h5>
@@ -104,7 +104,7 @@
                         <i class="bi bi-info-circle me-1"></i> No dimension sides added
                     </p>
                 @endif
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

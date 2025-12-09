@@ -2,56 +2,63 @@
 @section('content')
 
 @php
-$selectedMaterialId = $selectedMaterialId ?? session('selected_material_id');
-$selectedMaterialTypeId = $selectedMaterialTypeId ?? session('selected_material_type_id');
-$selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
+    $selectedMaterialId = $selectedMaterialId ?? session('selected_material_id');
+    $selectedMaterialTypeId = $selectedMaterialTypeId ?? session('selected_material_type_id');
+    $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 @endphp
 
+
 <div class="steps">
-    <div class="step stepper1 active step-click" data-step="1">
+    <div class="step stepper1 active">
         <div class="icon"><span>01</span>
             <img src="{{ asset('assets/front/img/01.png') }}" width="28" height="28">
         </div>
         <p>Material Price</p>
     </div>
-    <div class="step stepper2 step-click" data-step="2">
+    <div class="step stepper2">
         <div class="icon"><span>02</span>
+            <img src="{{ asset('assets/front/img/02.png') }}" width="28" height="28">
+        </div>
+        <p>Type of</p>
+    </div>
+    <div class="step stepper3">
+        <div class="icon"><span>03</span>
             <img src="{{ asset('assets/front/img/03.png') }}" width="28" height="28">
         </div>
         <p>Choose Layout</p>
     </div>
-    <div class="step stepper3 step-click" data-step="3">
-        <div class="icon"><span>03</span>
+    <div class="step stepper4">
+        <div class="icon"><span>04</span>
             <img src="{{ asset('assets/front/img/04.png') }}" width="28" height="28">
         </div>
         <p>Dimensions</p>
     </div>
-    <div class="step stepper4 step-click" data-step="4">
-        <div class="icon"><span>04</span>
+    <div class="step stepper5">
+        <div class="icon"><span>05</span>
             <img src="{{ asset('assets/front/img/05.png') }}" width="28" height="28">
         </div>
         <p>Edge Finishing</p>
     </div>
-    <div class="step stepper5 step-click" data-step="5">
-        <div class="icon"><span>05</span>
+    <div class="step stepper6">
+        <div class="icon"><span>06</span>
             <img src="{{ asset('assets/front/img/06.png') }}" width="28" height="28">
         </div>
         <p>Back Wall</p>
     </div>
-    <div class="step stepper6 step-click" data-step="6">
-        <div class="icon"><span>06</span>
+    <div class="step stepper7">
+        <div class="icon"><span>07</span>
             <img src="{{ asset('assets/front/img/07.png') }}" width="28" height="28">
         </div>
         <p>Sink</p>
     </div>
-    <div class="step stepper7 step-click" data-step="7">
-        <div class="icon"><span>07</span>
+    <div class="step stepper8">
+        <div class="icon"><span>08</span>
             <img src="{{ asset('assets/front/img/08.png') }}" width="28" height="28">
         </div>
         <p>Cut Outs</p>
     </div>
-    <div class="step stepper8 step-click" data-step="8">
-        <div class="icon"><span>08</span>
+    <div class="step stepper9">
+        <div class="icon"><span>09</span>
             <img src="{{ asset('assets/front/img/09.png') }}" width="28" height="28">
         </div>
         <p>Overview</p>
@@ -61,10 +68,10 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 <div class="materials">
     <div id="step1" class="tab-content show active">
         @include('front.partials.material-price', [
-        'materialGroups' => $materialCategories,
-        'materialTypesByGroup' => $materialsByCategory,
-        'selectedMaterialId' => $selectedMaterialId ?? null,
-        'selectedMaterialTypeId' => $selectedMaterialTypeId ?? null,
+            'materialCategories' => $materialCategories,
+            'materialsByCategory' => $materialsByCategory,
+            'productsByMaterial' => $productsByMaterial,
+            'selectedMaterialId' => $selectedMaterialId,
         ])
     </div>
 
@@ -89,6 +96,9 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
     <div id="step8" class="tab-content fade hidden">
 
     </div>
+    <div id="step9" class="tab-content fade hidden">
+
+    </div>
 
 
 </div>
@@ -104,87 +114,6 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
-    // ==============================
-    // CLICKABLE STEPPER NAVIGATION
-    // ==============================
-    document.querySelectorAll('.step-click').forEach(stepBtn => {
-        stepBtn.addEventListener('click', function() {
-
-            const targetStep = parseInt(this.getAttribute('data-step'));
-
-            // ✅ Forward validation (same as Next button)
-            if (targetStep > 1 && !selectedMaterialId) {
-                alert('Please select a material first.');
-                return;
-            }
-            if (targetStep > 2 && !selectedMaterialTypeId) {
-                alert('Please select a material type first.');
-                return;
-            }
-            if (targetStep > 3 && !selectedLayoutId) {
-                alert('Please select a layout first.');
-                return;
-            }
-
-            const data = {
-                step: targetStep
-            };
-            if (targetStep >= 2) data.material_id = selectedMaterialId;
-            if (targetStep >= 3) data.material_type_id = selectedMaterialTypeId;
-            if (targetStep >= 4) data.layout_id = selectedLayoutId;
-
-            fetch("{{ route('calculator.steps') }}", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.text())
-                .then(html => {
-
-                    // ✅ Load content of clicked step
-                    document.getElementById('step' + targetStep).innerHTML = html;
-
-                    // ✅ Switch active view
-                    for (let i = 1; i <= 9; i++) {
-                        const div = document.getElementById('step' + i);
-                        const stepper = document.querySelector('.stepper' + i);
-
-                        if (i === targetStep) {
-                            div.classList.remove('hidden');
-                            div.classList.add('show', 'active');
-                            stepper.classList.add('active');
-                        } else {
-                            div.classList.add('hidden');
-                            div.classList.remove('show', 'active');
-                            stepper.classList.remove('active');
-                        }
-                    }
-
-                    // ✅ Sync Next button
-                    nextStepBtn.setAttribute('data-step', targetStep + 1);
-                    nextStepBtn.style.display = (targetStep === 9) ? 'none' :
-                        'inline-block';
-
-                    // ✅ Re-init step logic
-                    if (targetStep === 3) initializeLayoutCards();
-                    if (targetStep === 4) initializeDimensionInputs();
-                    if (targetStep === 5) initializeEdgeFinishing();
-                    if (targetStep === 6) initializeBackWall();
-                    if (targetStep === 7) initializeSinkSelection();
-                    if (targetStep === 8) initializeCutoutSelection();
-                    if (targetStep === 9) initializePersonalDataForm();
-
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Failed to load step.');
-                });
-        });
-    });
 
     const nextStepBtn = document.getElementById('nextStepBtn');
     const materialTabButtons = document.querySelectorAll('#materialsTab button[data-bs-toggle="tab"]');
@@ -203,19 +132,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const initialMaterialId = @json($selectedMaterialId);
-    console.log(initialMaterialId);
-    //let selectedMaterialId = initialMaterialId ? String(initialMaterialId) : null;
-    window.selectedMaterialId = initialMaterialId ? String(initialMaterialId) : null;
+    let selectedMaterialId = initialMaterialId ? String(initialMaterialId) : null;
     const initialMaterialTypeId = @json($selectedMaterialTypeId);
-    //let selectedMaterialTypeId = initialMaterialTypeId ? String(initialMaterialTypeId) : null;
-    window.selectedMaterialTypeId = initialMaterialTypeId ? String(initialMaterialTypeId) : null;
+    let selectedMaterialTypeId = initialMaterialTypeId ? String(initialMaterialTypeId) : null;
     const initialLayoutId = @json($selectedLayoutId);
     let selectedLayoutId = initialLayoutId ? String(initialLayoutId) : null;
     let dimensions = {
-        blad1: {
-            width: null,
-            height: null
-        }
+        blad1: { width: null, height: null }
     };
     let edgeFinishing = {
         edge_id: null,
@@ -328,8 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
             circle.addEventListener('click', function() {
                 const edge = this.getAttribute('data-edge');
                 if (edgeFinishing.selected_edges.includes(edge)) {
-                    edgeFinishing.selected_edges = edgeFinishing.selected_edges.filter(e =>
-                        e !== edge);
+                    edgeFinishing.selected_edges = edgeFinishing.selected_edges.filter(e => e !== edge);
                     this.classList.remove('selected');
                 } else {
                     edgeFinishing.selected_edges.push(edge);
@@ -389,10 +311,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const sinkId = this.getAttribute('data-sink-id');
                 const modal = this.closest('.modal');
-                const cutoutSelect = modal.querySelector('.sink-cutout[data-sink-id="' +
-                    sinkId + '"]');
-                const numberInput = modal.querySelector('.sink-number[data-sink-id="' + sinkId +
-                    '"]');
+                const cutoutSelect = modal.querySelector('.sink-cutout[data-sink-id="' + sinkId + '"]');
+                const numberInput = modal.querySelector('.sink-number[data-sink-id="' + sinkId + '"]');
 
                 if (!cutoutSelect.value) {
                     alert('Please select a cutout type.');
@@ -410,8 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.sink-card').forEach(card => {
                     card.classList.remove('selected');
                 });
-                const selectedCard = document.querySelector('.sink-card[data-id="' + sinkId +
-                    '"]');
+                const selectedCard = document.querySelector('.sink-card[data-id="' + sinkId + '"]');
                 if (selectedCard) {
                     selectedCard.classList.add('selected');
                 }
@@ -441,8 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const cutoutId = this.getAttribute('data-cutout-id');
                 const modal = this.closest('.modal');
-                const recessTypeSelect = modal.querySelector(
-                    '.cutout-recess-type[data-cutout-id="' + cutoutId + '"]');
+                const recessTypeSelect = modal.querySelector('.cutout-recess-type[data-cutout-id="' + cutoutId + '"]');
 
                 if (!recessTypeSelect.value) {
                     alert('Please select a recess type.');
@@ -455,8 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.cutout-card').forEach(card => {
                     card.classList.remove('selected');
                 });
-                const selectedCard = document.querySelector('.cutout-card[data-id="' +
-                    cutoutId + '"]');
+                const selectedCard = document.querySelector('.cutout-card[data-id="' + cutoutId + '"]');
                 if (selectedCard) {
                     selectedCard.classList.add('selected');
                 }
@@ -492,48 +409,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 userDetails.promo_code = document.getElementById('promoCode').value;
 
                 // Validate required fields
-                if (!userDetails.first_name || !userDetails.last_name || !userDetails.phone_number || !
-                    userDetails.email || !userDetails.delivery_option || !userDetails.measurement_time
-                ) {
+                if (!userDetails.first_name || !userDetails.last_name || !userDetails.phone_number || !userDetails.email || !userDetails.delivery_option || !userDetails.measurement_time) {
                     alert('Please fill in all required fields.');
                     return;
                 }
 
                 // Send user details to server
                 fetch("{{ route('calculator.submit') }}", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            step: 9,
-                            first_name: userDetails.first_name,
-                            last_name: userDetails.last_name,
-                            phone_number: userDetails.phone_number,
-                            email: userDetails.email,
-                            delivery_option: userDetails.delivery_option,
-                            measurement_time: userDetails.measurement_time,
-                            promo_code: userDetails.promo_code,
-                        })
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        step: 9,
+                        first_name : userDetails.first_name,
+                        last_name : userDetails.last_name,
+                        phone_number : userDetails.phone_number,
+                        email : userDetails.email,
+                        delivery_option : userDetails.delivery_option,
+                        measurement_time : userDetails.measurement_time,
+                        promo_code : userDetails.promo_code,
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // alert('User details saved successfully!');
-                            window.location.href = "{{ route('thank.you') }}";
-                            // Optionally switch to Overview tab
-                            const overviewTab = document.getElementById('overview-tab');
-                            if (overviewTab) {
-                                bootstrap.Tab.getOrCreateInstance(overviewTab).show();
-                            }
-                        } else {
-                            alert('Error saving user details: ' + (data.error || 'Unknown error'));
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // alert('User details saved successfully!');
+                        window.location.href = "{{ route('thank.you') }}";
+                        // Optionally switch to Overview tab
+                        const overviewTab = document.getElementById('overview-tab');
+                        if (overviewTab) {
+                            bootstrap.Tab.getOrCreateInstance(overviewTab).show();
                         }
-                    })
-                    .catch(error => {
-                        alert('Error saving user details: ' + error);
-                    });
+                    } else {
+                        alert('Error saving user details: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    alert('Error saving user details: ' + error);
+                });
             });
         }
     }
@@ -544,69 +459,249 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Next Step button click
     nextStepBtn.addEventListener('click', function() {
         const currentStep = parseInt(nextStepBtn.getAttribute('data-step'));
-
-        /* ✅ STEP-1 VALIDATION BASED ON CONFIRMED MATERIAL */
+        console.log(selectedMaterialId)
+        if(currentStep >1){
+            $('.materials-tab-div').addClass('hidden');
+        }else{
+            $('.materials-tab-div').removeClass('hidden');
+        }
+        // Validate selections based on step
         if (currentStep === 2) {
-            if (!materialSelection.material_type_id) {
-                alert("Please confirm material configuration first.");
+            if (!selectedMaterialId) {
+                alert("Please select a material before proceeding to the next step.");
+                return;
+            }
+        }
+        if (currentStep === 3) {
+            if (!selectedMaterialId) {
+                alert("Please select a material before proceeding to the next step.");
+                return;
+            }
+            if (!selectedMaterialTypeId) {
+                alert("Please select a material type before proceeding to the next step.");
+                return;
+            }
+        }
+        if (currentStep === 4 && !selectedLayoutId) {
+            alert("Please select a layout before proceeding to the next step.");
+            return;
+        }
+        if (currentStep === 5) {
+            if (!dimensions.blad1.width || !dimensions.blad1.height) {
+                alert("Please enter both width and height for Blad 01.");
+                return;
+            }
+            if (isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) || dimensions.blad1.width <= 0 || dimensions.blad1.height <= 0) {
+                alert("Please enter valid numeric values for width and height.");
+                return;
+            }
+        }
+        if (currentStep === 6) {
+            if (!edgeFinishing.edge_id) {
+                alert("Please select an edge type.");
+                return;
+            }
+            if (!edgeFinishing.thickness) {
+                alert("Please select an edge thickness.");
+                return;
+            }
+            if (edgeFinishing.selected_edges.length === 0) {
+                alert("Please select at least one edge to finish.");
+                return;
+            }
+        }
+        if (currentStep === 7) {
+            if (!backWall.wall_id) {
+                alert("Please select a back wall type.");
+                return;
+            }
+            if (!backWall.thickness) {
+                alert("Please select a back wall thickness.");
+                return;
+            }
+            if (backWall.selected_edges.length === 0) {
+                alert("Please select at least one side for back wall finishing.");
+                return;
+            }
+        }
+        if (currentStep === 8) {
+            if (!sinkSelection.sink_id) {
+                alert("Please select a sink by confirming in the modal.");
+                return;
+            }
+            if (!sinkSelection.cutout) {
+                alert("Please select a cutout type for the sink.");
+                return;
+            }
+            if (!sinkSelection.number || isNaN(sinkSelection.number) || sinkSelection.number < 0 || sinkSelection.number > 10) {
+                alert("Please enter a valid number of sinks (0-10).");
+                return;
+            }
+        }
+        if (currentStep === 9) {
+            if (!cutoutSelection.cutout_id) {
+                alert("Please select a cut-out by confirming in the modal.");
+                return;
+            }
+            if (!cutoutSelection.recess_type) {
+                alert("Please select a recess type for the cut-out.");
                 return;
             }
         }
 
-        const data = {
-            step: currentStep
-        };
-
-        /* ✅ SEND FULL MATERIAL CONFIG ONLY ON STEP-1 */
-        if (currentStep === 2) {
-            data.material_config = materialSelection;
+        // Prepare data for AJAX request
+        const data = { step: currentStep };
+        if (currentStep === 2 || currentStep === 3) data.material_id = selectedMaterialId;
+        if ((currentStep === 2 || currentStep === 3) && selectedMaterialTypeId) {
+            data.material_type_id = selectedMaterialTypeId;
         }
-
         if (currentStep === 4) data.layout_id = selectedLayoutId;
         if (currentStep === 5) data.dimensions = dimensions;
         if (currentStep === 6) data.edge_finishing = edgeFinishing;
         if (currentStep === 7) data.back_wall = backWall;
         if (currentStep === 8) data.sink_selection = sinkSelection;
         if (currentStep === 9) data.cutout_selection = cutoutSelection;
-
+        console.log('Data sent for step', currentStep, data);
         fetch("{{ route('calculator.steps') }}", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('step' + currentStep).innerHTML = html;
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Insert HTML into the correct step div
+            const stepDivId = 'step' + currentStep;
+            document.getElementById(stepDivId).innerHTML = html;
 
-                for (let i = 1; i <= 9; i++) {
-                    const div = document.getElementById('step' + i);
-                    const stepper = document.querySelector('.stepper' + i);
+            // Show current step, hide others
+            for (let i = 1; i <= 9; i++) {
+                const div = document.getElementById('step' + i);
+                const stepperDiv = document.querySelector('.stepper' + i);
+                if (div) {
                     if (i === currentStep) {
                         div.classList.remove('hidden');
                         div.classList.add('show', 'active');
-                        stepper.classList.add('active');
                     } else {
                         div.classList.add('hidden');
                         div.classList.remove('show', 'active');
-                        stepper.classList.remove('active');
                     }
                 }
+                if (stepperDiv) {
+                    if (i < currentStep) {
+                        stepperDiv.classList.add('completed');
+                    } else if (i === currentStep) {
+                        stepperDiv.classList.add('active');
+                        stepperDiv.classList.remove('completed');
+                    } else {
+                        stepperDiv.classList.remove('active', 'completed');
+                    }
+                }
+            }
 
-                nextStepBtn.setAttribute('data-step', currentStep + 1);
+            // Update button data-step
+            nextStepBtn.setAttribute('data-step', currentStep + 1);
 
-                if (currentStep === 3) initializeLayoutCards();
-                if (currentStep === 4) initializeDimensionInputs();
-                if (currentStep === 5) initializeEdgeFinishing();
-                if (currentStep === 6) initializeBackWall();
-                if (currentStep === 7) initializeSinkSelection();
-                if (currentStep === 8) initializeCutoutSelection();
-                if (currentStep === 9) initializePersonalDataForm();
-            });
+            // Initialize handlers for the loaded step
+            if (currentStep === 3) {
+                initializeLayoutCards();
+            }
+            if (currentStep === 4) {
+                initializeDimensionInputs();
+            }
+            if (currentStep === 5) {
+                initializeEdgeFinishing();
+            }
+            if (currentStep === 6) {
+                initializeBackWall();
+            }
+            if (currentStep === 7) {
+                initializeSinkSelection();
+            }
+            if (currentStep === 8) {
+                initializeCutoutSelection();
+            }
+            if (currentStep === 9) {
+                initializePersonalDataForm();
+                if (nextStepBtn) {
+                    nextStepBtn.style.display = 'none';
+                }
+            }
+
+            // Handle material type selection (for step 2)
+            const materialTypeItems = document.querySelectorAll('.material-type-item');
+            const materialImage = document.getElementById('material-image');
+            if (materialTypeItems.length) {
+                materialTypeItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        materialTypeItems.forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                        const typeId = this.getAttribute('data-id');
+                        selectedMaterialTypeId = typeId ? String(typeId) : null;
+                        selectedLayoutId = null;
+                        if (materialImage) {
+                            const newImage = this.getAttribute('data-image');
+                            if (newImage) {
+                                materialImage.setAttribute('src', newImage);
+                            }
+                        }
+                    });
+                });
+
+                if (!selectedMaterialTypeId) {
+                    const activeItem = document.querySelector('.material-type-item.active');
+                    if (activeItem) {
+                        const defaultTypeId = activeItem.getAttribute('data-id');
+                        selectedMaterialTypeId = defaultTypeId ? String(defaultTypeId) : null;
+                        if (materialImage) {
+                            const defaultImage = activeItem.getAttribute('data-image');
+                            if (defaultImage) {
+                                materialImage.setAttribute('src', defaultImage);
+                            }
+                        }
+                    }
+                    selectedLayoutId = null;
+                }
+            } else {
+                selectedMaterialTypeId = null;
+                selectedLayoutId = null;
+            }
+
+            if(currentStep == 9){
+                document.getElementById('customForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: new FormData(this),
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Quotation submitted successfully!');
+                            document.querySelector('#overview-tab').click();
+                        } else {
+                            alert('Submission failed. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    });
+                });
+            }
+            
+        })
+        .catch(error => {
+            alert('Error loading step: ' + error);
+        });
     });
 
+    
 });
 </script>
 
@@ -647,10 +742,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .material-meta strong {
     font-weight: 600;
-}
-
-.step-click {
-    cursor: pointer;
 }
 </style>
 @endsection
