@@ -23,27 +23,33 @@
                         @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <!-- Series Type -->
+                    <!-- Sink  Category -->
                     <div class="col-md-4 mb-3">
-                        <label>Series Type</label><span class="text-danger">*</span>
-                        <select class="form-select" name="series_type">
-                            <option value="">Select Series Type</option>
-                            @foreach(['Lorreine r series','LORREINE SUPERPLUG SERIES','LORREINE BLACK QUARTZ
-                            SERIES','LORREINE ROYAL SERIES'] as $series)
-                            <option value="{{ $series }}"
-                                {{ old('series_type', $sink->series_type) == $series ? 'selected' : '' }}>{{ $series }}
+                        <label for="sink_categorie_id">Sink Category</label><span style="color:red;">*</span>
+                        <select class="form-select" name="sink_categorie_id" id="sink_categorie_id">
+                            @foreach(($categories ?? []) as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('sink_categorie_id', $sink->sink_categorie_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
                             </option>
                             @endforeach
                         </select>
-                        @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
+                        @error('sink_categorie_id') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <!-- Price -->
                     <div class="col-md-4 mb-3">
-                        <label for="price">Per Sq/Price</label>
-                        <input type="number" step="0.01" class="form-control" name="price" id="price" 
+                        <label for="price">Per Sq/Price</label><span style="color:red;">*</span>
+                        <input type="number" step="0.01" class="form-control" name="price" id="price"
                             value="{{ old('price', $sink->price) }}" placeholder="Enter price">
                         @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="user_price">Per Sq/User Price</label><span style="color:red;">*</span>
+                        <input type="number" step="0.01" class="form-control" name="user_price" id="user_price"
+                            value="{{ old('user_price', $sink->user_price) }}" placeholder="Enter price">
+                        @error('user_price') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <!-- Internal / External Dimensions -->
@@ -113,7 +119,7 @@ const imageCount = document.getElementById('image-count');
 let selectedFiles = [];
 
 // Load existing images from server
-let existingImages = @json($sink->images->map(fn($img) => $img->image));
+let existingImages = @json($existingImages);
 existingImages.forEach(img => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('position-relative');

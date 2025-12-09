@@ -11,7 +11,8 @@ class CutOuts extends Model
     protected $fillable = [        
         'name',
         'price',
-        'series_type',
+        'user_price',
+        'cut_outs_category_id',
         'description',        
         'status',
     ];
@@ -19,5 +20,10 @@ class CutOuts extends Model
     public function images()
     {
         return $this->hasMany(CutOutsImage::class, 'cut_out_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(CutOutsCategory::class, 'cut_outs_category_id');
     }
 }

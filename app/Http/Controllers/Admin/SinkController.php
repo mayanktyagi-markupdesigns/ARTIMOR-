@@ -8,6 +8,8 @@ use App\Models\Sink;
 use App\Models\SinkImage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use App\Models\SinkCategory;
+use Illuminate\Support\Facades\Storage;
 
 class SinkController extends Controller
 {
@@ -20,20 +22,17 @@ class SinkController extends Controller
 
     public function create()
     {
-        return view('admin.sink.add');
+        $data['categories'] = SinkCategory::where('status', 1)->orderBy('name')->get();
+        return view('admin.sink.add', $data);       
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'nullable|numeric|min:0',
-            'series_type' => ['required', Rule::in([
-                'Lorreine r series',
-                'LORREINE SUPERPLUG SERIES',
-                'LORREINE BLACK QUARTZ SERIES',
-                'LORREINE ROYAL SERIES',
-            ])],
+            'price'         => 'required|numeric|min:0',
+            'user_price'         => 'required|numeric|min:0',
+            'sink_categorie_id' => 'required|exists:sink_categories,id',
             'internal_dimensions' => 'nullable|string|max:255',
             'external_dimensions' => 'nullable|string|max:255',
             'depth' => 'nullable|string|max:255',
@@ -47,7 +46,8 @@ class SinkController extends Controller
         $sink = Sink::create([
             'name' => $validated['name'],
             'price' => $validated['price'],
-            'series_type' => $validated['series_type'],
+            'user_price' => $validated['user_price'],
+            'sink_categorie_id' => $validated['sink_categorie_id'],
             'internal_dimensions' => $validated['internal_dimensions'] ?? null,
             'external_dimensions' => $validated['external_dimensions'] ?? null,
             'depth' => $validated['depth'] ?? null,
@@ -79,8 +79,10 @@ class SinkController extends Controller
     // Show edit form
     public function edit($id)
     {
-        $sink = Sink::with('images')->findOrFail($id);
-        return view('admin.sink.edit', compact('sink'));
+        $data['sink'] = Sink::with('images')->findOrFail($id); 
+        $data['categories'] = SinkCategory::where('status', 1)->orderBy('name')->get();      
+        $data['existingImages'] = $data['sink']->images->pluck('image')->toArray(); // ✅ Add this line
+        return view('admin.sink.edit', $data);
     }
 
     // Update sink
@@ -90,13 +92,9 @@ class SinkController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'nullable|numeric|min:0',
-            'series_type' => ['required', Rule::in([
-                'Lorreine r series',
-                'LORREINE SUPERPLUG SERIES',
-                'LORREINE BLACK QUARTZ SERIES',
-                'LORREINE ROYAL SERIES',
-            ])],
+            'price'         => 'required|numeric|min:0',
+            'user_price'         => 'required|numeric|min:0',
+            'sink_categorie_id' => 'required|exists:sink_categories,id',
             'internal_dimensions' => 'nullable|string|max:255',
             'external_dimensions' => 'nullable|string|max:255',
             'depth' => 'nullable|string|max:255',
@@ -108,7 +106,8 @@ class SinkController extends Controller
         $sink->update([
             'name' => $validated['name'],
             'price' => $validated['price'],
-            'series_type' => $validated['series_type'],
+            'user_price' => $validated['user_price'],
+            'sink_categorie_id' => $validated['sink_categorie_id'],
             'internal_dimensions' => $validated['internal_dimensions'] ?? null,
             'external_dimensions' => $validated['external_dimensions'] ?? null,
             'depth' => $validated['depth'] ?? null,

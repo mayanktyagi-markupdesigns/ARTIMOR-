@@ -22,6 +22,16 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/front/css/style.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/front/css/login.css')}}" />
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/front/css/style.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/front/css/login.css')}}" />
     <style>
     body {
         position: relative;
@@ -51,8 +61,11 @@
         @endif
         <form method="POST" action="{{ route('reset.password.submit') }}">
             @csrf
+            @php
+                $otpVerified = filter_var(session('otp_verified'), FILTER_VALIDATE_BOOLEAN);
+            @endphp
             <input type="hidden" name="email" value="{{ session('email') ?? old('email') }}">
-            <input type="hidden" name="otp_verified" value="{{ session('otp_verified') === true ? 'true' : 'false' }}">           
+            <input type="hidden" name="otp_verified" value="{{ $otpVerified ? 'true' : 'false' }}">           
 
             <div class="form-group text-start mb-3 position-relative">
                 <label for="password">Password</label><span style="color:red;">*</span>

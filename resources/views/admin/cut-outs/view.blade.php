@@ -18,16 +18,22 @@
                     <p>{{ $outs->name }}</p>
                 </div>
 
-                <!-- Name -->
+                <!-- price -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Per Sq/Price:</label>
-                    <p>{{ $outs->price }}</p>
+                    <p>€{{ $outs->price }}</p>
                 </div>
 
-                <!-- Series Type -->
+                <!-- User price -->
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Series Type:</label>
-                    <p>{{ $outs->series_type }}</p>
+                    <label class="form-label fw-bold">Per Sq/User Price:</label>
+                    <p>€{{ $outs->user_price }}</p>
+                </div>
+
+                <!-- Cut Outs Category -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Cut Outs Category:</label>
+                    <p>{{ $outs->category->name ?? '—' }}</p>
                 </div>                
 
                 <!-- Description -->

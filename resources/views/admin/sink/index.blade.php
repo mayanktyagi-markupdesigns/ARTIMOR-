@@ -19,7 +19,7 @@
                         <tr>
                             <th style="width: 50px; background-color: #f1f5f9;">SN.</th>
                             <th style="width: 250px; background-color: #f1f5f9;">Name</th>
-                            <th style="width: 200px; background-color: #f1f5f9;">Series Type</th>
+                            <th style="width: 200px; background-color: #f1f5f9;">Sink Category</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Internal Dim.</th>
                             <th style="width: 200px; background-color: #f1f5f9;">External Dim.</th>
                             <th style="width: 100px; background-color: #f1f5f9;">Status</th>
@@ -31,7 +31,7 @@
                         <tr>
                             <td>{{ $loop->iteration + ($sink->currentPage()-1)*$sink->perPage() }}</td>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->series_type }}</td>
+                            <td>{{ $item->category->name ?? '—' }}</td>
                             <td>{{ $item->internal_dimensions ?? '-' }}</td>
                             <td>{{ $item->external_dimensions ?? '-' }}</td>
                             <td>

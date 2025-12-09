@@ -16,7 +16,7 @@
                     <img src="{{ asset('uploads/users/' . $user->photo) }}" alt="Profile Photo" width="120" height="120"
                         class="rounded-circle img-thumbnail">
                     @else
-                    <img src="{{ asset('uploads/users/no_icon.jpg') }}" alt="Default Photo" width="120" height="120"
+                    <img src="{{ asset('uploads/users/user.png') }}" alt="Default Photo" width="120" height="120"
                         class="rounded-circle img-thumbnail">
                     @endif
                 </div>

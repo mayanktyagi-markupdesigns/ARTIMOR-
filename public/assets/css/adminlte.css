@@ -13099,7 +13099,7 @@ textarea.form-control-lg {
 }
 .sidebar-wrapper .sidebar-menu > .nav-item > .nav-link.active:not(:hover) {
   color: var(--lte-sidebar-menu-active-color);
-  background-color: var(--lte-sidebar-menu-active-bg);
+  background-color: var(--bs-blue);
 }
 .sidebar-wrapper .sidebar-menu > .nav-item.menu-open > .nav-link, .sidebar-wrapper .sidebar-menu > .nav-item:hover > .nav-link,
 .sidebar-wrapper .sidebar-menu > .nav-item > .nav-link:focus {
@@ -13179,6 +13179,7 @@ textarea.form-control-lg {
   display: none;
   padding: 0;
   list-style: none;
+  padding-left: 1rem;
 }
 .nav-indent .sidebar-menu .nav-treeview {
   padding-left: 0.5rem;
@@ -13508,6 +13509,7 @@ textarea.form-control-lg {
     top: 0;
     bottom: 0;
     max-height: 100vh;
+    overflow-y: auto;
   }
   .sidebar-expand-lg.layout-fixed .app-sidebar .sidebar-wrapper {
     height: calc(100vh - (calc(3.5rem + 1px)));

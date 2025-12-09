@@ -7,11 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class MaterialType extends Model
 {
     protected $table = 'material_types';
-    
-    protected $fillable = [        
-        'type',
+
+    protected $fillable = [
+        'name',
         'image',
-        'price',
+        'material_group_id',
         'status',
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(MaterialGroup::class, 'material_group_id');
+    }
+
+    public function colors() {
+    return $this->hasMany(Color::class);
+    }
+
+    public function finishes() {
+        return $this->hasMany(Finish::class);
+    }
+
+    public function thicknesses() {
+        return $this->hasMany(Thickness::class);
+    }
+
 }

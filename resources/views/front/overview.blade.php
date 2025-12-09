@@ -39,44 +39,66 @@ $area = (!empty($blad1['width']) && !empty($blad1['height']) && is_numeric($blad
 // Calculate prices
 $totalPrice = 0;
 $priceDetails = [];
+$useUserPrice = auth()->check();
 
-if ($material && $material->price) {
-    $materialPrice = $material->price * $area;
-    $totalPrice += $materialPrice;
-    $priceDetails['material'] = number_format($materialPrice, 2);
+if ($material) {
+    $base = $useUserPrice && isset($material->user_price) && $material->user_price !== null ? $material->user_price : ($material->price ?? 0);
+    if ($base) {
+        $materialPrice = $base * $area;
+        $totalPrice += $materialPrice;
+        $priceDetails['material'] = number_format($materialPrice, 3);
+    }
 }
-if ($materialType && $materialType->price) {
-    $materialTypePrice = $materialType->price * $area;
-    $totalPrice += $materialTypePrice;
-    $priceDetails['material_type'] = number_format($materialTypePrice, 2);
+if ($materialType) {
+    $base = $useUserPrice && isset($materialType->user_price) && $materialType->user_price !== null ? $materialType->user_price : ($materialType->price ?? 0);
+    if ($base) {
+        $materialTypePrice = $base * $area;
+        $totalPrice += $materialTypePrice;
+        $priceDetails['material_type'] = number_format($materialTypePrice, 3);
+    }
 }
-if ($layout && $layout->price) {
-    $layoutPrice = $layout->price * $area;
-    $totalPrice += $layoutPrice;
-    $priceDetails['layout'] = number_format($layoutPrice, 2);
+if ($layout) {
+    $base = $useUserPrice && isset($layout->user_price) && $layout->user_price !== null ? $layout->user_price : ($layout->price ?? 0);
+    if ($base) {
+        $layoutPrice = $base * $area;
+        $totalPrice += $layoutPrice;
+        $priceDetails['layout'] = number_format($layoutPrice, 3);
+    }
 }
-if ($edge && $edge->price) {
-    $edgePrice = $edge->price * $area;
-    $totalPrice += $edgePrice;
-    $priceDetails['edge'] = number_format($edgePrice, 2);
+if ($edge) {
+    $base = $useUserPrice && isset($edge->user_price) && $edge->user_price !== null ? $edge->user_price : ($edge->price ?? 0);
+    if ($base) {
+        $edgePrice = $base * $area;
+        $totalPrice += $edgePrice;
+        $priceDetails['edge'] = number_format($edgePrice, 3);
+    }
 }
-if ($wall && $wall->price) {
-    $wallPrice = $wall->price * $area;
-    $totalPrice += $wallPrice;
-    $priceDetails['wall'] = number_format($wallPrice, 2);
+if ($wall) {
+    $base = $useUserPrice && isset($wall->user_price) && $wall->user_price !== null ? $wall->user_price : ($wall->price ?? 0);
+    if ($base) {
+        $wallPrice = $base * $area;
+        $totalPrice += $wallPrice;
+        $priceDetails['wall'] = number_format($wallPrice, 3);
+    }
 }
-if ($sink && $sink->price) {
-    $sinkPrice = $sink->price * ($sinkSelection['number'] ?? 1);
-    $totalPrice += $sinkPrice;
-    $priceDetails['sink'] = number_format($sinkPrice, 2);
+if ($sink) {
+    $base = $useUserPrice && isset($sink->user_price) && $sink->user_price !== null ? $sink->user_price : ($sink->price ?? 0);
+    if ($base) {
+        $sinkPrice = $base * ($sinkSelection['number'] ?? 1);
+        $totalPrice += $sinkPrice;
+        $priceDetails['sink'] = number_format($sinkPrice, 3);
+    }
 }
-if ($cutout && $cutout->price) {
-    $cutoutPrice = $cutout->price;
-    $totalPrice += $cutoutPrice;
-    $priceDetails['cutout'] = number_format($cutoutPrice, 2);
+if ($cutout) {
+    $base = $useUserPrice && isset($cutout->user_price) && $cutout->user_price !== null ? $cutout->user_price : ($cutout->price ?? 0);
+    if ($base) {
+        $cutoutPrice = $base;
+        $totalPrice += $cutoutPrice;
+        $priceDetails['cutout'] = number_format($cutoutPrice, 3);
+    }
 }
 
-$totalPrice = number_format($totalPrice, 2);
+$totalPrice = number_format($totalPrice, 3);
 @endphp
 
 <div class="materials bg-white">
@@ -115,21 +137,21 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="inputfild-box">
                                         <label class="form-label">First Name<sup>*</sup></label>
                                         <input type="text" id="firstName" name="first_name" class="form-control"
-                                            placeholder="e.g. Johan" value="" required />
+                                            placeholder="e.g. Johan" value="{{ auth()->check() ? (explode(' ', auth()->user()->name ?? '')[0] ?? '') : '' }}" required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Last Name<sup>*</sup></label>
                                         <input type="text" id="lastName" name="last_name" class="form-control"
-                                            placeholder="e.g. Sans" value="" required />
+                                            placeholder="e.g. Sans" value="{{ auth()->check() ? (trim(implode(' ', array_slice(explode(' ', auth()->user()->name ?? ''), 1))) ) : '' }}" required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Phone Number<sup>*</sup></label>
                                         <input type="text" id="phoneNumber" name="phone_number" class="form-control"
-                                            placeholder="e.g. +32 4 9720 4041" value=""
+                                            placeholder="e.g. +32 4 9720 4041" value="{{ auth()->check() ? (auth()->user()->mobile ?? '') : '' }}"
                                             required />
                                     </div>
                                 </div>
@@ -137,7 +159,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="inputfild-box">
                                         <label class="form-label">Email ID<sup>*</sup></label>
                                         <input type="email" id="email" name="email" class="form-control"
-                                            placeholder="e.g. Johan@artimordesgns.com" value=""
+                                            placeholder="e.g. Johan@artimordesgns.com" value="{{ auth()->check() ? (auth()->user()->email ?? '') : '' }}"
                                             required />
                                     </div>
                                 </div>
@@ -197,7 +219,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($material->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/materials/' . $material->image) }}"
+                                            <img width="160" src="{{ asset('uploads/materials/' . $material->image) }}"
                                                 alt="{{ $material->name }}" />
                                         </figure>
                                         @endif
@@ -206,7 +228,7 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Material:</strong> {{ $material->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['material'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['material'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -226,7 +248,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($materialType->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/material-types/' . $materialType->image) }}"
+                                            <img width="160" src="{{ asset('uploads/materialtype/' . $materialType->image) }}"
                                                 alt="{{ $materialType->name }}" />
                                         </figure>
                                         @endif
@@ -235,7 +257,7 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Type:</strong> {{ $materialType->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['material_type'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['material_type'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -255,7 +277,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($layout->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/material-layout/' . $layout->image) }}"
+                                            <img width="160" src="{{ asset('uploads/material-layout/' . $layout->image) }}"
                                                 alt="{{ $layout->name }}" />
                                         </figure>
                                         @endif
@@ -264,7 +286,7 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Layout:</strong> {{ $layout->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['layout'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['layout'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -310,7 +332,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($edge->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/material-edge/' . $edge->image) }}"
+                                            <img width="160" src="{{ asset('uploads/material-edge/' . $edge->image) }}"
                                                 alt="{{ $edge->name }}" />
                                         </figure>
                                         @endif
@@ -325,7 +347,7 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Edges to be Finished:</strong> {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['edge'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['edge'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -345,7 +367,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($wall->image)
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/back-wall/' . $wall->image) }}"
+                                            <img width="160" src="{{ asset('uploads/back-wall/' . $wall->image) }}"
                                                 alt="{{ $wall->name }}" />
                                         </figure>
                                         @endif
@@ -360,7 +382,7 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Sides to be Finished:</strong> {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['wall'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['wall'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -380,7 +402,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($sink->images->first())
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/sinks/' . $sink->images->first()->image) }}"
+                                            <img width="160" src="{{ asset('uploads/sinks/' . $sink->images->first()->image) }}"
                                                 alt="{{ $sink->name }}" />
                                         </figure>
                                         @endif
@@ -389,13 +411,16 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Model:</strong> {{ $sink->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Category:</strong> {{ optional($sink->category)->name ?? 'N/A' }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Type:</strong> {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Number:</strong> {{ $sinkSelection['number'] ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['sink'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['sink'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -415,7 +440,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         @if($cutout->images->first())
                                         <figure class="me-4">
-                                            <img width="160" src="{{ asset('Uploads/cut-outs/' . $cutout->images->first()->image) }}"
+                                            <img width="160" src="{{ asset('uploads/cut-outs/' . $cutout->images->first()->image) }}"
                                                 alt="{{ $cutout->name }}" />
                                         </figure>
                                         @endif
@@ -424,10 +449,13 @@ $totalPrice = number_format($totalPrice, 2);
                                                 <strong>Kind:</strong> {{ $cutout->name ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Category:</strong> {{ optional($cutout->category)->name ?? 'N/A' }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Type:</strong> {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> ₹{{ $priceDetails['cutout'] ?? 'N/A' }}
+                                                <strong>Price:</strong> €{{ $priceDetails['cutout'] ?? 'N/A' }}
                                             </div>
                                         </div>
                                     </div>
@@ -446,7 +474,7 @@ $totalPrice = number_format($totalPrice, 2);
                                     <div class="result-gride d-flex">
                                         <div class="w-100">
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Total:</strong> ₹{{ $totalPrice }}
+                                                <strong>Total:</strong> €{{ $totalPrice }}
                                             </div>
                                         </div>
                                     </div>
@@ -471,30 +499,30 @@ $totalPrice = number_format($totalPrice, 2);
                     <ul>
                         @if($material)
                         <li><strong>Material:</strong> {{ $material->name }} (Brand: {{ $material->brand ?? 'N/A' }},
-                            Color: {{ $material->color ?? 'N/A' }}, Price: ₹{{ $priceDetails['material'] ?? 'N/A' }})</li>
+                            Color: {{ $material->color ?? 'N/A' }}, Price: €{{ $priceDetails['material'] ?? 'N/A' }})</li>
                         @endif
                         @if($materialType)
-                        <li><strong>Material Type:</strong> {{ $materialType->name }} (Price: ₹{{ $priceDetails['material_type'] ?? 'N/A' }})</li>
+                        <li><strong>Material Type:</strong> {{ $materialType->name }} (Price: €{{ $priceDetails['material_type'] ?? 'N/A' }})</li>
                         @endif
                         @if($layout)
-                        <li><strong>Layout:</strong> {{ $layout->name }} (Price: ₹{{ $priceDetails['layout'] ?? 'N/A' }})</li>
+                        <li><strong>Layout:</strong> {{ $layout->name }} (Price: €{{ $priceDetails['layout'] ?? 'N/A' }})</li>
                         @endif
                         @if($blad1['width'] || $blad1['height'])
                         <li><strong>Dimensions:</strong> Width: {{ $blad1['width'] ?: 'N/A' }} cm, Height: {{ $blad1['height'] ?: 'N/A' }} cm, Area: {{ number_format($area, 2) }} m²</li>
                         @endif
                         @if($edge)
-                        <li><strong>Edge Finishing:</strong> {{ $edge->name }} (Thickness: {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm, Edges: {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}, Price: ₹{{ $priceDetails['edge'] ?? 'N/A' }})</li>
+                        <li><strong>Edge Finishing:</strong> {{ $edge->name }} (Thickness: {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm, Edges: {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['edge'] ?? 'N/A' }})</li>
                         @endif
                         @if($wall)
-                        <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: ₹{{ $priceDetails['wall'] ?? 'N/A' }})</li>
+                        <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['wall'] ?? 'N/A' }})</li>
                         @endif
                         @if($sink)
-                        <li><strong>Sink:</strong> {{ $sink->name }} (Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: ₹{{ $priceDetails['sink'] ?? 'N/A' }})</li>
+                        <li><strong>Sink:</strong> {{ $sink->name }} (Category: {{ optional($sink->category)->name ?? 'N/A' }}, Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: €{{ $priceDetails['sink'] ?? 'N/A' }})</li>
                         @endif
                         @if($cutout)
-                        <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: ₹{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
+                        <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Category: {{ optional($cutout->category)->name ?? 'N/A' }}, Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
                         @endif
-                        <li><strong>Total Price:</strong> ₹{{ $totalPrice }}</li>
+                        <li><strong>Total Price:</strong> €{{ $totalPrice }}</li>
                     </ul>
                 </div>
             </div>

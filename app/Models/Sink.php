@@ -11,7 +11,8 @@ class Sink extends Model
     protected $fillable = [        
         'name',
         'price',
-        'series_type',
+        'user_price',
+        'sink_categorie_id',
         'internal_dimensions',
         'external_dimensions',
         'depth',
@@ -22,5 +23,10 @@ class Sink extends Model
     public function images()
     {
         return $this->hasMany(SinkImage::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(SinkCategory::class, 'sink_categorie_id');
     }
 }

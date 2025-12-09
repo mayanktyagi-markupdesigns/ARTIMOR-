@@ -11,12 +11,15 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
         <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
             @foreach($grouped->keys() as $key => $series)
                 <li class="nav-item" role="presentation">
+                    @php
+                    $slug = Str::slug($series) ?: ('cutout-series-' . $key);
+                    @endphp
                     <button class="nav-link @if($key === 0) active @endif"
-                            id="tab-{{ $key }}"
+                            id="{{ $slug }}-tab"
                             data-bs-toggle="tab"
-                            data-bs-target="#tab-pane-{{ $key }}"
+                            data-bs-target="#{{ $slug }}"
                             type="button" role="tab">
-                        {{ strtoupper($series) }}
+                        {{ $series ?: 'Other' }}
                     </button>
                 </li>
             @endforeach
@@ -26,24 +29,30 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
     <!-- Tab Content -->
     <div class="tab-content" id="materialsTabContent">
         @foreach($grouped as $series => $items)
+            @php
+            $slug = Str::slug($series) ?: ('cutout-series-' . $loop->index);
+            @endphp
             <div class="tab-pane fade @if($loop->first) show active @endif"
-                 id="tab-pane-{{ $loop->index }}"
+                 id="{{ $slug }}"
                  role="tabpanel"
-                 aria-labelledby="tab-{{ $loop->index }}">
+                 aria-labelledby="{{ $slug }}-tab">
                 <div class="row">
                     @foreach($items as $item)
                         <div class="col-md-4 mb-4">
                             <div class="p-0 card border-0 rounded-0 position-relative product-col cutout-card {{ $selectedCutoutId == $item->id ? 'selected' : '' }}"
                                  data-id="{{ $item->id }}">
                                 @if($item->images->first())
-                                    <img src="{{ asset('Uploads/cut-outs/' . $item->images->first()->image) }}" class="card-img-top" alt="{{ $item->name }}" />
+                                    <img src="{{ asset('uploads/cut-outs/' . $item->images->first()->image) }}" class="card-img-top" alt="{{ $item->name }}" />
                                 @else
-                                    <img src="{{ asset('Uploads/cut-outs/default.jpg') }}" class="card-img-top" alt="{{ $item->name }}" />
+                                    <img src="{{ asset('uploads/cut-outs/default.jpg') }}" class="card-img-top" alt="{{ $item->name }}" />
                                 @endif
                                 <div class="p-0 card-body text-center">
                                     <div class="titleoverlay">
                                         <div>
                                             <span>{{ $item->id }}.</span> {{ $item->name }}
+                                        </div>
+                                        <div class="mt-1">
+                                            <small class="text-uppercase">{{ $item->category?->name ?? '—' }}</small>
                                         </div>
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#cutoutModal-{{ $item->id }}" class="btn-link">Quick View</a>
                                     </div>
@@ -60,15 +69,18 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                             <!-- Left: Main image -->
                                             <div class="col-md-7 text-center">
                                                 @if($item->images->first())
-                                                    <img src="{{ asset('Uploads/cut-outs/' . $item->images->first()->image) }}" class="product-main-img" alt="{{ $item->name }}" />
+                                                    <img src="{{ asset('uploads/cut-outs/' . $item->images->first()->image) }}" class="product-main-img" alt="{{ $item->name }}" />
                                                 @else
-                                                    <img src="{{ asset('Uploads/cut-outs/default.jpg') }}" class="product-main-img" alt="{{ $item->name }}" />
+                                                    <img src="{{ asset('uploads/cut-outs/default.jpg') }}" class="product-main-img" alt="{{ $item->name }}" />
                                                 @endif
                                             </div>
 
                                             <!-- Right: Product Info -->
                                             <div class="col-md-5">
                                                 <h2 class="fw-bold fs-3">{{ $item->name }}</h2>
+                                                <p class="small mb-2">
+                                                    <strong>Category:</strong> {{ $item->category?->name ?? '—' }}
+                                                </p>
                                                 <p class="small">
                                                     <strong>Series:</strong> {{ $item->series_type }}<br />
                                                     <strong>Price:</strong> ₹{{ $item->price }}<br />

@@ -20,27 +20,35 @@
                         <input type="text" class="form-control" name="name" value="{{ old('name', $outs->name) }}">
                         @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
-                    <!-- Series Type -->
+
+                    <!-- Cut Outs Category -->
                     <div class="col-md-4 mb-3">
-                        <label>Series Type</label><span class="text-danger">*</span>
-                        <select class="form-select" name="series_type">
-                            <option value="">Select Series Type</option>
-                            @foreach(['Lorreine r series','LORREINE SUPERPLUG SERIES','LORREINE BLACK QUARTZ
-                            SERIES','LORREINE ROYAL SERIES'] as $series)
-                            <option value="{{ $series }}"
-                                {{ old('series_type', $outs->series_type) == $series ? 'selected' : '' }}>{{ $series }}
+                        <label for="cut_outs_category_id">Material Type</label><span style="color:red;">*</span>
+                        <select class="form-select" name="cut_outs_category_id" id="cut_outs_category_id">
+                            @foreach(($categories ?? []) as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('cut_outs_category_id', $outs->cut_outs_category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
                             </option>
                             @endforeach
                         </select>
-                        @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>      
+                        @error('cut_outs_category_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
                     <!-- Price -->
                     <div class="col-md-4 mb-3">
-                        <label for="price">Per Sq/Price</label>
-                        <input type="number" step="0.01" class="form-control" name="price" id="price" 
+                        <label for="price">Per Sq/Price</label><span style="color:red;">*</span>
+                        <input type="number" step="0.01" class="form-control" name="price" id="price"
                             value="{{ old('price', $outs->price) }}" placeholder="Enter price">
                         @error('price') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>              
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="user_price">Per Sq/User Price</label><span style="color:red;">*</span>
+                        <input type="number" step="0.01" class="form-control" name="user_price" id="user_price"
+                            value="{{ old('user_price', $outs->user_price) }}" placeholder="Enter price">
+                        @error('user_price') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
                     <!-- Status -->
                     <div class="col-md-4 mb-3">
                         <label>Status</label>
@@ -49,15 +57,15 @@
                             <option value="0" {{ old('status', $outs->status) == 0 ? 'selected' : '' }}>Inactive
                             </option>
                         </select>
-                    </div>                  
+                    </div>
                     <!-- Upload New Images -->
                     <div class="col-md-4 mb-3">
                         <label>Upload New Images</label>
                         <input type="file" class="form-control" name="images[]" id="images" multiple
                             accept=".jpg,.jpeg,.png,.svg">
                     </div>
-                      <!-- Description -->
-                    <div class="col-md-6 mb-3"> 
+                    <!-- Description -->
+                    <div class="col-md-6 mb-3">
                         <label for="description">Description</label>
                         <textarea class="form-control" name="description" id="description" rows="3"
                             placeholder="Enter description">{{ old('description', $outs->description) }}</textarea>
@@ -89,7 +97,7 @@ const imageCount = document.getElementById('image-count');
 let selectedFiles = [];
 
 // Load existing images from server
-let existingImages = @json($outs->images->map(fn($img) => $img->image));
+let existingImages = @json($existingImages);
 existingImages.forEach(img => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('position-relative');

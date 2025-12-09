@@ -23,33 +23,35 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- series_type -->
+                        <!-- Cut Outs Category -->
                         <div class="col-md-4 mb-3">
-                            <label for="series_type">Series Type</label><span style="color:red;">*</span>
-                            <select class="form-select" name="series_type" id="series_type">
-                                <option value="">Select Series Type</option>
-                                <option value="Lorreine r series"
-                                    {{ old('series_type') == 'Lorreine r series' ? 'selected' : '' }}>Lorreine r series
+                            <label for="cut_outs_category_id">Cut Outs Category</label><span style="color:red;">*</span>
+                            <select class="form-select" name="cut_outs_category_id" id="cut_outs_category_id">
+                                <option value="">Select Cut Outs Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('cut_outs_category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
                                 </option>
-                                <option value="LORREINE SUPERPLUG SERIES"
-                                    {{ old('series_type') == 'LORREINE SUPERPLUG SERIES' ? 'selected' : '' }}>LORREINE
-                                    SUPERPLUG SERIES</option>
-                                <option value="LORREINE BLACK QUARTZ SERIES"
-                                    {{ old('series_type') == 'LORREINE BLACK QUARTZ SERIES' ? 'selected' : '' }}>
-                                    LORREINE BLACK QUARTZ SERIES</option>
-                                <option value="LORREINE ROYAL SERIES"
-                                    {{ old('series_type') == 'LORREINE ROYAL SERIES' ? 'selected' : '' }}>LORREINE ROYAL
-                                    SERIES</option>
+                                @endforeach
                             </select>
-                            @error('series_type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('cut_outs_category_id') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>        
                         <!-- Price -->
                         <div class="col-md-4 mb-3">
-                            <label for="price">Per Sq/Price</label>
+                            <label for="price">Per Sq/Price</label><span style="color:red;">*</span>
                             <input type="number" step="0.01" class="form-control" name="price" id="price" 
                                 value="{{ old('price') }}" placeholder="Enter price">
                             @error('price') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>               
+                        </div>    
+                        <!--User Price -->
+                        <div class="col-md-4 mb-3">
+                            <label for="user_price">Per Sq/User Price</label><span style="color:red;">*</span>
+                            <input type="number" step="0.01" class="form-control" name="user_price" id="user_price"
+                                value="{{ old('user_price') }}" placeholder="Enter price">
+                            @error('user_price') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+           
                         <!-- Status -->
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label>
