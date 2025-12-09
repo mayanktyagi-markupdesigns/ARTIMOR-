@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>Price LM (Guest) *</label>
+                        <label>Price (Guest) *</label>
                         <input type="number" name="price_lm_guest" value="{{ old('price_lm_guest') }}" class="form-control" required step="0.01">
                     </div>
 
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>Price LM (Business) *</label>
+                        <label>Price (Business) *</label>
                         <input type="number" name="price_lm_business" value="{{ old('price_lm_business') }}" class="form-control" required step="0.01">
                     </div>
 

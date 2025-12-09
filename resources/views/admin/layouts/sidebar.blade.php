@@ -167,7 +167,7 @@
                             </a>
                         </li>            
                     </ul>
-                     <ul class="nav nav-treeview">
+                     <!-- <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.shapes.sides.list') }}"
                                 class="nav-link {{ request()->routeIs('admin.backsplash.shapes.sides.list') ? 'active' : '' }}">
@@ -175,7 +175,7 @@
                                 <p>Shape Sides</p>
                             </a>
                         </li>            
-                    </ul>
+                    </ul> -->
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('admin.backsplash.price.list') }}"
