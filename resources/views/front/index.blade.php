@@ -544,114 +544,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Next Step button click
     nextStepBtn.addEventListener('click', function() {
         const currentStep = parseInt(nextStepBtn.getAttribute('data-step'));
-        console.log
-        if (currentStep > 1) {
-            $('.materials-tab-div').addClass('hidden');
-        } else {
-            $('.materials-tab-div').removeClass('hidden');
-        }
-        // Validate selections based on step
+
+        /* ✅ STEP-1 VALIDATION BASED ON CONFIRMED MATERIAL */
         if (currentStep === 2) {
-            if (!window.selectedMaterialTypeId) {
-                alert("Please select a material before proceeding to the next step.");
+            if (!materialSelection.material_type_id) {
+                alert("Please confirm material configuration first.");
                 return;
             }
         }
 
-        if (currentStep === 3) {
-            if (!window.selectedMaterialId) {
-                alert("Please select a material before proceeding to the next step.");
-                return;
-            }
-            if (!window.selectedMaterialTypeId) {
-                alert("Please select a material type before proceeding to the next step.");
-                return;
-            }
-        }
-        if (currentStep === 4 && !selectedLayoutId) {
-            alert("Please select a layout before proceeding to the next step.");
-            return;
-        }
-        if (currentStep === 5) {
-            if (!dimensions.blad1.width || !dimensions.blad1.height) {
-                alert("Please enter both width and height for Blad 01.");
-                return;
-            }
-            if (isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) || dimensions.blad1
-                .width <= 0 || dimensions.blad1.height <= 0) {
-                alert("Please enter valid numeric values for width and height.");
-                return;
-            }
-        }
-        if (currentStep === 6) {
-            if (!edgeFinishing.edge_id) {
-                alert("Please select an edge type.");
-                return;
-            }
-            if (!edgeFinishing.thickness) {
-                alert("Please select an edge thickness.");
-                return;
-            }
-            if (edgeFinishing.selected_edges.length === 0) {
-                alert("Please select at least one edge to finish.");
-                return;
-            }
-        }
-        if (currentStep === 7) {
-            if (!backWall.wall_id) {
-                alert("Please select a back wall type.");
-                return;
-            }
-            if (!backWall.thickness) {
-                alert("Please select a back wall thickness.");
-                return;
-            }
-            if (backWall.selected_edges.length === 0) {
-                alert("Please select at least one side for back wall finishing.");
-                return;
-            }
-        }
-        if (currentStep === 8) {
-            if (!sinkSelection.sink_id) {
-                alert("Please select a sink by confirming in the modal.");
-                return;
-            }
-            if (!sinkSelection.cutout) {
-                alert("Please select a cutout type for the sink.");
-                return;
-            }
-            if (!sinkSelection.number || isNaN(sinkSelection.number) || sinkSelection.number < 0 ||
-                sinkSelection.number > 10) {
-                alert("Please enter a valid number of sinks (0-10).");
-                return;
-            }
-        }
-        if (currentStep === 9) {
-            if (!cutoutSelection.cutout_id) {
-                alert("Please select a cut-out by confirming in the modal.");
-                return;
-            }
-            if (!cutoutSelection.recess_type) {
-                alert("Please select a recess type for the cut-out.");
-                return;
-            }
-        }
-
-        // Prepare data for AJAX request
         const data = {
             step: currentStep
         };
-        if (currentStep === 2 || currentStep === 3) data.material_type_id = window
-            .selectedMaterialTypeId;
-        if ((currentStep === 2 || currentStep === 3) && window.selectedMaterialTypeId) data
-            .material_type_id = window.selectedMaterialTypeId;
+
+        /* ✅ SEND FULL MATERIAL CONFIG ONLY ON STEP-1 */
+        if (currentStep === 2) {
+            data.material_config = materialSelection;
+        }
+
         if (currentStep === 4) data.layout_id = selectedLayoutId;
         if (currentStep === 5) data.dimensions = dimensions;
         if (currentStep === 6) data.edge_finishing = edgeFinishing;
         if (currentStep === 7) data.back_wall = backWall;
         if (currentStep === 8) data.sink_selection = sinkSelection;
         if (currentStep === 9) data.cutout_selection = cutoutSelection;
-        console.log('Data sent for step', currentStep, data);
+
         fetch("{{ route('calculator.steps') }}", {
                 method: "POST",
                 headers: {
@@ -662,137 +579,33 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.text())
             .then(html => {
-                // Insert HTML into the correct step div
-                const stepDivId = 'step' + currentStep;
-                document.getElementById(stepDivId).innerHTML = html;
+                document.getElementById('step' + currentStep).innerHTML = html;
 
-                // Show current step, hide others
                 for (let i = 1; i <= 9; i++) {
                     const div = document.getElementById('step' + i);
-                    const stepperDiv = document.querySelector('.stepper' + i);
-                    if (div) {
-                        if (i === currentStep) {
-                            div.classList.remove('hidden');
-                            div.classList.add('show', 'active');
-                        } else {
-                            div.classList.add('hidden');
-                            div.classList.remove('show', 'active');
-                        }
-                    }
-                    if (stepperDiv) {
-                        if (i < currentStep) {
-                            stepperDiv.classList.add('completed');
-                        } else if (i === currentStep) {
-                            stepperDiv.classList.add('active');
-                            stepperDiv.classList.remove('completed');
-                        } else {
-                            stepperDiv.classList.remove('active', 'completed');
-                        }
+                    const stepper = document.querySelector('.stepper' + i);
+                    if (i === currentStep) {
+                        div.classList.remove('hidden');
+                        div.classList.add('show', 'active');
+                        stepper.classList.add('active');
+                    } else {
+                        div.classList.add('hidden');
+                        div.classList.remove('show', 'active');
+                        stepper.classList.remove('active');
                     }
                 }
 
-                // Update button data-step
                 nextStepBtn.setAttribute('data-step', currentStep + 1);
 
-                // Initialize handlers for the loaded step
-                if (currentStep === 3) {
-                    initializeLayoutCards();
-                }
-                if (currentStep === 4) {
-                    initializeDimensionInputs();
-                }
-                if (currentStep === 5) {
-                    initializeEdgeFinishing();
-                }
-                if (currentStep === 6) {
-                    initializeBackWall();
-                }
-                if (currentStep === 7) {
-                    initializeSinkSelection();
-                }
-                if (currentStep === 8) {
-                    initializeCutoutSelection();
-                }
-                if (currentStep === 9) {
-                    initializePersonalDataForm();
-                    if (nextStepBtn) {
-                        nextStepBtn.style.display = 'none';
-                    }
-                }
-
-                // Handle material type selection (for step 2)
-                const materialTypeItems = document.querySelectorAll('.material-type-item');
-                const materialImage = document.getElementById('material-image');
-                if (materialTypeItems.length) {
-                    materialTypeItems.forEach(item => {
-                        item.addEventListener('click', function() {
-                            materialTypeItems.forEach(i => i.classList.remove(
-                                'active'));
-                            this.classList.add('active');
-                            const typeId = this.getAttribute('data-id');
-                            selectedMaterialTypeId = typeId ? String(typeId) : null;
-                            selectedLayoutId = null;
-                            if (materialImage) {
-                                const newImage = this.getAttribute('data-image');
-                                if (newImage) {
-                                    materialImage.setAttribute('src', newImage);
-                                }
-                            }
-                        });
-                    });
-
-                    if (!window.selectedMaterialTypeId) {
-                        const activeItem = document.querySelector('.material-type-item.active');
-                        if (activeItem) {
-                            const defaultTypeId = activeItem.getAttribute('data-id');
-                            selectedMaterialTypeId = defaultTypeId ? String(defaultTypeId) : null;
-                            if (materialImage) {
-                                const defaultImage = activeItem.getAttribute('data-image');
-                                if (defaultImage) {
-                                    materialImage.setAttribute('src', defaultImage);
-                                }
-                            }
-                        }
-                        selectedLayoutId = null;
-                    }
-                } else {
-                    selectedMaterialTypeId = null;
-                    selectedLayoutId = null;
-                }
-
-                if (currentStep == 9) {
-                    document.getElementById('customForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        fetch(this.action, {
-                                method: 'POST',
-                                body: new FormData(this),
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').content
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Quotation submitted successfully!');
-                                    document.querySelector('#overview-tab').click();
-                                } else {
-                                    alert('Submission failed. Please try again.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred. Please try again.');
-                            });
-                    });
-                }
-
-            })
-            .catch(error => {
-                alert('Error loading step: ' + error);
+                if (currentStep === 3) initializeLayoutCards();
+                if (currentStep === 4) initializeDimensionInputs();
+                if (currentStep === 5) initializeEdgeFinishing();
+                if (currentStep === 6) initializeBackWall();
+                if (currentStep === 7) initializeSinkSelection();
+                if (currentStep === 8) initializeCutoutSelection();
+                if (currentStep === 9) initializePersonalDataForm();
             });
     });
-
 
 });
 </script>

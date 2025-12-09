@@ -21,8 +21,8 @@
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Guest)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price LM (Business)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Business)</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Min Height (mm)</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Max Height</th>
+                            <!-- <th scope="col" style="width: 200px; background-color: #f1f5f9;">Min Height (mm)</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Max Height</th> -->
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>                           
                         </tr>
@@ -36,8 +36,8 @@
                             <td>{{ $price->finished_side_price_lm_guest }}</td>
                             <td>{{ $price->price_lm_business }}</td>
                             <td>{{ $price->finished_side_price_lm_business }}</td>
-                            <td>{{ $price->min_height_mm ?? '—' }}</td>
-                            <td>{{ $price->max_height_mm ?? '—' }}</td>
+                            <!-- <td>{{ $price->min_height_mm ?? '—' }}</td>
+                            <td>{{ $price->max_height_mm ?? '—' }}</td> -->
                             <td>
                                 @if($price->status)
                                 <span class="badge bg-success">Active</span>
