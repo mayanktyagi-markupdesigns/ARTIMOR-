@@ -17,9 +17,9 @@
                         <tr>
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Material Type</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price LM (Guest)</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price (Guest)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Guest)</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price LM (Business)</th>
+                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price (Business)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Business)</th>
                             <!-- <th scope="col" style="width: 200px; background-color: #f1f5f9;">Min Height (mm)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Max Height</th> -->
