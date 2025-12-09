@@ -225,8 +225,8 @@ document.addEventListener('click', function(e) {
     if (!finish) return alert('Please select finish');
     if (!thickness) return alert('Please select thickness');
 
-    /* ✅ CORRECT GLOBAL SAVE */
-    window.selectedMaterialTypeId = materialTypeId; // ✅ ONLY TYPE
+    /* CORRECT GLOBAL SAVE */
+    window.selectedMaterialTypeId = materialTypeId; // ONLY TYPE
     materialSelection = {
         material_type_id: materialTypeId,
         color,
@@ -236,7 +236,7 @@ document.addEventListener('click', function(e) {
 
     console.log('Material Saved:', materialSelection);
 
-    /* ✅ UI UPDATE */
+    /* UI UPDATE */
     document.querySelectorAll('.material-type-card')
         .forEach(c => c.classList.remove('selected'));
 
@@ -245,7 +245,7 @@ document.addEventListener('click', function(e) {
     );
     if (selectedCard) selectedCard.classList.add('selected');
 
-    /* ✅ SAFE MODAL CLOSE */
+    /* SAFE MODAL CLOSE */
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
     modalInstance.hide();
 });

@@ -34,10 +34,10 @@
                         <input type="number" name="sort_order" value="1" class="form-control" required>
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Dimension Fields (comma separated)</label>
                         <input type="text" name="dimension_fields[]" class="form-control" placeholder="length,height">
-                    </div>
+                    </div> -->
                     <div class="col-md-4 mb-3">
                         <label for="status">Status</label>
                         <select class="form-select" name="status" id="status">

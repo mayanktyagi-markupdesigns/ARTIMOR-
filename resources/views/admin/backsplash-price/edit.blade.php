@@ -47,7 +47,7 @@
                         <input type="number" name="finished_side_price_lm_business" value="{{ $price->finished_side_price_lm_business }}" class="form-control" step="0.01">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Min Height (mm)</label>
                         <input type="number" name="min_height_mm" value="{{ $price->min_height_mm }}" class="form-control">
                     </div>
@@ -55,7 +55,7 @@
                     <div class="col-md-4 mb-3">
                         <label>Max Height (mm)</label>
                         <input type="number" name="max_height_mm" value="{{ $price->max_height_mm }}" class="form-control">
-                    </div>
+                    </div> -->
 
                     <div class="col-md-4 mb-3">
                         <label>Status *</label>

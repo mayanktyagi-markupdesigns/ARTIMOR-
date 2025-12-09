@@ -37,7 +37,7 @@ class MaterialLayoutShapeController extends Controller
             'layout_group_id' => 'required|exists:material_layout_groups,id',
             'status'        => 'required|in:0,1',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
-            'dimension_sides' => 'nullable|array',
+           // 'dimension_sides' => 'nullable|array',
             'dimension_sides.*.name' => 'required_with:dimension_sides|string',
             'dimension_sides.*.min' => 'required_with:dimension_sides|numeric',
             'dimension_sides.*.max' => 'required_with:dimension_sides|numeric',
@@ -69,7 +69,7 @@ class MaterialLayoutShapeController extends Controller
         $shape->layout_group_id        = $request->layout_group_id;    
         $shape->image                  = $imageName;
         $shape->status                 = $request->status;
-        $shape->dimension_sides        = $request->dimension_sides;
+       // $shape->dimension_sides        = $request->dimension_sides;
 
         $shape->save();    
 

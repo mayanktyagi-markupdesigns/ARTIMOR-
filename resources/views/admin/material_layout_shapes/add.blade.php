@@ -48,7 +48,7 @@
                             @error('image') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-12 mb-3">
+                        <!-- <div class="col-12 mb-3">
                             <label>Dimension Sides</label>
                             <div id="dimension-wrapper">
 
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                             <button type="button" id="add-side" class="btn btn-primary btn-sm mt-2">+ Add Side</button>
-                        </div>
+                        </div> -->
                         <!-- Status -->
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label>
