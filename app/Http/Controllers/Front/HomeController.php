@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\MaterialGroup;
 use App\Models\MaterialType;
 use App\Models\MaterialLayout;
+use App\Models\MaterialLayoutShape; // or whatever the correct model name is
 use App\Models\Dimension;
 use App\Models\MaterialEdge;
 use App\Models\BackWall;
@@ -422,19 +423,23 @@ public function getCalculatorSteps(Request $request)
             return view('front.cut-outs', compact('grouped'))->render();
 
         case 8:
-            // Overview: read from material_config (preferred) or fall back to legacy keys
-            $materialConfig = session('material_config', null);
-            $materialType = !empty($materialConfig['material_type_id'])
-                ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
-                : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
+        // Overview: read from material_config (preferred) or fall back to legacy keys
+        $materialConfig = session('material_config', null);
+        $materialType = !empty($materialConfig['material_type_id'])
+            ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
+            : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
 
-            $layout = session('selected_layout_id') ? \App\Models\MaterialLayout::find(session('selected_layout_id')) : null;
-            $edge = session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
-            $wall = session('back_wall.wall_id') ? \App\Models\BackWall::find(session('back_wall.wall_id')) : null;
-            $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
-            $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
+        $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
 
-            return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+        // Edge removed
+        $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
+
+        $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
+        $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
+        $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
+
+        return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+
 
         default:
             return response()->json(['error' => 'Invalid step'], 400);
@@ -482,7 +487,7 @@ public function submitQuote(Request $request)
             // Fetch records for price calculation
             $material = Material::find($materialId);
             $materialType = MaterialType::find($materialTypeId);
-            $layout = MaterialLayout::find($layoutId);
+            $layout = MaterialLayoutShape::find($layoutId);
             $edge = MaterialEdge::find($edgeFinishing['edge_id']);
             $wall = BackWall::find($backWall['wall_id']);
             $sink = Sink::find($sinkSelection['sink_id']);
