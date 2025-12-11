@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Step 1 to Step 2: Material configuration must be complete
             if (targetStep > 1 && targetStep <= 2) {
                 if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection.finish || !materialSelection.thickness) {
-                    alert('कृपया पहले Material configuration complete करें।\n\nPlease complete material configuration first.');
+                    alert('Please complete material configuration first.');
                     return;
                 }
             }
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!dimensions.blad1.width || !dimensions.blad1.height || 
                     isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
                     parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
-                    alert('कृपया Width और Height दर्ज करें।\n\nPlease enter Width and Height.');
+                    alert('Please enter Width and Height.');
                     return;
                 }
             }
@@ -836,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!dimensions.blad1.width || !dimensions.blad1.height || 
                 isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
                 parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
-                alert("कृपया Width और Height दर्ज करें (सकारात्मक संख्या)।\n\nPlease enter Width and Height (positive numbers).");
+                alert("Please enter Width and Height");
                 return;
             }
         }
