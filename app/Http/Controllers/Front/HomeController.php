@@ -159,100 +159,47 @@ protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): ar
 
 protected function getEdgeStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    if (!$materialId || !$materialTypeId || !$layoutId) {
+    // If materialTypeId and layoutId are provided, return edge profiles
+    // For now, return all active edge profiles
+    if (!$materialTypeId || !$layoutId) {
         return collect();
     }
 
-    $products = MasterProduct::with([
-            'materialEdge' => function ($query) {
-                $query->where('status', 1);
-            },
-        ])
-        ->where('status', 1)
-        ->where('material_id', $materialId)
-        ->where('material_type_id', $materialTypeId)
-        ->where('material_layout_id', $layoutId)
-        ->whereHas('materialEdge', function ($query) {
-            $query->where('status', 1);
-        })
-        ->get();
-
-    return $products->pluck('materialEdge')->filter()->unique('id')->values();
+    // Return all active edge profiles
+    return \App\Models\EdgeProfile::where('status', 1)->get();
 }
 
 protected function getBackWallStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    if (!$materialId || !$materialTypeId || !$layoutId) {
+    // If materialTypeId and layoutId are provided, return back walls
+    if (!$materialTypeId || !$layoutId) {
         return collect();
     }
 
-    $products = MasterProduct::with([
-            'backWall' => function ($query) {
-                $query->where('status', 1);
-            },
-        ])
-        ->where('status', 1)
-        ->where('material_id', $materialId)
-        ->where('material_type_id', $materialTypeId)
-        ->where('material_layout_id', $layoutId)
-        ->whereHas('backWall', function ($query) {
-            $query->where('status', 1);
-        })
-        ->get();
-
-    return $products->pluck('backWall')->filter()->unique('id')->values();
+    // Return all active edge profiles (back wall uses same structure)
+    return \App\Models\EdgeProfile::where('status', 1)->get();
 }
 
 protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    if (!$materialId || !$materialTypeId || !$layoutId) {
+    // If materialTypeId and layoutId are provided, return sinks
+    if (!$materialTypeId || !$layoutId) {
         return collect();
     }
 
-    $products = MasterProduct::with([
-            'sink' => function ($query) {
-                $query->where('status', 1)->with(['category', 'images']);
-            },
-        ])
-        ->where('status', 1)
-        ->where('material_id', $materialId)
-        ->where('material_type_id', $materialTypeId)
-        ->where('material_layout_id', $layoutId)
-        ->whereHas('sink', function ($query) {
-            $query->where('status', 1);
-        })
-        ->get();
-
-    $sinks = $products->pluck('sink')->filter()->unique('id')->values();
-    // Re-fetch unique sinks with relations to avoid losing eager loads after pluck/unique
-    if ($sinks->isEmpty()) {
-        return $sinks;
-    }
-    $uniqueSinkIds = $sinks->pluck('id')->filter()->unique()->values();
-    return Sink::with(['category', 'images'])->whereIn('id', $uniqueSinkIds)->get();
+    // Return all active sinks
+    return Sink::with(['category', 'images'])->where('status', 1)->get();
 }
 
 protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    if (!$materialId || !$materialTypeId || !$layoutId) {
+    // If materialTypeId and layoutId are provided, return cutouts
+    if (!$materialTypeId || !$layoutId) {
         return collect();
     }
 
-    $products = MasterProduct::with([
-            'cutOut' => function ($query) {
-                $query->where('status', 1)->with(['category', 'images']);
-            },
-        ])
-        ->where('status', 1)
-        ->where('material_id', $materialId)
-        ->where('material_type_id', $materialTypeId)
-        ->where('material_layout_id', $layoutId)
-        ->whereHas('cutOut', function ($query) {
-            $query->where('status', 1);
-        })
-        ->get();
-
-    return $products->pluck('cutOut')->filter()->unique('id')->values();
+    // Return all active cutouts
+    return CutOuts::with(['category', 'images'])->where('status', 1)->get();
 }
 
 public function selectMaterial(Request $request)
@@ -425,7 +372,8 @@ public function getCalculatorSteps(Request $request)
 
         case 2:
             // IMPORTANT: prefer material_config -> material_type_id, fallback to old session key
-            $selectedMaterialTypeId = session(['selected_material_type_id']);
+            $materialConfig = session('material_config', []);
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             // call getLayoutStepData with materialType (we don't require material_id anymore)
             $layoutStepData = $this->getLayoutStepData(null, $selectedMaterialTypeId);
             return view('front.layout', $layoutStepData)->render();
@@ -437,25 +385,40 @@ public function getCalculatorSteps(Request $request)
             return view('front.dimensions')->render();
 
         case 4:
-            $selectedMaterialTypeId = session('material_config.material_type_id') ?? session('selected_material_type_id');
+            $materialConfig = session('material_config', []);
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
-            $edge = $this->getEdgeStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
-            return view('front.edge-finishing', compact('edge'))->render();
+            
+            // Get all edge profiles
+            $edgeProfiles = \App\Models\EdgeProfile::where('status', 1)->orderBy('name')->get();
+            
+            // Get edge finishing from session
+            $edgeFinishing = session('edge_finishing', [
+                'edge_id' => null,
+                'thickness_id' => null,
+                'color_id' => null,
+                'selected_edges' => []
+            ]);
+            
+            return view('front.edge-finishing', compact('edgeProfiles', 'selectedMaterialTypeId', 'edgeFinishing'))->render();
 
         case 5:
-            $selectedMaterialTypeId = session('material_config.material_type_id') ?? session('selected_material_type_id');
+            $materialConfig = session('material_config', []);
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $wall = $this->getBackWallStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.back-wall', compact('wall'))->render();
 
         case 6:
-            $selectedMaterialTypeId = session('material_config.material_type_id') ?? session('selected_material_type_id');
+            $materialConfig = session('material_config', []);
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $sinks = $this->getSinkStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.sink', compact('sinks'))->render();
 
         case 7:
-            $selectedMaterialTypeId = session('material_config.material_type_id') ?? session('selected_material_type_id');
+            $materialConfig = session('material_config', []);
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
             $cutOuts = $this->getCutOutsStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
             $grouped = $cutOuts->groupBy(function ($cutout) {
@@ -627,5 +590,74 @@ public function submitQuote(Request $request)
     {
         return view('front.thank-you');
         
+    }
+
+    /**
+     * Get thicknesses for edge profile based on material type
+     */
+    public function getEdgeThicknesses(Request $request)
+    {
+        $edgeProfileId = $request->get('edge_profile_id');
+        $materialTypeId = $request->get('material_type_id');
+        
+        if (!$edgeProfileId || !$materialTypeId) {
+            return response()->json(['thicknesses' => []]);
+        }
+
+        // Get thicknesses from edge_profile_thickness_rules
+        $rules = \App\Models\EdgeProfileThicknessRule::where('edge_profile_id', $edgeProfileId)
+            ->where('material_type_id', $materialTypeId)
+            ->where('is_allowed', true)
+            ->where('status', 1)
+            ->with('thickness')
+            ->get();
+
+        $thicknesses = $rules->map(function ($rule) {
+            return [
+                'id' => $rule->thickness_id,
+                'value' => $rule->thickness->thickness_value ?? '',
+                'price_per_lm_guest' => $rule->price_per_lm_guest,
+                'price_per_lm_business' => $rule->price_per_lm_business,
+            ];
+        })->filter(function ($item) {
+            return !empty($item['value']);
+        })->values();
+
+        return response()->json(['thicknesses' => $thicknesses]);
+    }
+
+    /**
+     * Get colors for edge profile based on material type and thickness
+     */
+    public function getEdgeColors(Request $request)
+    {
+        $edgeProfileId = $request->get('edge_profile_id');
+        $materialTypeId = $request->get('material_type_id');
+        $thicknessId = $request->get('thickness_id');
+        
+        if (!$edgeProfileId || !$materialTypeId || !$thicknessId) {
+            return response()->json(['colors' => []]);
+        }
+
+        // Get colors from material_color_edge_exceptions
+        $exceptions = \App\Models\MaterialColorEdgeException::where('edge_profile_id', $edgeProfileId)
+            ->where('material_type_id', $materialTypeId)
+            ->where('thickness_id', $thicknessId)
+            ->where('is_allowed', true)
+            ->where('status', 1)
+            ->with('color')
+            ->get();
+
+        $colors = $exceptions->map(function ($exception) {
+            return [
+                'id' => $exception->color_id,
+                'name' => $exception->color->name ?? '',
+                'override_price' => $exception->override_price_per_lm,
+            ];
+        })->filter(function ($item) {
+            return !empty($item['name']);
+        })->values();
+
+        return response()->json(['colors' => $colors]);
     }
 }

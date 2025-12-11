@@ -38,7 +38,15 @@ $blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'h
     width: 100px;
     text-align: center;
 }
-.measurement-cl input.form-control:invalid {
+.measurement-cl input.form-control:invalid,
+.measurement-cl input.form-control.is-invalid {
     border-color: #dc3545;
+}
+.measurement-cl input.form-control.is-valid {
+    border-color: #28a745;
+}
+.measurement-cl .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 </style>
