@@ -1,14 +1,5 @@
-
 @php
-// Retrieve session data
-$materialId = session('selected_material_id');
-$materialTypeId = session('selected_material_type_id');
-$layoutId = session('selected_layout_id');
-$dimensions = session('dimensions', ['blad1' => ['width' => '', 'height' => '']]);
-$edgeFinishing = session('edge_finishing', ['edge_id' => null, 'thickness' => null, 'selected_edges' => []]);
-$backWall = session('back_wall', ['wall_id' => null, 'thickness' => null, 'selected_edges' => []]);
-$sinkSelection = session('sink_selection', ['sink_id' => null, 'cutout' => null, 'number' => null]);
-$cutoutSelection = session('cutout_selection', ['cutout_id' => null, 'recess_type' => null]);
+
 $userDetails = session('user_details', [
     'first_name' => '',
     'last_name' => '',
@@ -19,86 +10,33 @@ $userDetails = session('user_details', [
     'promo_code' => ''
 ]);
 
-// Fetch database records
-$material = $materialId ? \App\Models\Material::find($materialId) : null;
-$materialType = $materialTypeId ? \App\Models\MaterialType::find($materialTypeId) : null;
-$layout = $layoutId ? \App\Models\MaterialLayout::find($layoutId) : null;
-$edge = $edgeFinishing['edge_id'] ? \App\Models\MaterialEdge::find($edgeFinishing['edge_id']) : null;
-$wall = $backWall['wall_id'] ? \App\Models\BackWall::find($backWall['wall_id']) : null;
-$sink = $sinkSelection['sink_id'] ? \App\Models\Sink::with('images')->find($sinkSelection['sink_id']) : null;
-$cutout = $cutoutSelection['cutout_id'] ? \App\Models\CutOuts::with('images')->find($cutoutSelection['cutout_id']) : null;
+// Session data
+    $materialConfig   = session('material_config', []);
+    $layoutId         = session('selected_layout_id');
+    $dimensions       = session('dimensions', []);
+    $edgeFinishing    = session('edge_finishing', []);
+    $backWall         = session('back_wall', []);
+    $sinkSelection    = session('sink_selection', []);
+    $cutoutSelection  = session('cutout_selection', []);
 
-// Safely access dimensions
-$blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'height' => ''];
+    // Fetch selected database records
+    $materialType   = $materialConfig['material_type_id'] ? \App\Models\MaterialType::find($materialConfig['material_type_id']) : null;
+    $color          = $materialConfig['color'] ? \App\Models\Color::find($materialConfig['color']) : null;
+    $finish         = $materialConfig['finish'] ? \App\Models\Finish::find($materialConfig['finish']) : null;
+    $thickness      = $materialConfig['thickness'] ? \App\Models\Thickness::find($materialConfig['thickness']) : null;
 
-// Calculate area in square meters (width and height in cm, so divide by 10000 to convert to m²)
-$area = (!empty($blad1['width']) && !empty($blad1['height']) && is_numeric($blad1['width']) && is_numeric($blad1['height']))
-    ? ($blad1['width'] * $blad1['height']) / 10000
-    : 0;
+    $layout         = $layoutId ? \App\Models\MaterialLayoutShape::find($layoutId) : null;
+    $edgeProfile    = $edgeFinishing['edge_id'] ?? null ? \App\Models\EdgeProfile::find($edgeFinishing['edge_id']) : null;
+    $edgeThickness  = $edgeFinishing['thickness_id'] ?? null ? \App\Models\Thickness::find($edgeFinishing['thickness_id']) : null;
+    $edgeColor      = $edgeFinishing['color_id'] ?? null ? \App\Models\Color::find($edgeFinishing['color_id']) : null;
 
-// Calculate prices
-$totalPrice = 0;
-$priceDetails = [];
-$useUserPrice = auth()->check();
+    $backsplash     = $backWall['wall_id'] ?? null ? \App\Models\BacksplashShapes::find($backWall['wall_id']) : null;
+    $sink           = $sinkSelection['sink_id'] ?? null ? \App\Models\Sink::find($sinkSelection['sink_id']) : null;
+    $cutout         = $cutoutSelection['cutout_id'] ?? null ? \App\Models\CutOuts::find($cutoutSelection['cutout_id']) : null;
 
-if ($material) {
-    $base = $useUserPrice && isset($material->user_price) && $material->user_price !== null ? $material->user_price : ($material->price ?? 0);
-    if ($base) {
-        $materialPrice = $base * $area;
-        $totalPrice += $materialPrice;
-        $priceDetails['material'] = number_format($materialPrice, 3);
-    }
-}
-if ($materialType) {
-    $base = $useUserPrice && isset($materialType->user_price) && $materialType->user_price !== null ? $materialType->user_price : ($materialType->price ?? 0);
-    if ($base) {
-        $materialTypePrice = $base * $area;
-        $totalPrice += $materialTypePrice;
-        $priceDetails['material_type'] = number_format($materialTypePrice, 3);
-    }
-}
-if ($layout) {
-    $base = $useUserPrice && isset($layout->user_price) && $layout->user_price !== null ? $layout->user_price : ($layout->price ?? 0);
-    if ($base) {
-        $layoutPrice = $base * $area;
-        $totalPrice += $layoutPrice;
-        $priceDetails['layout'] = number_format($layoutPrice, 3);
-    }
-}
-if ($edge) {
-    $base = $useUserPrice && isset($edge->user_price) && $edge->user_price !== null ? $edge->user_price : ($edge->price ?? 0);
-    if ($base) {
-        $edgePrice = $base * $area;
-        $totalPrice += $edgePrice;
-        $priceDetails['edge'] = number_format($edgePrice, 3);
-    }
-}
-if ($wall) {
-    $base = $useUserPrice && isset($wall->user_price) && $wall->user_price !== null ? $wall->user_price : ($wall->price ?? 0);
-    if ($base) {
-        $wallPrice = $base * $area;
-        $totalPrice += $wallPrice;
-        $priceDetails['wall'] = number_format($wallPrice, 3);
-    }
-}
-if ($sink) {
-    $base = $useUserPrice && isset($sink->user_price) && $sink->user_price !== null ? $sink->user_price : ($sink->price ?? 0);
-    if ($base) {
-        $sinkPrice = $base * ($sinkSelection['number'] ?? 1);
-        $totalPrice += $sinkPrice;
-        $priceDetails['sink'] = number_format($sinkPrice, 3);
-    }
-}
-if ($cutout) {
-    $base = $useUserPrice && isset($cutout->user_price) && $cutout->user_price !== null ? $cutout->user_price : ($cutout->price ?? 0);
-    if ($base) {
-        $cutoutPrice = $base;
-        $totalPrice += $cutoutPrice;
-        $priceDetails['cutout'] = number_format($cutoutPrice, 3);
-    }
-}
-
-$totalPrice = number_format($totalPrice, 3);
+    // Dimensions
+    $blad1 = $dimensions['blad1'] ?? ['width' => 0, 'height' => 0];
+    $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['height']) / 10000 : 0; // in m²
 @endphp
 
 <div class="materials bg-white">
@@ -120,375 +58,187 @@ $totalPrice = number_format($totalPrice, 3);
     <div class="tab-content" id="materialsTabContent">
         <!-- Personal Data Tab -->
         <div class="tab-pane fade show active" id="personaldata" role="tabpanel" aria-labelledby="personaldata-tab">
-            <form action="{{ route('calculator.submit') }}" method="POST" class="pb-5 ps-0 ps-md-5 custom-form" id="customForm">
-                @csrf
-                <div class="row">
-                    <div class="col-lg-5">
-                        <figure class="pb-5">
-                            <img class="img-fluid" src="{{ asset('assets/front/img/image2-home1.jpg') }}"
-                                alt="Personal Data" />
-                        </figure>
-                    </div>
-                    <div class="col-lg-7 pt-5 d-flex">
-                        <div class="verticale-lign"></div>
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">First Name<sup>*</sup></label>
-                                        <input type="text" id="firstName" name="first_name" class="form-control"
-                                            placeholder="e.g. Johan" value="{{ auth()->check() ? (explode(' ', auth()->user()->name ?? '')[0] ?? '') : '' }}" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Last Name<sup>*</sup></label>
-                                        <input type="text" id="lastName" name="last_name" class="form-control"
-                                            placeholder="e.g. Sans" value="{{ auth()->check() ? (trim(implode(' ', array_slice(explode(' ', auth()->user()->name ?? ''), 1))) ) : '' }}" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Phone Number<sup>*</sup></label>
-                                        <input type="text" id="phoneNumber" name="phone_number" class="form-control"
-                                            placeholder="e.g. +32 4 9720 4041" value="{{ auth()->check() ? (auth()->user()->mobile ?? '') : '' }}"
-                                            required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Email ID<sup>*</sup></label>
-                                        <input type="email" id="email" name="email" class="form-control"
-                                            placeholder="e.g. Johan@artimordesgns.com" value="{{ auth()->check() ? (auth()->user()->email ?? '') : '' }}"
-                                            required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Delivery/Installation<sup>*</sup></label>
-                                        <select class="form-select" id="deliveryOption" name="delivery_option" required>
-                                            <option value="">Select the option</option>
-                                            <option value="square" >
-                                                Square
-                                            </option>
-                                            <option value="round" >
-                                                Round
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Estimated Time For Measurement<sup>*</sup></label>
-                                        <select class="form-select" id="measurementTime" name="measurement_time" required>
-                                            <option value="">Select the option</option>
-                                            <option value="square">
-                                                Square
-                                            </option>
-                                            <option value="round" >
-                                                Round
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 mb-5 position-relative">
-                                    <div class="inputfild-box">
-                                        <label class="form-label">Promo Code</label>
-                                        <input type="text" id="promoCode" name="promo_code" class="form-control"
-                                            placeholder="Write your coupon code" value="" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-lg-5">
+                    <figure class="pb-5">
+                        <img class="img-fluid" src="{{ asset('assets/front/img/image2-home1.jpg') }}"
+                            alt="Personal Data" />
+                    </figure>
                 </div>
-
-                <!-- Quotation Overview -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="result-box">
-                            <!-- Material -->
-                            @if($material)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Material <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($material->image)
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/materials/' . $material->image) }}"
-                                                alt="{{ $material->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Material:</strong> {{ $material->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['material'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="col-lg-7 pt-5 d-flex">
+                    <div class="verticale-lign"></div>
+                    <form action="#" method="POST" class="pb-5 ps-0 ps-md-5 custom-form" id="customForm">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">First Name<sup>*</sup></label>
+                                    <input type="text" id="firstName" name="first_name" class="form-control"
+                                        placeholder="e.g. Johan" value="" required />
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Material Type -->
-                            @if($materialType)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Material Type <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($materialType->image)
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/materialtype/' . $materialType->image) }}"
-                                                alt="{{ $materialType->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Type:</strong> {{ $materialType->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['material_type'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Last Name<sup>*</sup></label>
+                                    <input type="text" id="lastName" name="last_name" class="form-control"
+                                        placeholder="e.g. Sans" value="" required />
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Layout -->
-                            @if($layout)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Layout <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($layout->image)
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/material-layout/' . $layout->image) }}"
-                                                alt="{{ $layout->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Layout:</strong> {{ $layout->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['layout'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Phone Number<sup>*</sup></label>
+                                    <input type="text" id="phoneNumber" name="phone_number" class="form-control"
+                                        placeholder="e.g. +32 4 9720 4041" value=""
+                                        required />
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Dimensions -->
-                            @if($blad1['width'] || $blad1['height'])
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Dimensions <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Width:</strong> {{ $blad1['width'] ?: 'N/A' }} cm
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Height:</strong> {{ $blad1['height'] ?: 'N/A' }} cm
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Area:</strong> {{ number_format($area, 2) }} m²
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Email ID<sup>*</sup></label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        placeholder="e.g. Johan@artimordesgns.com" value=""
+                                        required />
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Edge Finishing -->
-                            @if($edge)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Edge Finishing <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($edge->image)
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/material-edge/' . $edge->image) }}"
-                                                alt="{{ $edge->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Kind:</strong> {{ $edge->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Thickness:</strong> {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Edges to be Finished:</strong> {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['edge'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Delivery/Installation<sup>*</sup></label>
+                                    <select class="form-select" id="deliveryOption" name="delivery_option" required>
+                                        <option value="">Select the option</option>
+                                        <option value="square">
+                                            Square
+                                        </option>
+                                        <option value="round">
+                                            Round
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Back Wall -->
-                            @if($wall)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Back Wall <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($wall->image)
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/back-wall/' . $wall->image) }}"
-                                                alt="{{ $wall->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Kind:</strong> {{ $wall->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Thickness:</strong> {{ $backWall['thickness'] ?? 'N/A' }} cm
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Sides to be Finished:</strong> {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['wall'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Estimated Time For Measurement<sup>*</sup></label>
+                                    <select class="form-select" id="measurementTime" name="measurement_time" required>
+                                        <option value="">Select the option</option>
+                                        <option value="square">
+                                            Square
+                                        </option>
+                                        <option value="round">
+                                            Round
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Sink -->
-                            @if($sink)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Sink <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($sink->images->first())
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/sinks/' . $sink->images->first()->image) }}"
-                                                alt="{{ $sink->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Model:</strong> {{ $sink->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Category:</strong> {{ optional($sink->category)->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Type:</strong> {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Number:</strong> {{ $sinkSelection['number'] ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['sink'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-12 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Promo Code</label>
+                                    <input type="text" id="promoCode" name="promo_code" class="form-control"
+                                        placeholder="Write your coupon code" value="" />
                                 </div>
                             </div>
-                            @endif
-
-                            <!-- Cut-Outs -->
-                            @if($cutout)
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Cutouts <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        @if($cutout->images->first())
-                                        <figure class="me-4">
-                                            <img width="160" src="{{ asset('uploads/cut-outs/' . $cutout->images->first()->image) }}"
-                                                alt="{{ $cutout->name }}" />
-                                        </figure>
-                                        @endif
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Kind:</strong> {{ $cutout->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Category:</strong> {{ optional($cutout->category)->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Type:</strong> {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}
-                                            </div>
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['cutout'] ?? 'N/A' }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
-                            <!-- Total Price -->
-                            <div class="row mb-4">
-                                <div class="col-md-12 mb-5">
-                                    <div class="result-head">
-                                        <h3 class="fs-4">Total Price <span></span></h3>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="result-gride d-flex">
-                                        <div class="w-100">
-                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Total:</strong> €{{ $totalPrice }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
                             <div class="text-center my-5 d-flex align-items-center justify-content-start gap-4">
                                 <button type="submit" class="btn btn-dark btn-primary px-4">Submit</button>
                             </div>
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quotation Overview -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="result-box">
+                        <!-- Material -->
+                       {{-- Material --}}
+                @if($materialType)
+                    <h5 class="fw-bold text-primary mb-3">Material & Finish</h5>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-3 text-center">
+                            <img src="{{ asset('uploads/material-type/' . ($materialType->image ?? 'default.jpg')) }}" class="img-fluid rounded" style="max-height:100px;">
+                        </div>
+                        <div class="col-9">
+                            <p><strong>Type:</strong> {{ $materialType->name }}</p>
+                            <p><strong>Color:</strong> {{ $color?->name ?? '—' }}</p>
+                            <p><strong>Finish:</strong> {{ $finish?->finish_name ?? '—' }}</p>
+                            <p><strong>Thickness:</strong> {{ $thickness?->thickness_value ?? '—' }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                         {{-- Layout --}}
+                @if($layout)
+                    <h5 class="fw-bold text-primary mb-3">Layout</h5>
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('uploads/layout-shapes/' . ($layout->image ?? 'default.jpg')) }}" class="img-fluid rounded" style="max-height:120px;">
+                        <p class="fw-bold mt-2">{{ $layout->name }}</p>
+                    </div>
+                @endif
+
+                        {{-- Dimensions --}}
+                @if($blad1['width'] && $blad1['height'])
+                    <h5 class="fw-bold text-primary mb-3">Dimensions (Blad 01)</h5>
+                    <p><strong>Width:</strong> {{ $blad1['width'] }} cm</p>
+                    <p><strong>Height:</strong> {{ $blad1['height'] }} cm</p>
+                    <p class="fw-bold text-success">Total Area: {{ number_format($area,3) }} m²</p>
+                @endif
+
+                {{-- Edge Finishing --}}
+                @if($edgeProfile)
+                    <h5 class="fw-bold text-primary mb-3">Edge Finishing</h5>
+                    <p><strong>Profile:</strong> {{ $edgeProfile->name }}</p>
+                    <p><strong>Thickness:</strong> {{ $edgeThickness?->thickness_value ?? '—' }}</p>
+                    <p><strong>Color:</strong> {{ $edgeColor?->name ?? '—' }}</p>
+                    <p><strong>Selected Edges:</strong> 
+                        @if(!empty($edgeFinishing['selected_edges']))
+                            {{ implode(', ', array_map('ucfirst', $edgeFinishing['selected_edges'])) }}
+                        @else
+                            Standard (Green edges)
+                        @endif
+                    </p>
+                @endif
+
+                {{-- Back Wall --}}
+                @if($backsplash)
+                    <h5 class="fw-bold text-primary mb-3">Back Wall / Backsplash</h5>
+                    <div class="text-center mb-2">
+                        <img src="{{ asset('uploads/backsplash-shape/' . ($backsplash->image ?? 'default.jpg')) }}" class="img-fluid rounded" style="max-height:120px;">
+                    </div>
+                    <p class="fw-bold text-center">{{ $backsplash->name }}</p>
+                    @if(!empty($backWall['selected_edges']))
+                        <p><strong>Finished Sides:</strong> {{ implode(', ', array_map('ucfirst', $backWall['selected_edges'])) }}</p>
+                    @endif
+                @endif
+
+                {{-- Sink --}}
+                @if($sink)
+                    <h5 class="fw-bold text-primary mb-3">Sink</h5>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-4 text-center">
+                            <img src="{{ asset('uploads/sinks/' . ($sink->images->first()->image ?? 'default.jpg')) }}" class="img-fluid rounded" style="max-height:80px;">
+                        </div>
+                        <div class="col-8">
+                            <p class="fw-bold">{{ $sink->name }}</p>
+                            <p><strong>Cutout:</strong> {{ ucfirst(str_replace('_',' ',$sinkSelection['cutout'] ?? '')) }}</p>
+                            <p><strong>Quantity:</strong> {{ $sinkSelection['number'] ?? 1 }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Cutout --}}
+                @if($cutout)
+                    <h5 class="fw-bold text-primary mb-3">Cutout / Hob</h5>
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            <img src="{{ asset('uploads/cut-outs/' . ($cutout->images->first()->image ?? 'default.jpg')) }}" class="img-fluid rounded" style="max-height:80px;">
+                        </div>
+                        <div class="col-8">
+                            <p class="fw-bold">{{ $cutout->name }}</p>
+                            <p><strong>Recess Type:</strong> {{ ucfirst($cutoutSelection['recess_type'] ?? '') }}</p>
+                        </div>
+                    </div>
+                @endif
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <!-- Overview Tab -->
@@ -496,34 +246,7 @@ $totalPrice = number_format($totalPrice, 3);
             <div class="row">
                 <div class="col-md-12">
                     <h3>Summary of Your Selections</h3>
-                    <ul>
-                        @if($material)
-                        <li><strong>Material:</strong> {{ $material->name }} (Brand: {{ $material->brand ?? 'N/A' }},
-                            Color: {{ $material->color ?? 'N/A' }}, Price: €{{ $priceDetails['material'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($materialType)
-                        <li><strong>Material Type:</strong> {{ $materialType->name }} (Price: €{{ $priceDetails['material_type'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($layout)
-                        <li><strong>Layout:</strong> {{ $layout->name }} (Price: €{{ $priceDetails['layout'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($blad1['width'] || $blad1['height'])
-                        <li><strong>Dimensions:</strong> Width: {{ $blad1['width'] ?: 'N/A' }} cm, Height: {{ $blad1['height'] ?: 'N/A' }} cm, Area: {{ number_format($area, 2) }} m²</li>
-                        @endif
-                        @if($edge)
-                        <li><strong>Edge Finishing:</strong> {{ $edge->name }} (Thickness: {{ $edgeFinishing['thickness'] ?? 'N/A' }} cm, Edges: {{ implode(', ', $edgeFinishing['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['edge'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($wall)
-                        <li><strong>Back Wall:</strong> {{ $wall->name }} (Thickness: {{ $backWall['thickness'] ?? 'N/A' }} cm, Sides: {{ implode(', ', $backWall['selected_edges']) ?: 'None' }}, Price: €{{ $priceDetails['wall'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($sink)
-                        <li><strong>Sink:</strong> {{ $sink->name }} (Category: {{ optional($sink->category)->name ?? 'N/A' }}, Type: {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number: {{ $sinkSelection['number'] ?? 'N/A' }}, Price: €{{ $priceDetails['sink'] ?? 'N/A' }})</li>
-                        @endif
-                        @if($cutout)
-                        <li><strong>Cut-Out:</strong> {{ $cutout->name }} (Category: {{ optional($cutout->category)->name ?? 'N/A' }}, Type: {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price: €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
-                        @endif
-                        <li><strong>Total Price:</strong> €{{ $totalPrice }}</li>
-                    </ul>
+                    <p>This section provides a comprehensive overview of all your selections made during the configuration process.</p>
                 </div>
             </div>
         </div>
@@ -536,47 +259,26 @@ $totalPrice = number_format($totalPrice, 3);
     border: 1px solid #ddd;
     border-radius: 8px;
 }
+
 .result-head h3 {
     margin-bottom: 10px;
     font-weight: bold;
 }
+
 .result-gride {
     align-items: flex-start;
 }
+
 .inputfild-box {
     margin-bottom: 15px;
 }
+
 .inputfild-box label {
     font-weight: 500;
 }
+
 .form-control,
 .form-select {
     border-radius: 4px;
 }
 </style>
-
-<!-- <script>
-document.getElementById('customForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    fetch(this.action, {
-        method: 'POST',
-        body: new FormData(this),
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Quotation submitted successfully!');
-            document.querySelector('#overview-tab').click();
-        } else {
-            alert('Submission failed. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-});
-</script> -->

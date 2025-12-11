@@ -118,16 +118,35 @@ $selectedLayoutId = (string)($selectedLayoutId ?? session('selected_layout_id'))
     position: relative;
 }
 
+.layout-card.selected {
+    border: 3px solid #28a745 !important;
+    box-shadow: 0 0 12px rgba(40, 167, 69, 0.6) !important;
+}
+
 .layout-card.selected::after {
     content: "✔ Selected";
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     padding: 4px 8px;
     font-size: 12px;
     border-radius: 4px;
     font-weight: bold;
+    z-index: 5;
+}
+
+.layout-confirmation-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 10;
 }
 </style>

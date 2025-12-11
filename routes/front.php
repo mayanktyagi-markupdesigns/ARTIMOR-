@@ -37,6 +37,10 @@ use App\Http\Controllers\Front\LanguageController;
 
     Route::get('/calculator/materials', [HomeController::class, 'getMaterials'])->name('calculator.materials');
     
+    Route::get('/calculator/edge-thicknesses', [HomeController::class, 'getEdgeThicknesses'])->name('calculator.edge.thicknesses');
+    
+    Route::get('/calculator/edge-colors', [HomeController::class, 'getEdgeColors'])->name('calculator.edge.colors');
+    
     Route::post('/calculator/submit', [HomeController::class, 'submitQuote'])->name('calculator.submit');
 
     Route::get('/thank-you', [HomeController::class, 'thankYou'])->name('thank.you');

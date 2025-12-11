@@ -46,7 +46,7 @@ class CutOutsCategoryController extends Controller
     {
         $category = CutOutsCategory::findOrFail($id);
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:material_categories,name,' . $category->id,
+            'name' => 'required|string|max:255|unique:cut_outs_categories,name,' . $category->id,
             'status' => 'required|in:0,1',
         ]);
 
