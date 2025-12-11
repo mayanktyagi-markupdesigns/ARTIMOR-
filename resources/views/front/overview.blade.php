@@ -1,5 +1,16 @@
 @php
-    // Session data
+
+$userDetails = session('user_details', [
+    'first_name' => '',
+    'last_name' => '',
+    'phone_number' => '',
+    'email' => '',
+    'delivery_option' => '',
+    'measurement_time' => '',
+    'promo_code' => ''
+]);
+
+// Session data
     $materialConfig   = session('material_config', []);
     $layoutId         = session('selected_layout_id');
     $dimensions       = session('dimensions', []);
@@ -28,15 +39,116 @@
     $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['height']) / 10000 : 0; // in m²
 @endphp
 
-<div class="container py-5">
-    <h2 class="text-center mb-5 fw-bold">Your Selected Configuration</h2>
+<div class="materials bg-white">
+    <!-- Nav Tabs -->
+    <div class="d-flex align-items-center justify-content-center">
+        <ul class="border-0 nav nav-tabs justify-content-center mb-5" id="materialsTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="personaldata-tab" data-bs-toggle="tab"
+                    data-bs-target="#personaldata" type="button" role="tab">Personal Data</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
+                    role="tab">Overview</button>
+            </li>
+        </ul>
+    </div>
 
-    <div class="row g-5">
-        <!-- Left: Selected Items -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0 p-4">
+    <!-- Tab Content -->
+    <div class="tab-content" id="materialsTabContent">
+        <!-- Personal Data Tab -->
+        <div class="tab-pane fade show active" id="personaldata" role="tabpanel" aria-labelledby="personaldata-tab">
+            <div class="row">
+                <div class="col-lg-5">
+                    <figure class="pb-5">
+                        <img class="img-fluid" src="{{ asset('assets/front/img/image2-home1.jpg') }}"
+                            alt="Personal Data" />
+                    </figure>
+                </div>
+                <div class="col-lg-7 pt-5 d-flex">
+                    <div class="verticale-lign"></div>
+                    <form action="#" method="POST" class="pb-5 ps-0 ps-md-5 custom-form" id="customForm">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">First Name<sup>*</sup></label>
+                                    <input type="text" id="firstName" name="first_name" class="form-control"
+                                        placeholder="e.g. Johan" value="" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Last Name<sup>*</sup></label>
+                                    <input type="text" id="lastName" name="last_name" class="form-control"
+                                        placeholder="e.g. Sans" value="" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Phone Number<sup>*</sup></label>
+                                    <input type="text" id="phoneNumber" name="phone_number" class="form-control"
+                                        placeholder="e.g. +32 4 9720 4041" value=""
+                                        required />
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Email ID<sup>*</sup></label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        placeholder="e.g. Johan@artimordesgns.com" value=""
+                                        required />
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Delivery/Installation<sup>*</sup></label>
+                                    <select class="form-select" id="deliveryOption" name="delivery_option" required>
+                                        <option value="">Select the option</option>
+                                        <option value="square">
+                                            Square
+                                        </option>
+                                        <option value="round">
+                                            Round
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Estimated Time For Measurement<sup>*</sup></label>
+                                    <select class="form-select" id="measurementTime" name="measurement_time" required>
+                                        <option value="">Select the option</option>
+                                        <option value="square">
+                                            Square
+                                        </option>
+                                        <option value="round">
+                                            Round
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-5 position-relative">
+                                <div class="inputfild-box">
+                                    <label class="form-label">Promo Code</label>
+                                    <input type="text" id="promoCode" name="promo_code" class="form-control"
+                                        placeholder="Write your coupon code" value="" />
+                                </div>
+                            </div>
+                            <div class="text-center my-5 d-flex align-items-center justify-content-start gap-4">
+                                <button type="submit" class="btn btn-dark btn-primary px-4">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-                {{-- Material --}}
+            <!-- Quotation Overview -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="result-box">
+                        <!-- Material -->
+                       {{-- Material --}}
                 @if($materialType)
                     <h5 class="fw-bold text-primary mb-3">Material & Finish</h5>
                     <div class="row align-items-center mb-4">
@@ -52,7 +164,7 @@
                     </div>
                 @endif
 
-                {{-- Layout --}}
+                         {{-- Layout --}}
                 @if($layout)
                     <h5 class="fw-bold text-primary mb-3">Layout</h5>
                     <div class="text-center mb-4">
@@ -61,7 +173,7 @@
                     </div>
                 @endif
 
-                {{-- Dimensions --}}
+                        {{-- Dimensions --}}
                 @if($blad1['width'] && $blad1['height'])
                     <h5 class="fw-bold text-primary mb-3">Dimensions (Blad 01)</h5>
                     <p><strong>Width:</strong> {{ $blad1['width'] }} cm</p>
@@ -124,20 +236,49 @@
                         </div>
                     </div>
                 @endif
-
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Right: User Form (unchanged) --}}
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Complete Your Request</h5>
-                </div>
-                <div class="card-body">
-                    {{-- Your existing form code here --}}
+        <!-- Overview Tab -->
+        <div class="tab-pane fade" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Summary of Your Selections</h3>
+                    <p>This section provides a comprehensive overview of all your selections made during the configuration process.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.result-box {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.result-head h3 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.result-gride {
+    align-items: flex-start;
+}
+
+.inputfild-box {
+    margin-bottom: 15px;
+}
+
+.inputfild-box label {
+    font-weight: 500;
+}
+
+.form-control,
+.form-select {
+    border-radius: 4px;
+}
+</style>
