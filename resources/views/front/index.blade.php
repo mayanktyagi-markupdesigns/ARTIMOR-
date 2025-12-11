@@ -265,17 +265,17 @@ document.addEventListener('DOMContentLoaded', function() {
             height: null
         }
     };
-    let edgeFinishing = {
+    window.edgeFinishing = {
         edge_id: null,
         thickness_id: null,
         color_id: null,
         selected_edges: []
     };
-    let backWall = {
+    window.backWall = {
         wall_id: null,
-        thickness: null,
         selected_edges: []
     };
+    let backWall = window.backWall;
     let sinkSelection = {
         sink_id: null,
         cutout: null,
@@ -481,31 +481,32 @@ document.addEventListener('DOMContentLoaded', function() {
         // Edge finishing is now handled in the blade file itself
         // Just sync the global edgeFinishing object with the form
         setTimeout(() => {
-            const edgeIdInput = document.querySelector('.edge-card.selected');
+            const ef = window.edgeFinishing || edgeFinishing;
+            const edgeIdInput = document.querySelector('.edge-profile-card.selected');
             const thicknessSelect = document.getElementById('edge-thickness-select');
             const colorSelect = document.getElementById('edge-color-select');
             const edgeCircles = document.querySelectorAll('.edge-circle');
 
             // Sync edge_id
-            if (edgeIdInput) {
-                edgeFinishing.edge_id = edgeIdInput.getAttribute('data-id');
+            if (edgeIdInput && ef) {
+                ef.edge_id = edgeIdInput.getAttribute('data-id');
             }
 
             // Sync thickness_id
-            if (thicknessSelect) {
-                edgeFinishing.thickness_id = thicknessSelect.value;
+            if (thicknessSelect && ef) {
+                ef.thickness_id = thicknessSelect.value;
                 thicknessSelect.addEventListener('change', function() {
-                    edgeFinishing.thickness_id = this.value;
+                    if (ef) ef.thickness_id = this.value;
                     // Save to session
                     saveEdgeFinishingToSession();
                 });
             }
 
             // Sync color_id
-            if (colorSelect) {
-                edgeFinishing.color_id = colorSelect.value;
+            if (colorSelect && ef) {
+                ef.color_id = colorSelect.value;
                 colorSelect.addEventListener('change', function() {
-                    edgeFinishing.color_id = this.value;
+                    if (ef) ef.color_id = this.value;
                     // Save to session
                     saveEdgeFinishingToSession();
                 });
@@ -515,17 +516,17 @@ document.addEventListener('DOMContentLoaded', function() {
             edgeCircles.forEach(circle => {
                 circle.addEventListener('click', function() {
                     const edge = this.getAttribute('data-edge');
-                    if (!edge) return;
+                    if (!edge || !ef) return;
 
-                    if (!edgeFinishing.selected_edges) {
-                        edgeFinishing.selected_edges = [];
+                    if (!ef.selected_edges) {
+                        ef.selected_edges = [];
                     }
 
-                    if (edgeFinishing.selected_edges.includes(edge)) {
-                        edgeFinishing.selected_edges = edgeFinishing.selected_edges.filter(e => e !== edge);
+                    if (ef.selected_edges.includes(edge)) {
+                        ef.selected_edges = ef.selected_edges.filter(e => e !== edge);
                         this.classList.remove('selected');
                     } else {
-                        edgeFinishing.selected_edges.push(edge);
+                        ef.selected_edges.push(edge);
                         this.classList.add('selected');
                     }
                     
@@ -534,12 +535,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Listen for edge card clicks (handled in blade but sync here)
-            document.querySelectorAll('.edge-card').forEach(card => {
+            // Listen for edge profile card clicks (handled in blade but sync here)
+            document.querySelectorAll('.edge-profile-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const edgeId = this.getAttribute('data-id');
-                    if (edgeId) {
-                        edgeFinishing.edge_id = edgeId;
+                    if (edgeId && ef) {
+                        ef.edge_id = edgeId;
                         // Save to session
                         saveEdgeFinishingToSession();
                     }
@@ -550,6 +551,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save edge finishing to session
     function saveEdgeFinishingToSession() {
+        const ef = window.edgeFinishing || edgeFinishing;
+        if (!ef) return;
+        
         fetch("{{ route('calculator.steps') }}", {
             method: "POST",
             headers: {
@@ -558,43 +562,78 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 step: 4,
-                edge_finishing: edgeFinishing
+                edge_finishing: ef
             })
         }).catch(err => console.error('Failed to save edge finishing:', err));
     }
 
     // Function to initialize back wall selections
     function initializeBackWall() {
-        const wallCards = document.querySelectorAll('.wall-card');
-        const wallCircles = document.querySelectorAll('.back-wall-tab .edge-circle');
-        const thicknessSelect = document.getElementById('wall-thickness');
+        // Back wall is now handled in the blade file itself
+        // Just sync the global backWall object
+        setTimeout(() => {
+            const ef = window.backWall || backWall;
+            const wallIdInput = document.querySelector('.wall-card.selected');
+            const edgeCircles = document.querySelectorAll('.edge-circle');
 
-        wallCards.forEach(card => {
-            card.addEventListener('click', function() {
-                backWall.wall_id = this.getAttribute('data-id');
-                wallCards.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
+            // Sync wall_id
+            if (wallIdInput && ef) {
+                ef.wall_id = wallIdInput.getAttribute('data-id');
+            }
 
-        wallCircles.forEach(circle => {
-            circle.addEventListener('click', function() {
-                const edge = this.getAttribute('data-edge');
-                if (backWall.selected_edges.includes(edge)) {
-                    backWall.selected_edges = backWall.selected_edges.filter(e => e !== edge);
-                    this.classList.remove('selected');
-                } else {
-                    backWall.selected_edges.push(edge);
-                    this.classList.add('selected');
-                }
-            });
-        });
+            // Sync edge circles
+            edgeCircles.forEach(circle => {
+                circle.addEventListener('click', function() {
+                    const edge = this.getAttribute('data-edge');
+                    if (!edge || !ef) return;
 
-        if (thicknessSelect) {
-            thicknessSelect.addEventListener('change', () => {
-                backWall.thickness = thicknessSelect.value;
+                    if (!ef.selected_edges) {
+                        ef.selected_edges = [];
+                    }
+
+                    if (ef.selected_edges.includes(edge)) {
+                        ef.selected_edges = ef.selected_edges.filter(e => e !== edge);
+                        this.classList.remove('selected');
+                    } else {
+                        ef.selected_edges.push(edge);
+                        this.classList.add('selected');
+                    }
+                    
+                    // Save to session
+                    saveBackWallToSession();
+                });
             });
-        }
+
+            // Listen for wall card clicks (handled in blade but sync here)
+            document.querySelectorAll('.wall-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const wallId = this.getAttribute('data-id');
+                    if (wallId && ef) {
+                        ef.wall_id = wallId;
+                        // Save to session
+                        saveBackWallToSession();
+                    }
+                });
+            });
+        }, 200);
+    }
+    
+    // Save back wall to session
+    function saveBackWallToSession() {
+        const ef = window.backWall || backWall;
+        if (!ef) return;
+        
+        fetch("{{ route('calculator.steps') }}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                step: 5,
+                back_wall: ef
+            })
+        }).catch(err => console.error('Failed to save back wall:', err));
     }
 
     // Function to initialize sink selections
@@ -802,14 +841,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // ✅ STEP-4 VALIDATION: Edge Finishing - Edge Profile, Thickness, and Color must be selected
+        // ✅ STEP-4 VALIDATION: Edge Finishing - Only Edge Profile must be selected (for now)
         if (currentStep === 5) {
-            if (!edgeFinishing.edge_id || !edgeFinishing.thickness_id || !edgeFinishing.color_id) {
+            // Use window.edgeFinishing if available, fallback to edgeFinishing
+            const ef = window.edgeFinishing || edgeFinishing;
+            
+            if (!ef || !ef.edge_id) {
                 // Scroll to edge finishing section
                 const edgeSection = document.getElementById('step4');
                 if (edgeSection) {
                     edgeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+                alert('Please select an Edge Profile.');
+                return;
+            }
+        }
+
+        // ✅ STEP-5 VALIDATION: Back Wall - Back Wall Shape must be selected
+        if (currentStep === 6) {
+            const bw = window.backWall || backWall;
+            
+            if (!bw || !bw.wall_id) {
+                const backWallSection = document.getElementById('step5');
+                if (backWallSection) {
+                    backWallSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                alert('Please select a Back Wall Shape.');
                 return;
             }
         }
@@ -836,8 +893,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (currentStep === 3) data.layout_id = selectedLayoutId;
         if (currentStep === 4) data.dimensions = dimensions;
-        if (currentStep === 5) data.edge_finishing = edgeFinishing;
-        if (currentStep === 6) data.back_wall = backWall;
+        if (currentStep === 5) {
+            const ef = window.edgeFinishing || edgeFinishing;
+            data.edge_finishing = ef;
+        }
+        if (currentStep === 6) {
+            const ef = window.backWall || backWall;
+            data.back_wall = ef;
+        }
         if (currentStep === 7) data.sink_selection = sinkSelection;
         if (currentStep === 8) data.cutout_selection = cutoutSelection;
 

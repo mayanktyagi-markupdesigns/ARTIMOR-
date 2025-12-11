@@ -171,13 +171,8 @@ protected function getEdgeStepData(?int $materialId, ?int $materialTypeId, ?int 
 
 protected function getBackWallStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    // If materialTypeId and layoutId are provided, return back walls
-    if (!$materialTypeId || !$layoutId) {
-        return collect();
-    }
-
-    // Return all active edge profiles (back wall uses same structure)
-    return \App\Models\EdgeProfile::where('status', 1)->get();
+    // Return all active backsplash shapes
+    return \App\Models\BacksplashShapes::where('status', 1)->orderBy('sort_order')->get();
 }
 
 protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
