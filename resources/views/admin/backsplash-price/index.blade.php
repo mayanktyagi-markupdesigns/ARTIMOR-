@@ -16,6 +16,7 @@
                     <thead class="text-uppercase">
                         <tr>
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
+                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Backsplash Shapes</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Material Type</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price (Guest)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Guest)</th>
@@ -31,6 +32,7 @@
                         @foreach($prices as $price)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{ $price->backsplashShapes->name ?? '—' }}</td>
                             <td>{{ $price->materialType->name ?? '—' }}</td>
                             <td>{{ $price->price_lm_guest }}</td>
                             <td>{{ $price->finished_side_price_lm_guest }}</td>
