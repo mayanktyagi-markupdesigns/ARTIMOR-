@@ -81,7 +81,7 @@
 
                     <!--override_price_per_lm-->
                     <div class="col-md-4 mb-3">
-                        <label>Override Price Per lm</label>
+                        <label>Override Price (Business) <span class="text-danger">*</span></label>
                         <input type="number" min="0" step="0.01" name="override_price_per_lm"
                                class="form-control" value="{{ old('override_price_per_lm') }}">
                         @error('override_price_per_lm') <small class="text-danger">{{ $message }}</small> @enderror
