@@ -836,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!dimensions.blad1.width || !dimensions.blad1.height || 
                 isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
                 parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
-                alert("Please enter Width and Height");
+                alert("Please enter Width and Height (positive numbers).");
                 return;
             }
         }

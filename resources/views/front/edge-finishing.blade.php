@@ -6,6 +6,8 @@ $edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
     'selected_edges' => []
 ]);
 
+
+
 $selectedEdgeId = $edgeFinishing['edge_id'] ?? null;
 $selectedThicknessId = $edgeFinishing['thickness_id'] ?? null;
 $selectedColorId = $edgeFinishing['color_id'] ?? null;

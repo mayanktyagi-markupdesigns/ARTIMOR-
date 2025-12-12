@@ -58,19 +58,19 @@
                     </div>
 
                     {{-- Is Allowed --}}
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label for="is_allowed">Is Allowed</label><span class="text-danger">*</span>
                         <select name="is_allowed" id="is_allowed" class="form-select">
                             <option value="true"  {{ old('is_allowed', $rule->is_allowed) == 1 ? 'selected' : '' }}>True</option>
                             <option value="false" {{ old('is_allowed', $rule->is_allowed) == 0 ? 'selected' : '' }}>False</option>
                         </select>
                         @error('is_allowed') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row">
                     {{-- Guest Price --}}
                     <div class="col-md-4 mb-3">
-                        <label for="price_per_lm_guest">Price Per LM (Guest)</label><span class="text-danger">*</span>
+                        <label for="price_per_lm_guest">Price (Guest)</label><span class="text-danger">*</span>
                         <input type="number" step="0.01" class="form-control" name="price_per_lm_guest"
                             value="{{ old('price_per_lm_guest', $rule->price_per_lm_guest) }}"
                             placeholder="Enter guest price">
@@ -79,7 +79,7 @@
 
                     {{-- Business Price --}}
                     <div class="col-md-4 mb-3">
-                        <label for="price_per_lm_business">Price Per LM (Business)</label><span class="text-danger">*</span>
+                        <label for="price_per_lm_business">Price (Business)</label><span class="text-danger">*</span>
                         <input type="number" step="0.01" class="form-control" name="price_per_lm_business"
                             value="{{ old('price_per_lm_business', $rule->price_per_lm_business) }}"
                             placeholder="Enter business price">

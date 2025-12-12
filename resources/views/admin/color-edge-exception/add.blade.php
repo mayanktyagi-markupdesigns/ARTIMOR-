@@ -69,7 +69,7 @@
                     </div>
 
                     <!-- Is Allowed -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label for="is_allowed">Is Allowed <span class="text-danger">*</span></label>
                         <select name="is_allowed" class="form-select">
                             <option value="">Select Option</option>
@@ -77,7 +77,7 @@
                             <option value="false" {{ old('is_allowed') == 'false' ? 'selected' : '' }}>No</option>
                         </select>
                         @error('is_allowed') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                    </div> -->
 
                     <!--override_price_per_lm-->
                     <div class="col-md-4 mb-3">
