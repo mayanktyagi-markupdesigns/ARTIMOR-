@@ -14,9 +14,8 @@ class MaterialColorEdgeException extends Model
         'edge_profile_id',
         'thickness_id',
         'is_allowed',
-        'price_per_lm_guest',
-        'price_per_lm_business',
         'override_price_per_lm',
+        'override_guest_price_per_lm',
         'status',
     ];
 
