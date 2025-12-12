@@ -117,6 +117,26 @@ $backsplashShapes = $wall ?? collect();
                         </div>
                     </div>
                 </div>
+                 <div class="col-lg-12 my-5">
+                            <hr>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 mb-5">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div
+                        class="border-btm-green edges-check-box d-flex align-items-center justify-content-center position-relative me-0 me-md-4">
+                        Blad 01
+                        <span class="left-11-cir edge-circle {{ in_array('left', $selectedEdges) ? 'selected' : '' }}"
+                            data-edge="left"></span>
+                        <span class="right-11-cir edge-circle {{ in_array('right', $selectedEdges) ? 'selected' : '' }}"
+                            data-edge="right"></span>
+                        <span class="top-11-cir edge-circle {{ in_array('top', $selectedEdges) ? 'selected' : '' }}"
+                            data-edge="top"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -262,79 +282,41 @@ $backsplashShapes = $wall ?? collect();
 <style>
 .wall-card {
     cursor: pointer;
-    transition: all 0.3s ease;
-    min-height: 240px;
+    transition: transform 0.2s ease;
 }
-
 .wall-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
 }
-
 .wall-card.selected {
-    border: 3px solid #28a745 !important;
-    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5) !important;
-    background-color: #f8fff9;
+    border: 3px solid #007bff;
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
+    position: relative;
 }
-
 .wall-card.selected::after {
-    content: "✓ Selected";
+    content: "✔ Selected";
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: 12px;
     border-radius: 4px;
     font-weight: bold;
-    z-index: 5;
 }
-
 .edge-circle {
     cursor: pointer;
     display: inline-block;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background-color: #ccc;
     position: absolute;
-    border: 2px solid #fff;
-    transition: all 0.3s ease;
 }
-
-.edge-circle:hover {
-    transform: scale(1.2);
-    border-color: #28a745;
-}
-
 .edge-circle.selected {
     background-color: #28a745;
-    border-color: #28a745;
-    box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
 }
-
-.left-11-cir {
-    left: -35px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.right-11-cir {
-    right: -35px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.top-11-cir {
-    top: -35px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.border-btm-green {
-    border: 2px solid #28a745;
-    border-radius: 8px;
-    background: #f8fff9;
-}
+.left-11-cir { left: -30px; }
+.right-11-cir { right: -30px; }
+.top-11-cir { top: -30px; }
 </style>

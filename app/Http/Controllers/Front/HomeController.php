@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\MaterialGroup;
 use App\Models\MaterialType;
 use App\Models\MaterialLayout;
-use App\Models\MaterialLayoutShape; // or whatever the correct model name is
+use App\Models\MaterialLayoutShape;
 use App\Models\Dimension;
 use App\Models\MaterialEdge;
 use App\Models\BackWall;
@@ -248,16 +248,7 @@ public function getCalculatorSteps(Request $request)
     // Accept both JSON payload and normal form-encoded payloads
     $data = $request->isJson() ? $request->json()->all() : $request->all();
     $step = $data['step'] ?? null;
-
-    // ------------------------
-    // NEW: material_config (preferred)
-    // material_config = [
-    //   'material_type_id' => int,
-    //   'color' => int|null,
-    //   'finish' => int|null,
-    //   'thickness' => int|null,
-    // ]
-    // ------------------------
+    
     if (isset($data['material_config'])) {
         $newConfig = $data['material_config'];
 
@@ -387,6 +378,12 @@ public function getCalculatorSteps(Request $request)
             
             // Get all edge profiles
             $edgeProfiles = \App\Models\EdgeProfile::where('status', 1)->orderBy('name')->get();
+
+            // Get all colors
+            $colors = \App\Models\Color::where('status', 1)->orderBy('name')->get();
+
+            // Get all thickness
+            $thickness = \App\Models\Thickness::where('status', 1)->orderBy('thickness_value')->get();
             
             // Get edge finishing from session
             $edgeFinishing = session('edge_finishing', [
@@ -396,7 +393,7 @@ public function getCalculatorSteps(Request $request)
                 'selected_edges' => []
             ]);
             
-            return view('front.edge-finishing', compact('edgeProfiles', 'selectedMaterialTypeId', 'edgeFinishing'))->render();
+            return view('front.edge-finishing', compact('edgeProfiles', 'selectedMaterialTypeId', 'edgeFinishing', 'colors', 'thickness'))->render();
 
         case 5:
             $materialConfig = session('material_config', []);
