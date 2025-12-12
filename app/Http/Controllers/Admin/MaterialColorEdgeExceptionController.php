@@ -40,6 +40,7 @@ class MaterialColorEdgeExceptionController extends Controller
             'edge_profile_id'  => 'required|exists:edge_profiles,id',
             'thickness_id'     => 'required|exists:thicknesses,id',
             'override_price_per_lm'  =>  'nullable|numeric|min:0',
+            'override_guest_price_per_lm'  =>  'nullable|numeric|min:0',
             'status'           => 'required|in:0,1',           
         ]);        
         // Convert true/false string → 1/0
@@ -47,13 +48,14 @@ class MaterialColorEdgeExceptionController extends Controller
 
         $color_edge_exception = new MaterialColorEdgeException();
 
-        $color_edge_exception->material_type_id        = $request->material_type_id;
-        $color_edge_exception->color_id                = $request->color_id;
-        $color_edge_exception->edge_profile_id         = $request->edge_profile_id;
-        $color_edge_exception->thickness_id            = $request->thickness_id;    
-        //$color_edge_exception->is_allowed              = $isAllowed;     
-        $color_edge_exception->override_price_per_lm   = $request->override_price_per_lm;
-        $color_edge_exception->status                  = $request->status;
+        $color_edge_exception->material_type_id            = $request->material_type_id;
+        $color_edge_exception->color_id                    = $request->color_id;
+        $color_edge_exception->edge_profile_id             = $request->edge_profile_id;
+        $color_edge_exception->thickness_id                = $request->thickness_id;    
+        //$color_edge_exception->is_allowed                = $isAllowed;     
+        $color_edge_exception->override_price_per_lm       = $request->override_price_per_lm;
+        $color_edge_exception->override_guest_price_per_lm = $request->override_guest_price_per_lm;
+        $color_edge_exception->status                      = $request->status;
         $color_edge_exception->save();    
 
         return redirect()->route('admin.color.edge.exception.list')->with('success', 'Material color edge exception added successfully!');
@@ -81,6 +83,7 @@ class MaterialColorEdgeExceptionController extends Controller
             'edge_profile_id'  => 'required|exists:edge_profiles,id',
             'thickness_id'     => 'required|exists:thicknesses,id',
             'override_price_per_lm'  =>  'nullable|numeric|min:0',
+            'override_guest_price_per_lm'  =>  'nullable|numeric|min:0',
             'status'          => 'required|in:0,1', 
         ]);
         
@@ -89,13 +92,14 @@ class MaterialColorEdgeExceptionController extends Controller
 
         $color_edge_exception = MaterialColorEdgeException::findOrFail($id);
         
-        $color_edge_exception->material_type_id        = $request->material_type_id;
-        $color_edge_exception->color_id                = $request->color_id;
-        $color_edge_exception->edge_profile_id         = $request->edge_profile_id;
-        $color_edge_exception->thickness_id            = $request->thickness_id;    
-        //$color_edge_exception->is_allowed              = $isAllowed;       
-        $color_edge_exception->override_price_per_lm   = $request->override_price_per_lm;
-        $color_edge_exception->status                  = $request->status;
+        $color_edge_exception->material_type_id             = $request->material_type_id;
+        $color_edge_exception->color_id                     = $request->color_id;
+        $color_edge_exception->edge_profile_id              = $request->edge_profile_id;
+        $color_edge_exception->thickness_id                 = $request->thickness_id;    
+        //$color_edge_exception->is_allowed                 = $isAllowed;       
+        $color_edge_exception->override_price_per_lm        = $request->override_price_per_lm;
+        $color_edge_exception->override_guest_price_per_lm  = $request->override_guest_price_per_lm;
+        $color_edge_exception->status                       = $request->status;
         $color_edge_exception->save();
 
         return redirect()->route('admin.color.edge.exception.list')->with('success', 'Material color edge exception updated successfully!');
