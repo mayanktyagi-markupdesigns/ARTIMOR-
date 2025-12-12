@@ -39,7 +39,6 @@ class MaterialColorEdgeExceptionController extends Controller
             'color_id'         => 'required|exists:colors,id',
             'edge_profile_id'  => 'required|exists:edge_profiles,id',
             'thickness_id'     => 'required|exists:thicknesses,id',
-            'is_allowed'       => 'required|in:true,false',
             'override_price_per_lm'  =>  'nullable|numeric|min:0',
             'status'           => 'required|in:0,1',           
         ]);        
@@ -52,7 +51,7 @@ class MaterialColorEdgeExceptionController extends Controller
         $color_edge_exception->color_id                = $request->color_id;
         $color_edge_exception->edge_profile_id         = $request->edge_profile_id;
         $color_edge_exception->thickness_id            = $request->thickness_id;    
-        $color_edge_exception->is_allowed              = $isAllowed;     
+        //$color_edge_exception->is_allowed              = $isAllowed;     
         $color_edge_exception->override_price_per_lm   = $request->override_price_per_lm;
         $color_edge_exception->status                  = $request->status;
         $color_edge_exception->save();    
@@ -81,7 +80,6 @@ class MaterialColorEdgeExceptionController extends Controller
             'color_id'         => 'required|exists:colors,id',
             'edge_profile_id'  => 'required|exists:edge_profiles,id',
             'thickness_id'     => 'required|exists:thicknesses,id',
-            'is_allowed'       => 'required|in:true,false',
             'override_price_per_lm'  =>  'nullable|numeric|min:0',
             'status'          => 'required|in:0,1', 
         ]);
@@ -95,7 +93,7 @@ class MaterialColorEdgeExceptionController extends Controller
         $color_edge_exception->color_id                = $request->color_id;
         $color_edge_exception->edge_profile_id         = $request->edge_profile_id;
         $color_edge_exception->thickness_id            = $request->thickness_id;    
-        $color_edge_exception->is_allowed              = $isAllowed;       
+        //$color_edge_exception->is_allowed              = $isAllowed;       
         $color_edge_exception->override_price_per_lm   = $request->override_price_per_lm;
         $color_edge_exception->status                  = $request->status;
         $color_edge_exception->save();

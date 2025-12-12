@@ -6,9 +6,7 @@ $edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
     'selected_edges' => []
 ]);
 
-<pre>
-{{ print_r(session()->all(), true) }}
-</pre>
+
 
 $selectedEdgeId = $edgeFinishing['edge_id'] ?? null;
 $selectedThicknessId = $edgeFinishing['thickness_id'] ?? null;
