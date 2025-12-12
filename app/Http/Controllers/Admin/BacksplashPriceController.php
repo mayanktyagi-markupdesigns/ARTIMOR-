@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BacksplashPrice;
 use App\Models\MaterialType;
+use App\Models\BacksplashShapes;
 
 class BacksplashPriceController extends Controller
 {
@@ -21,6 +22,7 @@ class BacksplashPriceController extends Controller
     // CREATE FORM
     public function create()
     {
+        $data['backsplashShapes'] = BacksplashShapes::where('status', 1)->get();
         $data['materialTypes'] = MaterialType::where('status', 1)->get();
         return view('admin.backsplash-price.add', $data);
     }
@@ -29,6 +31,7 @@ class BacksplashPriceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'backsplash_shape_id' => 'required|exists:backsplash_shapes,id',
             'material_type_id' => 'required|exists:material_types,id',
             'price_lm_guest' => 'required|numeric|min:0',
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
@@ -41,6 +44,7 @@ class BacksplashPriceController extends Controller
 
         $price = new BacksplashPrice();
 
+        $price->backsplash_shape_id               = $request->backsplash_shape_id ;
         $price->material_type_id                  = $request->material_type_id;
         $price->price_lm_guest                    = $request->price_lm_guest;
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;
@@ -59,6 +63,7 @@ class BacksplashPriceController extends Controller
     {
         $data['price']         = BacksplashPrice::findOrFail($id);
         $data['materialTypes'] = MaterialType::where('status', 1)->get();
+        $data['backsplashShapes'] = BacksplashShapes::where('status', 1)->get();
         return view('admin.backsplash-price.edit', $data);
     }
 
@@ -68,6 +73,7 @@ class BacksplashPriceController extends Controller
         $price = BacksplashPrice::findOrFail($id);
 
         $request->validate([
+            'backsplash_shape_id' => 'required|exists:backsplash_shapes,id',
             'material_type_id' => 'required|exists:material_types,id',
             'price_lm_guest' => 'required|numeric|min:0',
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
@@ -78,6 +84,7 @@ class BacksplashPriceController extends Controller
             'status' => 'required|in:0,1'
         ]);
 
+        $price->backsplash_shape_id               = $request->backsplash_shape_id;
         $price->material_type_id                  = $request->material_type_id;
         $price->price_lm_guest                    = $request->price_lm_guest;
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;

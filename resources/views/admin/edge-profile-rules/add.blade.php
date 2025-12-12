@@ -57,7 +57,7 @@
                     </div>
 
                     <!-- Is Allowed -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label for="is_allowed">Is Allowed <span class="text-danger">*</span></label>
                         <select name="is_allowed" class="form-select">
                             <option value="">Select Option</option>
@@ -65,11 +65,11 @@
                             <option value="false" {{ old('is_allowed') == 'false' ? 'selected' : '' }}>No</option>
                         </select>
                         @error('is_allowed') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                    </div> -->
 
                     <!-- Guest Price -->
                     <div class="col-md-4 mb-3">
-                        <label>Price Per LM (Guest) <span class="text-danger">*</span></label>
+                        <label>Price (Guest) <span class="text-danger">*</span></label>
                         <input type="number" min="0" step="0.01" name="price_per_lm_guest" class="form-control"
                             value="{{ old('price_per_lm_guest') }}">
                         @error('price_per_lm_guest') <small class="text-danger">{{ $message }}</small> @enderror
@@ -77,7 +77,7 @@
 
                     <!-- Business Price -->
                     <div class="col-md-4 mb-3">
-                        <label>Price Per LM (Business) <span class="text-danger">*</span></label>
+                        <label>Price (Business) <span class="text-danger">*</span></label>
                         <input type="number" min="0" step="0.01" name="price_per_lm_business" class="form-control"
                             value="{{ old('price_per_lm_business') }}">
                         @error('price_per_lm_business') <small class="text-danger">{{ $message }}</small> @enderror

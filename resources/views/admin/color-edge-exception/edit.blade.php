@@ -72,7 +72,7 @@
                     </div>
 
                     {{-- Is Allowed --}}
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label for="is_allowed">Is Allowed</label><span class="text-danger">*</span>
                         <select name="is_allowed" id="is_allowed" class="form-select">
                             <option value="true"
@@ -83,7 +83,7 @@
                             </option>
                         </select>
                         @error('is_allowed') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
+                    </div> -->
                     <!--override_price_per_lm-->
                     <div class="col-md-4 mb-3">
                         <label>Override Price Per lm</label>

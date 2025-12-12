@@ -37,7 +37,6 @@ class EdgeProfileThicknessController extends Controller
             'edge_profile_id'     => 'required|exists:edge_profiles,id',
             'material_type_id'    => 'required|exists:material_types,id',
             'thickness_id'        => 'required|exists:thicknesses,id',
-            'is_allowed'          => 'required|in:true,false',
             'price_per_lm_guest'  =>  'required|numeric|min:0',
             'price_per_lm_business'    => 'required|numeric|min:0',
             'status'              => 'required|in:0,1',           
@@ -50,7 +49,7 @@ class EdgeProfileThicknessController extends Controller
         $edge_profile_rule->edge_profile_id         = $request->edge_profile_id;
         $edge_profile_rule->material_type_id        = $request->material_type_id;
         $edge_profile_rule->thickness_id            = $request->thickness_id;    
-        $edge_profile_rule->is_allowed              = $isAllowed;   
+        //$edge_profile_rule->is_allowed              = $isAllowed;   
         $edge_profile_rule->price_per_lm_guest      = $request->price_per_lm_guest;    
         $edge_profile_rule->price_per_lm_business   = $request->price_per_lm_business;    
         $edge_profile_rule->status                  = $request->status;
@@ -78,7 +77,6 @@ class EdgeProfileThicknessController extends Controller
             'edge_profile_id'  => 'required|exists:edge_profiles,id',
             'material_type_id' => 'required|exists:material_types,id',
             'thickness_id'     => 'required|exists:thicknesses,id',
-            'is_allowed'       => 'required|in:true,false',
             'price_per_lm_guest'    =>  'required|numeric|min:0',
             'price_per_lm_business'    => 'required|numeric|min:0',
             'status'          => 'required|in:0,1', 
@@ -92,7 +90,7 @@ class EdgeProfileThicknessController extends Controller
         $edge_profile_rule->edge_profile_id         = $request->edge_profile_id;
         $edge_profile_rule->material_type_id        = $request->material_type_id;
         $edge_profile_rule->thickness_id            = $request->thickness_id;    
-        $edge_profile_rule->is_allowed              = $isAllowed;    
+        //$edge_profile_rule->is_allowed              = $isAllowed;    
         $edge_profile_rule->price_per_lm_guest      = $request->price_per_lm_guest;    
         $edge_profile_rule->price_per_lm_business   = $request->price_per_lm_business;    
         $edge_profile_rule->status                  = $request->status;
