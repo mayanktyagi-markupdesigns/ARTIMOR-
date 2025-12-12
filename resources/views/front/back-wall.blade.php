@@ -8,6 +8,9 @@ $selectedEdges = $backWall['selected_edges'] ?? [];
 
 // Shapes list (coming from backsplash_shapes)
 $backsplashShapes = $wall ?? collect();
+// Initialize dimensions with default values if not set
+$dimensions = session('dimensions', ['blad1' => ['width' => '', 'height' => '']]);
+$blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'height' => ''];
 @endphp
 
 <div class="materials">
@@ -149,6 +152,7 @@ $backsplashShapes = $wall ?? collect();
     setTimeout(function() {
         let selectedWallId = @json($selectedWallId);
         let selectedEdges = @json($selectedEdges);
+        window.dimensions = @json($dimensions);
 
         // Sync with global backWall object
         if (typeof window.backWall !== 'undefined') {

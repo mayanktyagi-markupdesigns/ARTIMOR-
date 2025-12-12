@@ -26,4 +26,9 @@ class CutOuts extends Model
     {
         return $this->belongsTo(CutOutsCategory::class, 'cut_outs_category_id');
     }
+
+    public function materialThicknessPrices()
+    {
+        return $this->hasMany(CutoutMaterialThicknessPrice::class, 'cut_out_id');
+    }
 }
