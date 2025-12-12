@@ -6,8 +6,6 @@ $edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
 'selected_edges' => []
 ]);
 
-
-
 $selectedEdgeId = $edgeFinishing['edge_id'] ?? null;
 $selectedThicknessId = $edgeFinishing['thickness_id'] ?? null;
 $selectedColorId = $edgeFinishing['color_id'] ?? null;
@@ -48,7 +46,7 @@ session('selected_material_type_id'));
     </div>
 
     <!-- Step 2: Select Thickness (shown after edge profile is selected) -->
-    <div class="row mb-5" id="thickness-section" style="display: none;">
+    <div class="row mb-5" id="thickness-section">
         <div class="col-lg-12">
             <hr class="my-4">
             <h4 class="mb-4 fw-bold">Step 2: Select Thickness</h4>
@@ -58,16 +56,12 @@ session('selected_material_type_id'));
                         <label class="form-label fw-bold">Thickness<sup class="text-danger">*</sup></label>
                         <select class="form-select form-select-lg" id="edge-thickness-select" required>
                             <option value="">-- Select Thickness --</option>
-                            <!-- Will be populated via AJAX -->
+                            @foreach($thickness as $item)
+                            <option value="{{ $item->id }}" {{ $selectedThickness = $item->id ? 'selected' : '' }}>
+                                {{ $item->thickness_value }}
+                            </option>
+                            @endforeach
                         </select>
-                        <div class="invalid-feedback">Please select a thickness.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                    <div class="alert alert-info mb-0 w-100">
-                        <small><i class="fas fa-info-circle"></i> Thickness will be loaded based on selected Edge
-                            Profile.</small>
                     </div>
                 </div>
             </div>
@@ -75,7 +69,7 @@ session('selected_material_type_id'));
     </div>
 
     <!-- Step 3: Select Color (shown after thickness is selected) -->
-    <div class="row mb-5" id="color-section" style="display: none;">
+    <div class="row mb-5" id="color-section">
         <div class="col-lg-12">
             <hr class="my-4">
             <h4 class="mb-4 fw-bold">Step 3: Select Color</h4>
@@ -85,16 +79,12 @@ session('selected_material_type_id'));
                         <label class="form-label fw-bold">Color<sup class="text-danger">*</sup></label>
                         <select class="form-select form-select-lg" id="edge-color-select" required>
                             <option value="">-- Select Color --</option>
-                            <!-- Will be populated via AJAX -->
+                            @foreach($colors as $item)
+                            <option value="{{ $item->id }}" {{ $selectedColor = $item->id ? 'selected' : '' }}>
+                                {{ $item->name }}
+                            </option>
+                            @endforeach
                         </select>
-                        <div class="invalid-feedback">Please select a color.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                    <div class="alert alert-info mb-0 w-100">
-                        <small><i class="fas fa-info-circle"></i> Colors will be loaded based on selected Edge Profile
-                            and Thickness.</small>
                     </div>
                 </div>
             </div>
@@ -102,7 +92,7 @@ session('selected_material_type_id'));
     </div>
 
     <!-- Step 4: Select Edges (shown after color is selected) -->
-    <div class="row mb-5" id="edges-selection-section" style="display: none;">
+    <div class="row mb-5" id="edges-selection-section">
         <div class="col-lg-12">
             <hr class="my-4">
             <h4 class="mb-4 fw-bold">Step 4: Select Edges to Finish (Optional)</h4>
@@ -138,7 +128,7 @@ session('selected_material_type_id'));
                             <span class="badge bg-success me-2 mb-2">{{ ucfirst($edge) }}</span>
                             @endforeach
                             @else
-                            <p class="text-muted">No edges selected yet.</p>
+                            <p class="text-muted"></p>
                             @endif
                         </div>
                     </div>
@@ -147,9 +137,8 @@ session('selected_material_type_id'));
         </div>
     </div>
 
-
     <!-- Selection Summary -->
-    <div class="row" id="selection-summary" style=>
+    <div class="row" id="selection-summary" style="display: none;">
         <div class="col-lg-12">
             <hr class="my-4">
             <div class="card bg-light">
@@ -568,7 +557,7 @@ session('selected_material_type_id'));
                     }
                     if (edgeFinishing) {
                         if (!edgeFinishing.selected_edges) edgeFinishing
-                    .selected_edges = [];
+                            .selected_edges = [];
                         edgeFinishing.selected_edges.push(edge);
                     }
                 }

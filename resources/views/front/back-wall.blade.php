@@ -117,8 +117,8 @@ $backsplashShapes = $wall ?? collect();
                         </div>
                     </div>
                 </div>
-                 <div class="col-lg-12 my-5">
-                            <hr>
+                <div class="col-lg-12 my-5">
+                    <hr>
                 </div>
             </div>
         </div>
@@ -284,14 +284,17 @@ $backsplashShapes = $wall ?? collect();
     cursor: pointer;
     transition: transform 0.2s ease;
 }
+
 .wall-card:hover {
     transform: scale(1.02);
 }
+
 .wall-card.selected {
     border: 3px solid #007bff;
     box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
     position: relative;
 }
+
 .wall-card.selected::after {
     content: "✔ Selected";
     position: absolute;
@@ -304,6 +307,7 @@ $backsplashShapes = $wall ?? collect();
     border-radius: 4px;
     font-weight: bold;
 }
+
 .edge-circle {
     cursor: pointer;
     display: inline-block;
@@ -313,10 +317,20 @@ $backsplashShapes = $wall ?? collect();
     background-color: #ccc;
     position: absolute;
 }
+
 .edge-circle.selected {
     background-color: #28a745;
 }
-.left-11-cir { left: -30px; }
-.right-11-cir { right: -30px; }
-.top-11-cir { top: -30px; }
+
+.left-11-cir {
+    left: -30px;
+}
+
+.right-11-cir {
+    right: -30px;
+}
+
+.top-11-cir {
+    top: -30px;
+}
 </style>
