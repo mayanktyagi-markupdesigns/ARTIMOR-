@@ -33,7 +33,7 @@ class BacksplashShapesController extends Controller
             'name'             => 'required|string|max:255',
             'sort_order'       => 'required|integer',
             'image'            => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
-            'dimension_fields' => 'nullable|array',
+            //'dimension_fields' => 'nullable|array',
             'status'           => 'required|in:0,1',
         ]);
 
@@ -63,7 +63,7 @@ class BacksplashShapesController extends Controller
         $shape->image             = $imageName;
         $shape->sort_order        = $request->sort_order;
         $shape->status            = $request->status;
-        $shape->dimension_fields  = $request->dimension_fields;
+        //$shape->dimension_fields  = $request->dimension_fields;
 
         $shape->save();
 
@@ -88,7 +88,7 @@ class BacksplashShapesController extends Controller
             'sort_order'    => 'required|integer',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
             'status'        => 'required|in:0,1',
-            'dimension_fields' => 'nullable|array',
+            //'dimension_fields' => 'nullable|array',
         ]);
 
         $imageName = $shape->image;
@@ -115,7 +115,7 @@ class BacksplashShapesController extends Controller
         $shape->image                 = $imageName;
         $shape->sort_order            = $request->sort_order;
         $shape->status                = $request->status;
-        $shape->dimension_fields      = $request->dimension_fields;
+       // $shape->dimension_fields      = $request->dimension_fields;
 
         $shape->save();
 

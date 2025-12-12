@@ -55,7 +55,8 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                 <div class="col-md-4 mb-4">
                     <div class="p-0 card border-0 rounded-0 position-relative product-col material-type-card
                                 {{ (string)$selectedMaterialTypeId === (string)$type->id ? 'selected' : '' }}"
-                        data-id="{{ $type->id }}">
+                        data-id="{{ $type->id }}"
+                        data-modal-target="#materialModal-{{ $type->id }}">
 
                         <img src="{{ $typeImage }}" class="card-img-top" alt="{{ $type->name }}">
 
@@ -64,11 +65,6 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                 <div>
                                     <span>{{ $i + 1 }}.</span> {{ $type->name }}
                                 </div>
-
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#materialModal-{{ $type->id }}"
-                                    class="btn-link">
-                                    Quick View
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -91,37 +87,46 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                         <!-- COLOR -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Color<sup>*</sup></label>
-                                            <select class="form-select mat-color" data-id="{{ $type->id }}">
+                                            <select class="form-select mat-color" data-id="{{ $type->id }}" required>
                                                 <option value="">Select Color</option>
                                                 @foreach($type->colors as $color)
-                                                <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                                <option value="{{ $color->id }}" 
+                                                    {{ (string)$materialConfig['color'] === (string)$color->id ? 'selected' : '' }}>
+                                                    {{ $color->name }}
+                                                </option>
                                                 @endforeach
                                             </select>
-
+                                            <div class="invalid-feedback">Please select a color.</div>
                                         </div>
 
                                         <!-- FINISH -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Finish<sup>*</sup></label>
-                                            <select class="form-select mat-finish" data-id="{{ $type->id }}">
+                                            <select class="form-select mat-finish" data-id="{{ $type->id }}" required>
                                                 <option value="">Select Finish</option>
                                                 @foreach($type->finishes as $finish)
-                                                <option value="{{ $finish->id }}">{{ $finish->finish_name }}</option>
+                                                <option value="{{ $finish->id }}"
+                                                    {{ (string)$materialConfig['finish'] === (string)$finish->id ? 'selected' : '' }}>
+                                                    {{ $finish->finish_name }}
+                                                </option>
                                                 @endforeach
                                             </select>
+                                            <div class="invalid-feedback">Please select a finish.</div>
                                         </div>
 
                                         <!-- THICKNESS -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Thickness<sup>*</sup></label>
-                                            <select class="form-select mat-thickness" data-id="{{ $type->id }}">
+                                            <select class="form-select mat-thickness" data-id="{{ $type->id }}" required>
                                                 <option value="">Select Thickness</option>
                                                 @foreach($type->thicknesses as $thickness)
-                                                <option value="{{ $thickness->id }}">
+                                                <option value="{{ $thickness->id }}"
+                                                    {{ (string)$materialConfig['thickness'] === (string)$thickness->id ? 'selected' : '' }}>
                                                     {{ $thickness->thickness_value }}
                                                 </option>
                                                 @endforeach
                                             </select>
+                                            <div class="invalid-feedback">Please select a thickness.</div>
                                         </div>
 
                                         <div class="d-flex gap-4 mt-5">
@@ -131,7 +136,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
                                             <button class="btn btn-primary red-btn confirm-material"
                                                 data-id="{{ $type->id }}">
-                                                Confirm
+                                                Confirm & Continue
                                             </button>
                                         </div>
 
@@ -164,42 +169,48 @@ let materialSelection = {};
 console.log('Final Material script loaded');
 
 /* =================================
-   SAFE MATERIAL CARD SELECTION
+   MATERIAL CARD CLICK - OPEN MODAL DIRECTLY
 ================================= */
 document.addEventListener('click', function(e) {
-
+    // Don't interfere with modal interactions
     if (e.target.closest('.modal')) return;
-    // if (e.target.closest('[data-bs-toggle="modal"]')) return;
-
-    /* If click is on Quick View button → LET BOOTSTRAP HANDLE IT */
-
-    const quickViewBtn = e.target.closest('[data-bs-toggle="modal"]');
-
-    if (quickViewBtn) {
-
-        return; // DO NOT touch selection, DO NOT stop event
-
-    }
+    if (e.target.closest('.btn-close')) return;
+    if (e.target.closest('.confirm-material')) return;
+    if (e.target.closest('.cancel-btn')) return;
 
     const card = e.target.closest('.material-type-card');
     if (!card) return;
 
-    const clickedId = card.dataset.id;
+    const modalTarget = card.getAttribute('data-modal-target');
+    if (!modalTarget) return;
 
-    if (card.classList.contains('selected')) {
-        card.classList.remove('selected');
-        selectedMaterialTypeId = null;
-        materialSelection = {};
-        console.log('Material unselected');
-    } else {
-        document.querySelectorAll('.material-type-card')
-            .forEach(c => c.classList.remove('selected'));
-
-        card.classList.add('selected');
-        selectedMaterialTypeId = clickedId;
-        materialSelection.material_type_id = clickedId;
-
-        console.log('Material selected:', clickedId);
+    // Open modal directly
+    const modalElement = document.querySelector(modalTarget);
+    if (modalElement) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        
+        // Restore selected values if material was already selected
+        const materialTypeId = card.getAttribute('data-id');
+        if (materialSelection.material_type_id === materialTypeId) {
+            const colorSelect = modalElement.querySelector('.mat-color');
+            const finishSelect = modalElement.querySelector('.mat-finish');
+            const thicknessSelect = modalElement.querySelector('.mat-thickness');
+            
+            if (colorSelect && materialSelection.color) {
+                colorSelect.value = materialSelection.color;
+                colorSelect.classList.add('is-valid');
+            }
+            if (finishSelect && materialSelection.finish) {
+                finishSelect.value = materialSelection.finish;
+                finishSelect.classList.add('is-valid');
+            }
+            if (thicknessSelect && materialSelection.thickness) {
+                thicknessSelect.value = materialSelection.thickness;
+                thicknessSelect.classList.add('is-valid');
+            }
+        }
+        
+        modal.show();
     }
 });
 
@@ -221,12 +232,43 @@ document.addEventListener('click', function(e) {
     const finish = modal.querySelector('.mat-finish')?.value;
     const thickness = modal.querySelector('.mat-thickness')?.value;
 
-    if (!color) return alert('Please select color');
-    if (!finish) return alert('Please select finish');
-    if (!thickness) return alert('Please select thickness');
+    // Validation without alerts - show inline errors
+    const colorSelect = modal.querySelector('.mat-color');
+    const finishSelect = modal.querySelector('.mat-finish');
+    const thicknessSelect = modal.querySelector('.mat-thickness');
 
-    /* ✅ CORRECT GLOBAL SAVE */
-    window.selectedMaterialTypeId = materialTypeId; // ✅ ONLY TYPE
+    let hasError = false;
+
+    if (!color) {
+        colorSelect.classList.add('is-invalid');
+        hasError = true;
+    } else {
+        colorSelect.classList.remove('is-invalid');
+        colorSelect.classList.add('is-valid');
+    }
+
+    if (!finish) {
+        finishSelect.classList.add('is-invalid');
+        hasError = true;
+    } else {
+        finishSelect.classList.remove('is-invalid');
+        finishSelect.classList.add('is-valid');
+    }
+
+    if (!thickness) {
+        thicknessSelect.classList.add('is-invalid');
+        hasError = true;
+    } else {
+        thicknessSelect.classList.remove('is-invalid');
+        thicknessSelect.classList.add('is-valid');
+    }
+
+    if (hasError) {
+        return; // Don't proceed if validation fails
+    }
+
+    /* CORRECT GLOBAL SAVE */
+    window.selectedMaterialTypeId = materialTypeId; // ONLY TYPE
     materialSelection = {
         material_type_id: materialTypeId,
         color,
@@ -236,18 +278,34 @@ document.addEventListener('click', function(e) {
 
     console.log('Material Saved:', materialSelection);
 
-    /* ✅ UI UPDATE */
+    /* UI UPDATE */
     document.querySelectorAll('.material-type-card')
-        .forEach(c => c.classList.remove('selected'));
+        .forEach(c => {
+            c.classList.remove('selected');
+            // Remove confirmation badge if exists
+            const badge = c.querySelector('.confirmation-badge');
+            if (badge) badge.remove();
+        });
 
     const selectedCard = document.querySelector(
         `.material-type-card[data-id="${materialTypeId}"]`
     );
-    if (selectedCard) selectedCard.classList.add('selected');
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+        // Add confirmation badge
+        const badge = document.createElement('span');
+        badge.className = 'confirmation-badge';
+        badge.innerHTML = '✓ Confirmed';
+        badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+        selectedCard.style.position = 'relative';
+        selectedCard.appendChild(badge);
+    }
 
-    /* ✅ SAFE MODAL CLOSE */
+    /* SAFE MODAL CLOSE */
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
     modalInstance.hide();
+    
+    // No alert message - just visual feedback through selected state
 });
 
 
@@ -290,5 +348,28 @@ document.addEventListener('hidden.bs.modal', function() {
     font-size: 12px;
     border-radius: 4px;
     font-weight: bold;
+    z-index: 5;
+}
+
+.confirmation-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* Modal validation styles */
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-select.is-valid {
+    border-color: #28a745;
 }
 </style>

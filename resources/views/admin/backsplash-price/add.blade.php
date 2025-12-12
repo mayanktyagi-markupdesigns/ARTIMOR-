@@ -15,8 +15,20 @@
                 @csrf
                 <div class="row">
                     <div class="col-md-4 mb-3">
+                        <label>Backsplash Shapes *</label>
+                        <select name="backsplash_shape_id" class="form-select">
+                            <option value="">Select Backsplash Shapes</option>
+                            @foreach($backsplashShapes as $mt)
+                                <option value="{{ $mt->id }}" {{ old('backsplash_shape_id') == $mt->id ? 'selected' : '' }}>
+                                    {{ $mt->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('backsplash_shape_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                    <div class="col-md-4 mb-3">
                         <label>Material Type *</label>
-                        <select name="material_type_id" class="form-select" required>
+                        <select name="material_type_id" class="form-select">
                             <option value="">Select Material Type</option>
                             @foreach($materialTypes as $mt)
                                 <option value="{{ $mt->id }}" {{ old('material_type_id') == $mt->id ? 'selected' : '' }}>
@@ -28,7 +40,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>Price LM (Guest) *</label>
+                        <label>Price (Guest) *</label>
                         <input type="number" name="price_lm_guest" value="{{ old('price_lm_guest') }}" class="form-control" required step="0.01">
                     </div>
 
@@ -38,7 +50,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>Price LM (Business) *</label>
+                        <label>Price (Business) *</label>
                         <input type="number" name="price_lm_business" value="{{ old('price_lm_business') }}" class="form-control" required step="0.01">
                     </div>
 
@@ -47,7 +59,7 @@
                         <input type="number" name="finished_side_price_lm_business" value="{{ old('finished_side_price_lm_business') }}" class="form-control" step="0.01">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Min Height (mm)</label>
                         <input type="number" name="min_height_mm" value="{{ old('min_height_mm') }}" class="form-control">
                     </div>
@@ -55,7 +67,7 @@
                     <div class="col-md-4 mb-3">
                         <label>Max Height (mm)</label>
                         <input type="number" name="max_height_mm" value="{{ old('max_height_mm') }}" class="form-control">
-                    </div>
+                    </div> -->
 
                     <div class="col-md-4 mb-3">
                         <label>Status *</label>

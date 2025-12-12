@@ -18,7 +18,7 @@
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Name</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Image</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Dimensions</th>
+                            <!-- <th scope="col" style="width: 200px; background-color: #f1f5f9;">Dimensions</th> -->
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Sort Order</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>
                         </tr>
@@ -36,11 +36,11 @@
                                 <span class="text-muted">No image</span>
                                 @endif
                             </td>
-                            <td>
+                            <!-- <td>
                                 @if($shape->dimension_fields)
                                 {{ implode(", ", $shape->dimension_fields) }}
                                 @endif
-                            </td>
+                            </td> -->
                             <td>{{ $shape->sort_order }}</td>
                             <td>
                                 <a href="{{ route('admin.backsplash.shapes.edit',$shape->id) }}"

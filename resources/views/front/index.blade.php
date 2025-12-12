@@ -102,6 +102,16 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
     <button id="nextStepBtn" class="btn btn-dark btn-primary px-4" data-step="2">Next Step</button>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+    <div class="text-center text-white">
+        <div class="spinner-border mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p style="font-size: 18px; font-weight: 500;">Loading...</p>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -114,17 +124,38 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetStep = parseInt(this.getAttribute('data-step'));
 
             // ✅ Forward validation (same as Next button)
-            if (targetStep > 1 && !selectedMaterialId) {
-                alert('Please select a material first.');
-                return;
+            // Step 1 to Step 2: Material configuration must be complete
+            if (targetStep > 1 && targetStep <= 2) {
+                if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection.finish || !materialSelection.thickness) {
+                    alert('Please complete material configuration first.');
+                    return;
+                }
             }
-            if (targetStep > 2 && !selectedMaterialTypeId) {
-                alert('Please select a material type first.');
-                return;
+            // Step 2 to Step 3: Layout must be selected
+            if (targetStep > 2 && targetStep <= 3) {
+                if (!selectedLayoutId) {
+                    // Scroll to layout section
+                    const layoutSection = document.getElementById('step2');
+                    if (layoutSection) {
+                        layoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    return;
+                }
             }
-            if (targetStep > 3 && !selectedLayoutId) {
-                alert('Please select a layout first.');
-                return;
+            // Step 3 to Step 4: Dimensions must be entered
+            if (targetStep > 3 && targetStep <= 4) {
+                if (!dimensions.blad1.width || !dimensions.blad1.height || 
+                    isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
+                    parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
+                    alert('Please enter Width and Height.');
+                    return;
+                }
+            }
+
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
             }
 
             const data = {
@@ -154,13 +185,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         const stepper = document.querySelector('.stepper' + i);
 
                         if (i === targetStep) {
-                            div.classList.remove('hidden');
-                            div.classList.add('show', 'active');
-                            stepper.classList.add('active');
+                            if (div) {
+                                div.classList.remove('hidden');
+                                div.classList.add('show', 'active');
+                            }
+                            if (stepper) {
+                                stepper.classList.add('active');
+                            }
                         } else {
-                            div.classList.add('hidden');
-                            div.classList.remove('show', 'active');
-                            stepper.classList.remove('active');
+                            if (div) {
+                                div.classList.add('hidden');
+                                div.classList.remove('show', 'active');
+                            }
+                            if (stepper) {
+                                stepper.classList.remove('active');
+                            }
                         }
                     }
 
@@ -170,18 +209,27 @@ document.addEventListener('DOMContentLoaded', function() {
                         'inline-block';
 
                     // ✅ Re-init step logic
-                    if (targetStep === 3) initializeLayoutCards();
-                    if (targetStep === 4) initializeDimensionInputs();
-                    if (targetStep === 5) initializeEdgeFinishing();
-                    if (targetStep === 6) initializeBackWall();
-                    if (targetStep === 7) initializeSinkSelection();
-                    if (targetStep === 8) initializeCutoutSelection();
-                    if (targetStep === 9) initializePersonalDataForm();
+                    if (targetStep === 2) {
+                        setTimeout(() => initializeLayoutCards(), 100);
+                    }
+                    if (targetStep === 3) initializeDimensionInputs();
+                    if (targetStep === 4) initializeEdgeFinishing();
+                    if (targetStep === 5) initializeBackWall();
+                    if (targetStep === 6) initializeSinkSelection();
+                    if (targetStep === 7) initializeCutoutSelection();
+                    if (targetStep === 8) initializePersonalDataForm();
 
                 })
                 .catch(err => {
                     console.error(err);
                     alert('Failed to load step.');
+                })
+                .finally(() => {
+                    // Hide loading overlay
+                    const loadingOverlay = document.getElementById('loadingOverlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
                 });
         });
     });
@@ -217,16 +265,17 @@ document.addEventListener('DOMContentLoaded', function() {
             height: null
         }
     };
-    let edgeFinishing = {
+    window.edgeFinishing = {
         edge_id: null,
-        thickness: null,
+        thickness_id: null,
+        color_id: null,
         selected_edges: []
     };
-    let backWall = {
+    window.backWall = {
         wall_id: null,
-        thickness: null,
         selected_edges: []
     };
+    let backWall = window.backWall;
     let sinkSelection = {
         sink_id: null,
         cutout: null,
@@ -277,26 +326,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to initialize layout card selection
     function initializeLayoutCards() {
-        const layoutCards = document.querySelectorAll('.layout-card');
-        if (!layoutCards.length) {
-            selectedLayoutId = null;
-            return;
-        }
-        layoutCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const layoutId = this.getAttribute('data-id');
-                selectedLayoutId = layoutId ? String(layoutId) : null;
-                layoutCards.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-        if (!selectedLayoutId) {
-            const activeLayoutCard = document.querySelector('.layout-card.selected');
-            if (activeLayoutCard) {
-                const layoutId = activeLayoutCard.getAttribute('data-id');
-                selectedLayoutId = layoutId ? String(layoutId) : null;
+        // Wait a bit for DOM to be ready
+        setTimeout(() => {
+            const layoutCards = document.querySelectorAll('.layout-card');
+            if (!layoutCards || layoutCards.length === 0) {
+                selectedLayoutId = null;
+                return;
             }
-        }
+
+            // Add event listeners directly (no cloning needed)
+            layoutCards.forEach(card => {
+                // Remove existing listener if any
+                const newCard = card.cloneNode(true);
+                if (card.parentNode) {
+                    card.parentNode.replaceChild(newCard, card);
+                }
+
+                // Add click listener to new card
+                newCard.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const layoutId = this.getAttribute('data-id');
+                    if (!layoutId) return;
+
+                    selectedLayoutId = String(layoutId);
+                    
+                    // Update UI - remove all selections
+                    document.querySelectorAll('.layout-card').forEach(c => {
+                        if (c && c.classList) {
+                            c.classList.remove('selected');
+                            // Remove any existing confirmation badge
+                            const existingBadge = c.querySelector('.layout-confirmation-badge');
+                            if (existingBadge) existingBadge.remove();
+                        }
+                    });
+                    
+                    // Add selected state to clicked card
+                    if (this && this.classList) {
+                        this.classList.add('selected');
+                        
+                        // Add confirmation badge
+                        if (!this.querySelector('.layout-confirmation-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'layout-confirmation-badge';
+                            badge.innerHTML = '✓ Selected';
+                            badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+                            if (this.style) {
+                                this.style.position = 'relative';
+                            }
+                            this.appendChild(badge);
+                        }
+                    }
+
+                    // Save to session immediately
+                    fetch("{{ route('calculator.steps') }}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            step: 2,
+                            layout_id: selectedLayoutId
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Layout saved to session:', selectedLayoutId);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to save layout:', err);
+                    });
+
+                    console.log('Layout selected:', selectedLayoutId);
+                });
+            });
+
+            // Restore selected state if exists
+            if (selectedLayoutId) {
+                const activeLayoutCard = document.querySelector(`.layout-card[data-id="${selectedLayoutId}"]`);
+                if (activeLayoutCard && activeLayoutCard.classList) {
+                    activeLayoutCard.classList.add('selected');
+                    // Add confirmation badge if not exists
+                    if (!activeLayoutCard.querySelector('.layout-confirmation-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'layout-confirmation-badge';
+                        badge.innerHTML = '✓ Selected';
+                        badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+                        if (activeLayoutCard.style) {
+                            activeLayoutCard.style.position = 'relative';
+                        }
+                        activeLayoutCard.appendChild(badge);
+                    }
+                }
+            }
+        }, 100);
     }
 
     // Function to initialize dimension inputs
@@ -305,78 +429,211 @@ document.addEventListener('DOMContentLoaded', function() {
         const height1Input = document.getElementById('height1');
 
         if (width1Input && height1Input) {
-            width1Input.addEventListener('input', () => dimensions.blad1.width = width1Input.value);
-            height1Input.addEventListener('input', () => dimensions.blad1.height = height1Input.value);
+            // Restore values if exist
+            if (dimensions.blad1.width) width1Input.value = dimensions.blad1.width;
+            if (dimensions.blad1.height) height1Input.value = dimensions.blad1.height;
+
+            width1Input.addEventListener('input', function() {
+                dimensions.blad1.width = this.value;
+                validateDimensions();
+            });
+            
+            height1Input.addEventListener('input', function() {
+                dimensions.blad1.height = this.value;
+                validateDimensions();
+            });
+
+            // Validate on blur
+            width1Input.addEventListener('blur', validateDimensions);
+            height1Input.addEventListener('blur', validateDimensions);
+        }
+    }
+
+    // Validate dimensions
+    function validateDimensions() {
+        const width = parseFloat(dimensions.blad1.width);
+        const height = parseFloat(dimensions.blad1.height);
+        
+        const widthInput = document.getElementById('width1');
+        const heightInput = document.getElementById('height1');
+
+        if (widthInput && heightInput) {
+            if (width && width > 0) {
+                widthInput.classList.remove('is-invalid');
+                widthInput.classList.add('is-valid');
+            } else if (dimensions.blad1.width) {
+                widthInput.classList.remove('is-valid');
+                widthInput.classList.add('is-invalid');
+            }
+
+            if (height && height > 0) {
+                heightInput.classList.remove('is-invalid');
+                heightInput.classList.add('is-valid');
+            } else if (dimensions.blad1.height) {
+                heightInput.classList.remove('is-valid');
+                heightInput.classList.add('is-invalid');
+            }
         }
     }
 
     // Function to initialize edge finishing selections
     function initializeEdgeFinishing() {
-        const edgeCards = document.querySelectorAll('.edge-card');
-        const edgeCircles = document.querySelectorAll('.edge-finishing-tab .edge-circle');
-        const thicknessSelect = document.getElementById('edge-thickness');
+        // Edge finishing is now handled in the blade file itself
+        // Just sync the global edgeFinishing object with the form
+        setTimeout(() => {
+            const ef = window.edgeFinishing || edgeFinishing;
+            const edgeIdInput = document.querySelector('.edge-profile-card.selected');
+            const thicknessSelect = document.getElementById('edge-thickness-select');
+            const colorSelect = document.getElementById('edge-color-select');
+            const edgeCircles = document.querySelectorAll('.edge-circle');
 
-        edgeCards.forEach(card => {
-            card.addEventListener('click', function() {
-                edgeFinishing.edge_id = this.getAttribute('data-id');
-                edgeCards.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
+            // Sync edge_id
+            if (edgeIdInput && ef) {
+                ef.edge_id = edgeIdInput.getAttribute('data-id');
+            }
 
-        edgeCircles.forEach(circle => {
-            circle.addEventListener('click', function() {
-                const edge = this.getAttribute('data-edge');
-                if (edgeFinishing.selected_edges.includes(edge)) {
-                    edgeFinishing.selected_edges = edgeFinishing.selected_edges.filter(e =>
-                        e !== edge);
-                    this.classList.remove('selected');
-                } else {
-                    edgeFinishing.selected_edges.push(edge);
-                    this.classList.add('selected');
-                }
-            });
-        });
+            // Sync thickness_id
+            if (thicknessSelect && ef) {
+                ef.thickness_id = thicknessSelect.value;
+                thicknessSelect.addEventListener('change', function() {
+                    if (ef) ef.thickness_id = this.value;
+                    // Save to session
+                    saveEdgeFinishingToSession();
+                });
+            }
 
-        if (thicknessSelect) {
-            thicknessSelect.addEventListener('change', () => {
-                edgeFinishing.thickness = thicknessSelect.value;
+            // Sync color_id
+            if (colorSelect && ef) {
+                ef.color_id = colorSelect.value;
+                colorSelect.addEventListener('change', function() {
+                    if (ef) ef.color_id = this.value;
+                    // Save to session
+                    saveEdgeFinishingToSession();
+                });
+            }
+
+            // Sync edge circles
+            edgeCircles.forEach(circle => {
+                circle.addEventListener('click', function() {
+                    const edge = this.getAttribute('data-edge');
+                    if (!edge || !ef) return;
+
+                    if (!ef.selected_edges) {
+                        ef.selected_edges = [];
+                    }
+
+                    if (ef.selected_edges.includes(edge)) {
+                        ef.selected_edges = ef.selected_edges.filter(e => e !== edge);
+                        this.classList.remove('selected');
+                    } else {
+                        ef.selected_edges.push(edge);
+                        this.classList.add('selected');
+                    }
+                    
+                    // Save to session
+                    saveEdgeFinishingToSession();
+                });
             });
-        }
+
+            // Listen for edge profile card clicks (handled in blade but sync here)
+            document.querySelectorAll('.edge-profile-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const edgeId = this.getAttribute('data-id');
+                    if (edgeId && ef) {
+                        ef.edge_id = edgeId;
+                        // Save to session
+                        saveEdgeFinishingToSession();
+                    }
+                });
+            });
+        }, 200);
+    }
+
+    // Save edge finishing to session
+    function saveEdgeFinishingToSession() {
+        const ef = window.edgeFinishing || edgeFinishing;
+        if (!ef) return;
+        
+        fetch("{{ route('calculator.steps') }}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                step: 4,
+                edge_finishing: ef
+            })
+        }).catch(err => console.error('Failed to save edge finishing:', err));
     }
 
     // Function to initialize back wall selections
     function initializeBackWall() {
-        const wallCards = document.querySelectorAll('.wall-card');
-        const wallCircles = document.querySelectorAll('.back-wall-tab .edge-circle');
-        const thicknessSelect = document.getElementById('wall-thickness');
+        // Back wall is now handled in the blade file itself
+        // Just sync the global backWall object
+        setTimeout(() => {
+            const ef = window.backWall || backWall;
+            const wallIdInput = document.querySelector('.wall-card.selected');
+            const edgeCircles = document.querySelectorAll('.edge-circle');
 
-        wallCards.forEach(card => {
-            card.addEventListener('click', function() {
-                backWall.wall_id = this.getAttribute('data-id');
-                wallCards.forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
+            // Sync wall_id
+            if (wallIdInput && ef) {
+                ef.wall_id = wallIdInput.getAttribute('data-id');
+            }
 
-        wallCircles.forEach(circle => {
-            circle.addEventListener('click', function() {
-                const edge = this.getAttribute('data-edge');
-                if (backWall.selected_edges.includes(edge)) {
-                    backWall.selected_edges = backWall.selected_edges.filter(e => e !== edge);
-                    this.classList.remove('selected');
-                } else {
-                    backWall.selected_edges.push(edge);
-                    this.classList.add('selected');
-                }
-            });
-        });
+            // Sync edge circles
+            edgeCircles.forEach(circle => {
+                circle.addEventListener('click', function() {
+                    const edge = this.getAttribute('data-edge');
+                    if (!edge || !ef) return;
 
-        if (thicknessSelect) {
-            thicknessSelect.addEventListener('change', () => {
-                backWall.thickness = thicknessSelect.value;
+                    if (!ef.selected_edges) {
+                        ef.selected_edges = [];
+                    }
+
+                    if (ef.selected_edges.includes(edge)) {
+                        ef.selected_edges = ef.selected_edges.filter(e => e !== edge);
+                        this.classList.remove('selected');
+                    } else {
+                        ef.selected_edges.push(edge);
+                        this.classList.add('selected');
+                    }
+                    
+                    // Save to session
+                    saveBackWallToSession();
+                });
             });
-        }
+
+            // Listen for wall card clicks (handled in blade but sync here)
+            document.querySelectorAll('.wall-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const wallId = this.getAttribute('data-id');
+                    if (wallId && ef) {
+                        ef.wall_id = wallId;
+                        // Save to session
+                        saveBackWallToSession();
+                    }
+                });
+            });
+        }, 200);
+    }
+    
+    // Save back wall to session
+    function saveBackWallToSession() {
+        const ef = window.backWall || backWall;
+        if (!ef) return;
+        
+        fetch("{{ route('calculator.steps') }}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                step: 5,
+                back_wall: ef
+            })
+        }).catch(err => console.error('Failed to save back wall:', err));
     }
 
     // Function to initialize sink selections
@@ -544,114 +801,109 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Next Step button click
     nextStepBtn.addEventListener('click', function() {
         const currentStep = parseInt(nextStepBtn.getAttribute('data-step'));
-        console.log
-        if (currentStep > 1) {
-            $('.materials-tab-div').addClass('hidden');
-        } else {
-            $('.materials-tab-div').removeClass('hidden');
-        }
-        // Validate selections based on step
+
+        // Prevent multiple clicks
+        if (nextStepBtn.disabled) return;
+        
+        // ✅ STEP-1 VALIDATION: Material Price - Color, Finish, Thickness must be selected
         if (currentStep === 2) {
-            if (!window.selectedMaterialTypeId) {
-                alert("Please select a material before proceeding to the next step.");
+            if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection.finish || !materialSelection.thickness) {
+                // Show inline error - no alert
+                const materialCards = document.querySelectorAll('.material-type-card');
+                if (materialCards.length > 0) {
+                    // Scroll to material section
+                    document.getElementById('step1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
                 return;
             }
         }
 
+        // ✅ STEP-2 VALIDATION: Choose Layout - Layout must be selected
         if (currentStep === 3) {
-            if (!window.selectedMaterialId) {
-                alert("Please select a material before proceeding to the next step.");
-                return;
-            }
-            if (!window.selectedMaterialTypeId) {
-                alert("Please select a material type before proceeding to the next step.");
-                return;
-            }
-        }
-        if (currentStep === 4 && !selectedLayoutId) {
-            alert("Please select a layout before proceeding to the next step.");
-            return;
-        }
-        if (currentStep === 5) {
-            if (!dimensions.blad1.width || !dimensions.blad1.height) {
-                alert("Please enter both width and height for Blad 01.");
-                return;
-            }
-            if (isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) || dimensions.blad1
-                .width <= 0 || dimensions.blad1.height <= 0) {
-                alert("Please enter valid numeric values for width and height.");
-                return;
-            }
-        }
-        if (currentStep === 6) {
-            if (!edgeFinishing.edge_id) {
-                alert("Please select an edge type.");
-                return;
-            }
-            if (!edgeFinishing.thickness) {
-                alert("Please select an edge thickness.");
-                return;
-            }
-            if (edgeFinishing.selected_edges.length === 0) {
-                alert("Please select at least one edge to finish.");
-                return;
-            }
-        }
-        if (currentStep === 7) {
-            if (!backWall.wall_id) {
-                alert("Please select a back wall type.");
-                return;
-            }
-            if (!backWall.thickness) {
-                alert("Please select a back wall thickness.");
-                return;
-            }
-            if (backWall.selected_edges.length === 0) {
-                alert("Please select at least one side for back wall finishing.");
-                return;
-            }
-        }
-        if (currentStep === 8) {
-            if (!sinkSelection.sink_id) {
-                alert("Please select a sink by confirming in the modal.");
-                return;
-            }
-            if (!sinkSelection.cutout) {
-                alert("Please select a cutout type for the sink.");
-                return;
-            }
-            if (!sinkSelection.number || isNaN(sinkSelection.number) || sinkSelection.number < 0 ||
-                sinkSelection.number > 10) {
-                alert("Please enter a valid number of sinks (0-10).");
-                return;
-            }
-        }
-        if (currentStep === 9) {
-            if (!cutoutSelection.cutout_id) {
-                alert("Please select a cut-out by confirming in the modal.");
-                return;
-            }
-            if (!cutoutSelection.recess_type) {
-                alert("Please select a recess type for the cut-out.");
+            if (!selectedLayoutId) {
+                // Scroll to layout section
+                const layoutSection = document.getElementById('step2');
+                if (layoutSection) {
+                    layoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                // Show inline error - no alert
                 return;
             }
         }
 
-        // Prepare data for AJAX request
+        // ✅ STEP-3 VALIDATION: Dimensions - Width and Height must be entered
+        if (currentStep === 4) {
+            if (!dimensions.blad1.width || !dimensions.blad1.height || 
+                isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
+                parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
+                alert("Please enter Width and Height (positive numbers).");
+                return;
+            }
+        }
+
+        // ✅ STEP-4 VALIDATION: Edge Finishing - Only Edge Profile must be selected (for now)
+        if (currentStep === 5) {
+            // Use window.edgeFinishing if available, fallback to edgeFinishing
+            const ef = window.edgeFinishing || edgeFinishing;
+            
+            if (!ef || !ef.edge_id) {
+                // Scroll to edge finishing section
+                const edgeSection = document.getElementById('step4');
+                if (edgeSection) {
+                    edgeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                alert('Please select an Edge Profile.');
+                return;
+            }
+        }
+
+        // ✅ STEP-5 VALIDATION: Back Wall - Back Wall Shape must be selected
+        if (currentStep === 6) {
+            const bw = window.backWall || backWall;
+            
+            if (!bw || !bw.wall_id) {
+                const backWallSection = document.getElementById('step5');
+                if (backWallSection) {
+                    backWallSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                alert('Please select a Back Wall Shape.');
+                return;
+            }
+        }
+
+        // Disable button and show loading
+        nextStepBtn.disabled = true;
+        const originalText = nextStepBtn.innerHTML;
+        nextStepBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+        
+        // Show loading overlay
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+        }
+
         const data = {
             step: currentStep
         };
-        if (currentStep === 2 || currentStep === 3) data.material_type_id = window
-            .selectedMaterialTypeId;
-        if ((currentStep === 2 || currentStep === 3) && window.selectedMaterialTypeId) data
-            .material_type_id = window.selectedMaterialTypeId;
-        if (currentStep === 4) data.layout_id = selectedLayoutId;
-        if (currentStep === 5) data.dimensions = dimensions;
-        if (currentStep === 6) data.edge_finishing = edgeFinishing;
-        if (currentStep === 7) data.back_wall = backWall;
-        if (currentStep === 8) data.sink_selection = sinkSelection;
-        if (currentStep === 9) data.cutout_selection = cutoutSelection;
-        console.log('Data sent for step', currentStep, data);
+
+        /* ✅ SEND FULL MATERIAL CONFIG ONLY ON STEP-1 */
+        if (currentStep === 2) {
+            data.material_config = materialSelection;
+        }
+
+        if (currentStep === 3) data.layout_id = selectedLayoutId;
+        if (currentStep === 4) data.dimensions = dimensions;
+        if (currentStep === 5) {
+            const ef = window.edgeFinishing || edgeFinishing;
+            data.edge_finishing = ef;
+        }
+        if (currentStep === 6) {
+            const ef = window.backWall || backWall;
+            data.back_wall = ef;
+        }
+        if (currentStep === 7) data.sink_selection = sinkSelection;
+        if (currentStep === 8) data.cutout_selection = cutoutSelection;
+
         fetch("{{ route('calculator.steps') }}", {
                 method: "POST",
                 headers: {
@@ -660,139 +912,93 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.text())
+            .then(async response => {
+                const text = await response.text();
+                if (!response.ok) {
+                    // Try to parse error message
+                    try {
+                        const json = JSON.parse(text);
+                        throw new Error(json.error || json.message || 'Server error occurred');
+                    } catch (e) {
+                        throw new Error('Server error: ' + response.status + ' ' + response.statusText);
+                    }
+                }
+                return text;
+            })
             .then(html => {
-                // Insert HTML into the correct step div
-                const stepDivId = 'step' + currentStep;
-                document.getElementById(stepDivId).innerHTML = html;
+                document.getElementById('step' + currentStep).innerHTML = html;
 
-                // Show current step, hide others
                 for (let i = 1; i <= 9; i++) {
                     const div = document.getElementById('step' + i);
-                    const stepperDiv = document.querySelector('.stepper' + i);
-                    if (div) {
-                        if (i === currentStep) {
+                    const stepper = document.querySelector('.stepper' + i);
+                    if (i === currentStep) {
+                        if (div) {
                             div.classList.remove('hidden');
                             div.classList.add('show', 'active');
-                        } else {
+                        }
+                        if (stepper) {
+                            stepper.classList.add('active');
+                        }
+                    } else {
+                        if (div) {
                             div.classList.add('hidden');
                             div.classList.remove('show', 'active');
                         }
-                    }
-                    if (stepperDiv) {
-                        if (i < currentStep) {
-                            stepperDiv.classList.add('completed');
-                        } else if (i === currentStep) {
-                            stepperDiv.classList.add('active');
-                            stepperDiv.classList.remove('completed');
-                        } else {
-                            stepperDiv.classList.remove('active', 'completed');
+                        if (stepper) {
+                            stepper.classList.remove('active');
                         }
                     }
                 }
 
-                // Update button data-step
                 nextStepBtn.setAttribute('data-step', currentStep + 1);
-
-                // Initialize handlers for the loaded step
-                if (currentStep === 3) {
-                    initializeLayoutCards();
-                }
-                if (currentStep === 4) {
-                    initializeDimensionInputs();
-                }
-                if (currentStep === 5) {
-                    initializeEdgeFinishing();
-                }
-                if (currentStep === 6) {
-                    initializeBackWall();
-                }
-                if (currentStep === 7) {
-                    initializeSinkSelection();
-                }
+                
+                // Hide button on last step
                 if (currentStep === 8) {
-                    initializeCutoutSelection();
-                }
-                if (currentStep === 9) {
-                    initializePersonalDataForm();
-                    if (nextStepBtn) {
-                        nextStepBtn.style.display = 'none';
-                    }
-                }
-
-                // Handle material type selection (for step 2)
-                const materialTypeItems = document.querySelectorAll('.material-type-item');
-                const materialImage = document.getElementById('material-image');
-                if (materialTypeItems.length) {
-                    materialTypeItems.forEach(item => {
-                        item.addEventListener('click', function() {
-                            materialTypeItems.forEach(i => i.classList.remove(
-                                'active'));
-                            this.classList.add('active');
-                            const typeId = this.getAttribute('data-id');
-                            selectedMaterialTypeId = typeId ? String(typeId) : null;
-                            selectedLayoutId = null;
-                            if (materialImage) {
-                                const newImage = this.getAttribute('data-image');
-                                if (newImage) {
-                                    materialImage.setAttribute('src', newImage);
-                                }
-                            }
-                        });
-                    });
-
-                    if (!window.selectedMaterialTypeId) {
-                        const activeItem = document.querySelector('.material-type-item.active');
-                        if (activeItem) {
-                            const defaultTypeId = activeItem.getAttribute('data-id');
-                            selectedMaterialTypeId = defaultTypeId ? String(defaultTypeId) : null;
-                            if (materialImage) {
-                                const defaultImage = activeItem.getAttribute('data-image');
-                                if (defaultImage) {
-                                    materialImage.setAttribute('src', defaultImage);
-                                }
-                            }
-                        }
-                        selectedLayoutId = null;
-                    }
+                    nextStepBtn.style.display = 'none';
                 } else {
-                    selectedMaterialTypeId = null;
-                    selectedLayoutId = null;
+                    nextStepBtn.style.display = 'inline-block';
                 }
 
-                if (currentStep == 9) {
-                    document.getElementById('customForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        fetch(this.action, {
-                                method: 'POST',
-                                body: new FormData(this),
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').content
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Quotation submitted successfully!');
-                                    document.querySelector('#overview-tab').click();
-                                } else {
-                                    alert('Submission failed. Please try again.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred. Please try again.');
-                            });
-                    });
+                // Initialize step handlers
+                if (currentStep === 2) {
+                    setTimeout(() => initializeLayoutCards(), 100);
                 }
-
+                if (currentStep === 3) initializeDimensionInputs();
+                if (currentStep === 4) initializeEdgeFinishing();
+                if (currentStep === 5) initializeBackWall();
+                if (currentStep === 6) initializeSinkSelection();
+                if (currentStep === 7) initializeCutoutSelection();
+                if (currentStep === 8) initializePersonalDataForm();
             })
             .catch(error => {
-                alert('Error loading step: ' + error);
+                console.error('Error:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    currentStep: currentStep,
+                    data: data
+                });
+                
+                // More specific error message
+                let errorMessage = 'An error occurred. Please try again.';
+                if (error.message) {
+                    errorMessage += '\n\nError: ' + error.message;
+                }
+                
+                alert(errorMessage);
+            })
+            .finally(() => {
+                // Re-enable button
+                nextStepBtn.disabled = false;
+                nextStepBtn.innerHTML = originalText;
+                
+                // Hide loading overlay
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
             });
     });
-
 
 });
 </script>

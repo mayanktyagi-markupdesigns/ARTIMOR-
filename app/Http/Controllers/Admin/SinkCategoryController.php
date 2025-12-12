@@ -23,7 +23,7 @@ class SinkCategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:material_type_categories,name',
+            'name' => 'required|string|max:255|unique:sink_categories,name',
             'status' => 'required|in:0,1',
         ]);
 

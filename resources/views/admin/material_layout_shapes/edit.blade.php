@@ -63,11 +63,11 @@
                     DIMENSION SIDES (JSON INPUT)
                 ================================== --}}
 
-                @php
+                <!-- @php
                 $sides = old('dimension_sides', $shape->dimension_sides ?? []);
-                @endphp
+                @endphp -->
 
-                <div class="col-12 mt-3">
+                <!-- <div class="col-12 mt-3">
                     <label class="fw-bold">Dimension Sides</label>
                     <div id="dimension-wrapper">
                         @if(!empty($sides))
@@ -112,7 +112,8 @@
                         @endif
                     </div>
                     <button type="button" id="add-side" class="btn btn-primary btn-sm mt-2">+ Add Side</button>
-                </div>
+                </div> -->
+
                 <!-- Submit -->
                 <div class="mt-4 text-end">
                     <button type="submit" class="btn btn-success">Update</button>

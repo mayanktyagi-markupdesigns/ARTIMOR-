@@ -11,6 +11,7 @@ class CutoutMaterialThicknessPrice extends Model
     protected $fillable = [        
         'cut_out_id',
         'material_type_id',
+        'thickness_id',
         'thickness_value',
         'price_guest',
         'price_business',        
@@ -25,5 +26,10 @@ class CutoutMaterialThicknessPrice extends Model
     public function cutOuts()
     {
          return $this->belongsTo(CutOuts::class, 'cut_out_id');
+    }
+
+    public function thickness()
+    {
+        return $this->belongsTo(Thickness::class, 'thickness_id');
     }
 }

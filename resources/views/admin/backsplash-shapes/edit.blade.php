@@ -38,11 +38,11 @@
                             required>
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Dimension Fields</label>
                         <input type="text" name="dimension_fields[]" class="form-control"
                             value="{{ $shape->dimension_fields ? implode(',', $shape->dimension_fields) : '' }}">
-                    </div>
+                    </div> -->
                     <div class="col-md-4 mb-3">
                         <label for="status">Status</label>
                         <select class="form-select" name="status" id="status">
