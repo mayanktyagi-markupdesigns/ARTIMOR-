@@ -15,6 +15,19 @@
                 @csrf
                 <div class="row">
                     <div class="col-md-4 mb-3">
+                        <label>Backsplash Shapes *</label>
+                        <select name="backsplash_shape_id" class="form-select">
+                            <option value="">Select Backsplash Shapes</option>
+                            @foreach($backsplashShapes as $mt)
+                                <option value="{{ $mt->id }}" {{ $price->backsplash_shape_id == $mt->id ? 'selected' : '' }}>
+                                    {{ $mt->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('backsplash_shape_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="col-md-4 mb-3">
                         <label>Material Type *</label>
                         <select name="material_type_id" class="form-select" required>
                             <option value="">Select Material Type</option>

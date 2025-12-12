@@ -9,6 +9,7 @@ class BacksplashPrice extends Model
     protected $table = 'backsplash_prices';
 
     protected $fillable = [
+        'backsplash_shape_id',
         'material_type_id',
         'price_lm_guest',
         'finished_side_price_lm_guest',
@@ -23,5 +24,10 @@ class BacksplashPrice extends Model
     public function materialType()
     {
         return $this->belongsTo(MaterialType::class, 'material_type_id');
+    }
+    // Relation to BacksplashShapes 
+    public function backsplashShapes()
+    {
+        return $this->belongsTo(BacksplashShapes::class, 'backsplash_shape_id');
     }
 }
