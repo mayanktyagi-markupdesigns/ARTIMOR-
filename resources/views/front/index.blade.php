@@ -103,7 +103,8 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 </div>
 
 <!-- Loading Overlay -->
-<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+<div id="loadingOverlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
     <div class="text-center text-white">
         <div class="spinner-border mb-3" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Loading...</span>
@@ -126,7 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // ✅ Forward validation (same as Next button)
             // Step 1 to Step 2: Material configuration must be complete
             if (targetStep > 1 && targetStep <= 2) {
-                if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection.finish || !materialSelection.thickness) {
+                if (!materialSelection.material_type_id || !materialSelection.color || !
+                    materialSelection.finish || !materialSelection.thickness) {
                     alert('Please complete material configuration first.');
                     return;
                 }
@@ -137,16 +139,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Scroll to layout section
                     const layoutSection = document.getElementById('step2');
                     if (layoutSection) {
-                        layoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        layoutSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                     return;
                 }
             }
             // Step 3 to Step 4: Dimensions must be entered
             if (targetStep > 3 && targetStep <= 4) {
-                if (!dimensions.blad1.width || !dimensions.blad1.height || 
+                if (!dimensions.blad1.width || !dimensions.blad1.height ||
                     isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
-                    parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
+                    parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1
+                        .height) <= 0) {
                     alert('Please enter Width and Height.');
                     return;
                 }
@@ -349,27 +355,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!layoutId) return;
 
                     selectedLayoutId = String(layoutId);
-                    
+
                     // Update UI - remove all selections
                     document.querySelectorAll('.layout-card').forEach(c => {
                         if (c && c.classList) {
                             c.classList.remove('selected');
                             // Remove any existing confirmation badge
-                            const existingBadge = c.querySelector('.layout-confirmation-badge');
+                            const existingBadge = c.querySelector(
+                                '.layout-confirmation-badge');
                             if (existingBadge) existingBadge.remove();
                         }
                     });
-                    
+
                     // Add selected state to clicked card
                     if (this && this.classList) {
                         this.classList.add('selected');
-                        
+
                         // Add confirmation badge
                         if (!this.querySelector('.layout-confirmation-badge')) {
                             const badge = document.createElement('span');
                             badge.className = 'layout-confirmation-badge';
                             badge.innerHTML = '✓ Selected';
-                            badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+                            badge.style.cssText =
+                                'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
                             if (this.style) {
                                 this.style.position = 'relative';
                             }
@@ -379,24 +387,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Save to session immediately
                     fetch("{{ route('calculator.steps') }}", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            step: 2,
-                            layout_id: selectedLayoutId
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                step: 2,
+                                layout_id: selectedLayoutId
+                            })
                         })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('Layout saved to session:', selectedLayoutId);
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Failed to save layout:', err);
-                    });
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Layout saved to session:',
+                                    selectedLayoutId);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed to save layout:', err);
+                        });
 
                     console.log('Layout selected:', selectedLayoutId);
                 });
@@ -404,7 +413,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Restore selected state if exists
             if (selectedLayoutId) {
-                const activeLayoutCard = document.querySelector(`.layout-card[data-id="${selectedLayoutId}"]`);
+                const activeLayoutCard = document.querySelector(
+                    `.layout-card[data-id="${selectedLayoutId}"]`);
                 if (activeLayoutCard && activeLayoutCard.classList) {
                     activeLayoutCard.classList.add('selected');
                     // Add confirmation badge if not exists
@@ -412,7 +422,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         const badge = document.createElement('span');
                         badge.className = 'layout-confirmation-badge';
                         badge.innerHTML = '✓ Selected';
-                        badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+                        badge.style.cssText =
+                            'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
                         if (activeLayoutCard.style) {
                             activeLayoutCard.style.position = 'relative';
                         }
@@ -437,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dimensions.blad1.width = this.value;
                 validateDimensions();
             });
-            
+
             height1Input.addEventListener('input', function() {
                 dimensions.blad1.height = this.value;
                 validateDimensions();
@@ -453,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateDimensions() {
         const width = parseFloat(dimensions.blad1.width);
         const height = parseFloat(dimensions.blad1.height);
-        
+
         const widthInput = document.getElementById('width1');
         const heightInput = document.getElementById('height1');
 
@@ -529,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ef.selected_edges.push(edge);
                         this.classList.add('selected');
                     }
-                    
+
                     // Save to session
                     saveEdgeFinishingToSession();
                 });
@@ -553,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function saveEdgeFinishingToSession() {
         const ef = window.edgeFinishing || edgeFinishing;
         if (!ef) return;
-        
+
         fetch("{{ route('calculator.steps') }}", {
             method: "POST",
             headers: {
@@ -569,27 +580,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to initialize back wall selections
     function initializeBackWall() {
-        // Back wall is now handled in the blade file itself
-        // Just sync the global backWall object
         setTimeout(() => {
             const ef = window.backWall || backWall;
-            const wallIdInput = document.querySelector('.wall-card.selected');
-            const edgeCircles = document.querySelectorAll('.edge-circle');
 
-            // Sync wall_id
+            // Restore saved wall selection
+            const wallIdInput = document.querySelector('.wall-card.selected');
             if (wallIdInput && ef) {
                 ef.wall_id = wallIdInput.getAttribute('data-id');
             }
 
-            // Sync edge circles
-            edgeCircles.forEach(circle => {
+            // ---------------- DIMENSIONS SETUP ----------------
+            const widthInput = document.getElementById('width1');
+            const heightInput = document.getElementById('height1');
+
+            // Create global dimensions object if missing
+            if (!window.dimensions) {
+                window.dimensions = {
+                    blad1: {
+                        width: "",
+                        height: ""
+                    }
+                };
+            }
+
+            // Restore previous values in UI
+            widthInput.value = window.dimensions.blad1.width || "";
+            heightInput.value = window.dimensions.blad1.height || "";
+
+            // Update global object on input
+            widthInput.addEventListener("input", () => {
+                window.dimensions.blad1.width = widthInput.value;
+                saveBackWallToSession();
+            });
+
+            heightInput.addEventListener("input", () => {
+                window.dimensions.blad1.height = heightInput.value;
+                saveBackWallToSession();
+            });
+
+            // ---------------- EDGE CIRCLES ----------------
+            document.querySelectorAll('.edge-circle').forEach(circle => {
                 circle.addEventListener('click', function() {
                     const edge = this.getAttribute('data-edge');
-                    if (!edge || !ef) return;
+                    if (!edge) return;
 
-                    if (!ef.selected_edges) {
-                        ef.selected_edges = [];
-                    }
+                    if (!ef.selected_edges) ef.selected_edges = [];
 
                     if (ef.selected_edges.includes(edge)) {
                         ef.selected_edges = ef.selected_edges.filter(e => e !== edge);
@@ -598,43 +633,51 @@ document.addEventListener('DOMContentLoaded', function() {
                         ef.selected_edges.push(edge);
                         this.classList.add('selected');
                     }
-                    
-                    // Save to session
+
                     saveBackWallToSession();
                 });
             });
 
-            // Listen for wall card clicks (handled in blade but sync here)
+            // ---------------- WALL CLICK ----------------
             document.querySelectorAll('.wall-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const wallId = this.getAttribute('data-id');
-                    if (wallId && ef) {
+                    if (wallId) {
                         ef.wall_id = wallId;
-                        // Save to session
                         saveBackWallToSession();
                     }
                 });
             });
+
         }, 200);
     }
-    
+
     // Save back wall to session
     function saveBackWallToSession() {
         const ef = window.backWall || backWall;
         if (!ef) return;
-        
+
+        // Dimensions must be INSIDE back_wall object
+        ef.dimensions = {
+            blad1: {
+                width: window.dimensions?.blad1?.width || "",
+                height: window.dimensions?.blad1?.height || ""
+            }
+        };
+
         fetch("{{ route('calculator.steps') }}", {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
             },
             body: JSON.stringify({
-                step: 5,
+                step: 6,
                 back_wall: ef
             })
-        }).catch(err => console.error('Failed to save back wall:', err));
+        }).catch(err => console.error("Failed to save back wall:", err));
     }
+
 
     // Function to initialize sink selections
     function initializeSinkSelection() {
@@ -691,6 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to initialize cut-out selections
     function initializeCutoutSelection() {
         const confirmButtons = document.querySelectorAll('.confirm-cutout');
+
         confirmButtons.forEach(button => {
             button.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -698,17 +742,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const cutoutId = this.getAttribute('data-cutout-id');
                 const modal = this.closest('.modal');
-                const recessTypeSelect = modal.querySelector(
-                    '.cutout-recess-type[data-cutout-id="' + cutoutId + '"]');
 
-                if (!recessTypeSelect.value) {
-                    alert('Please select a recess type.');
-                    return;
-                }
+                // Grab Material Type and Thickness selects
+                const materialSelect = modal.querySelector(
+                    '.material-type-select[data-cutout-id="' + cutoutId + '"]'
+                );
+                const thicknessSelect = modal.querySelector(
+                    '.thickness-select[data-cutout-id="' + cutoutId + '"]'
+                );
 
+                // Validation
+                // if (!materialSelect.value || !thicknessSelect.value) {
+                //     alert('Please select both Material Type and Thickness.');
+                //     return;
+                // }
+
+                // Save selection to your JS object or send via AJAX
                 cutoutSelection.cutout_id = cutoutId;
-                cutoutSelection.recess_type = recessTypeSelect.value;
+                cutoutSelection.material_type_id = materialSelect.value;
+                cutoutSelection.thickness_id = thicknessSelect.value;
 
+                // Update selected card UI
                 document.querySelectorAll('.cutout-card').forEach(card => {
                     card.classList.remove('selected');
                 });
@@ -718,6 +772,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectedCard.classList.add('selected');
                 }
 
+                // Close modal
                 const modalInstance = bootstrap.Modal.getInstance(modal);
                 if (modalInstance) {
                     modalInstance.hide();
@@ -726,12 +781,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     modal.setAttribute('aria-hidden', 'true');
                 }
 
+                // Optional: cleanup modal backdrop
                 cleanupModalBackdrop();
             });
         });
 
         document.addEventListener('hidden.bs.modal', cleanupModalBackdrop);
     }
+
 
     // Function to initialize personal data form
     function initializePersonalDataForm() {
@@ -804,15 +861,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Prevent multiple clicks
         if (nextStepBtn.disabled) return;
-        
+
         // ✅ STEP-1 VALIDATION: Material Price - Color, Finish, Thickness must be selected
         if (currentStep === 2) {
-            if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection.finish || !materialSelection.thickness) {
+            if (!materialSelection.material_type_id || !materialSelection.color || !materialSelection
+                .finish || !materialSelection.thickness) {
                 // Show inline error - no alert
                 const materialCards = document.querySelectorAll('.material-type-card');
                 if (materialCards.length > 0) {
                     // Scroll to material section
-                    document.getElementById('step1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('step1').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
                 return;
             }
@@ -824,7 +885,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Scroll to layout section
                 const layoutSection = document.getElementById('step2');
                 if (layoutSection) {
-                    layoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    layoutSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
                 // Show inline error - no alert
                 return;
@@ -833,7 +897,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ✅ STEP-3 VALIDATION: Dimensions - Width and Height must be entered
         if (currentStep === 4) {
-            if (!dimensions.blad1.width || !dimensions.blad1.height || 
+            if (!dimensions.blad1.width || !dimensions.blad1.height ||
                 isNaN(dimensions.blad1.width) || isNaN(dimensions.blad1.height) ||
                 parseFloat(dimensions.blad1.width) <= 0 || parseFloat(dimensions.blad1.height) <= 0) {
                 alert("Please enter Width and Height (positive numbers).");
@@ -845,12 +909,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentStep === 5) {
             // Use window.edgeFinishing if available, fallback to edgeFinishing
             const ef = window.edgeFinishing || edgeFinishing;
-            
+
             if (!ef || !ef.edge_id) {
                 // Scroll to edge finishing section
                 const edgeSection = document.getElementById('step4');
                 if (edgeSection) {
-                    edgeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    edgeSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
                 alert('Please select an Edge Profile.');
                 return;
@@ -860,11 +927,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // ✅ STEP-5 VALIDATION: Back Wall - Back Wall Shape must be selected
         if (currentStep === 6) {
             const bw = window.backWall || backWall;
-            
+
             if (!bw || !bw.wall_id) {
                 const backWallSection = document.getElementById('step5');
                 if (backWallSection) {
-                    backWallSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    backWallSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
                 alert('Please select a Back Wall Shape.');
                 return;
@@ -875,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nextStepBtn.disabled = true;
         const originalText = nextStepBtn.innerHTML;
         nextStepBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
-        
+
         // Show loading overlay
         const loadingOverlay = document.getElementById('loadingOverlay');
         if (loadingOverlay) {
@@ -920,7 +990,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         const json = JSON.parse(text);
                         throw new Error(json.error || json.message || 'Server error occurred');
                     } catch (e) {
-                        throw new Error('Server error: ' + response.status + ' ' + response.statusText);
+                        throw new Error('Server error: ' + response.status + ' ' + response
+                            .statusText);
                     }
                 }
                 return text;
@@ -951,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 nextStepBtn.setAttribute('data-step', currentStep + 1);
-                
+
                 // Hide button on last step
                 if (currentStep === 8) {
                     nextStepBtn.style.display = 'none';
@@ -978,20 +1049,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentStep: currentStep,
                     data: data
                 });
-                
+
                 // More specific error message
                 let errorMessage = 'An error occurred. Please try again.';
                 if (error.message) {
                     errorMessage += '\n\nError: ' + error.message;
                 }
-                
+
                 alert(errorMessage);
             })
             .finally(() => {
                 // Re-enable button
                 nextStepBtn.disabled = false;
                 nextStepBtn.innerHTML = originalText;
-                
+
                 // Hide loading overlay
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 if (loadingOverlay) {

@@ -190,13 +190,18 @@ protected function getSinkStepData(?int $materialId, ?int $materialTypeId, ?int 
 
 protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?int $layoutId)
 {
-    // If materialTypeId and layoutId are provided, return cutouts
     if (!$materialTypeId || !$layoutId) {
         return collect();
     }
 
-    // Return all active cutouts
-    return CutOuts::with(['category', 'images'])->where('status', 1)->get();
+    return CutOuts::with([
+        'category', 
+        'images', 
+        'materialThicknessPrices.materialType', // material type
+        'materialThicknessPrices.thickness'      // thickness
+    ])
+    ->where('status', 1)
+    ->get();
 }
 
 public function selectMaterial(Request $request)
@@ -413,6 +418,9 @@ public function getCalculatorSteps(Request $request)
             $materialConfig = session('material_config', []);
             $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
             $selectedLayoutId = session('selected_layout_id');
+            if (!session()->has('dimensions')) {
+                session(['dimensions' => ['blad1' => ['width' => '', 'height' => '']]]);
+            }
             $wall = $this->getBackWallStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
             return view('front.back-wall', compact('wall'))->render();
 
