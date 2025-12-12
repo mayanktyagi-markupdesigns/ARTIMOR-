@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use App\Mail\UserOverviewConfirmationMail;
 use App\Mail\AdminOverviewNotificationMail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\EdgeProfileThicknessRule;
 
 class HomeController extends Controller
 {
@@ -135,7 +136,7 @@ protected function getLayoutStepData(?int $materialId, ?int $materialTypeId): ar
         }
     }
 
-    // ✅✅ THIS WAS MISSING (VERY IMPORTANT)
+    // THIS WAS MISSING (VERY IMPORTANT)
     $layoutTypes = $layoutsByType->keys();
 
     // 3. Fake productsByLayout (kept for blade compatibility)
@@ -379,11 +380,24 @@ public function getCalculatorSteps(Request $request)
             // Get all edge profiles
             $edgeProfiles = \App\Models\EdgeProfile::where('status', 1)->orderBy('name')->get();
 
-            // Get all colors
-            $colors = \App\Models\Color::where('status', 1)->orderBy('name')->get();
+            // Get all color based on material type, ignoring edge_id
+            $colors = \App\Models\MaterialColorEdgeException::where('status', 1)
+                ->with('color')
+                ->get()
+                ->pluck('color')
+                ->filter(fn($t) => $t && $t->status == 1)
+                ->unique('name') // remove duplicates by value
+                ->values();
 
-            // Get all thickness
-            $thickness = \App\Models\Thickness::where('status', 1)->orderBy('thickness_value')->get();
+            // Get all thickness based on material type, ignoring edge_id
+            $thickness = \App\Models\EdgeProfileThicknessRule::where('status', 1)
+                ->with('thickness')
+                ->get()
+                ->pluck('thickness')
+                ->filter(fn($t) => $t && $t->status == 1)
+                ->unique('thickness_value') // remove duplicates by value
+                ->values();
+
             
             // Get edge finishing from session
             $edgeFinishing = session('edge_finishing', [
