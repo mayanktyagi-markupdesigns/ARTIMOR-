@@ -483,25 +483,141 @@ public function getCalculatorSteps(Request $request)
             });
             return view('front.cut-outs', compact('grouped'))->render();
 
+        // case 8:
+        // // Overview: read from material_config (preferred) or fall back to legacy keys
+        // $materialConfig = session('material_config', null);
+        // $materialType = !empty($materialConfig['material_type_id'])
+        //     ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
+        //     : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
+
+        // $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
+
+        // // Edge removed
+        // $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
+
+        // $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
+        // $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
+        // $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
+
+        // return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+
         case 8:
-        // Overview: read from material_config (preferred) or fall back to legacy keys
-        $materialConfig = session('material_config', null);
+
+        /* ---------------------------
+        | Session data
+        |----------------------------*/
+        $materialConfig   = session('material_config', []);
+        $layoutId          = session('selected_layout_id');
+        $dimensions        = session('dimensions', []);
+        $edgeFinishing     = session('edge_finishing', []);
+        $backWall          = session('back_wall', []);
+        $sinkSelection     = session('sink_selection', []);
+        $cutoutSelection   = session('cutout_selection', []);
+
+        /* ---------------------------
+        | Fetch DB models
+        |----------------------------*/
         $materialType = !empty($materialConfig['material_type_id'])
-            ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
-            : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
+            ? \App\Models\MaterialType::with('group')->find($materialConfig['material_type_id'])
+            : null;
 
-        $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
-
-        // Edge removed
-        $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
-
-        $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
-        $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
-        $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
-
-        return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+        $materialGroupName = $materialType?->group?->name ?? 'N/A';
 
 
+        $color     = !empty($materialConfig['color'])
+            ? \App\Models\Color::find($materialConfig['color'])
+            : null;
+
+        $finish    = !empty($materialConfig['finish'])
+            ? \App\Models\Finish::find($materialConfig['finish'])
+            : null;
+
+        $thickness = !empty($materialConfig['thickness'])
+            ? \App\Models\Thickness::find($materialConfig['thickness'])
+            : null;
+
+        $layout = $layoutId
+            ? \App\Models\MaterialLayoutShape::with('layoutGroup.layoutCategory')->find($layoutId)
+            : null;
+
+        $layoutGroupName = $layout?->layoutGroup?->name ?? 'N/A';
+        $layoutCategoryName = $layout?->layoutGroup?->layoutCategory?->name ?? 'N/A';
+
+        $edgeProfile = !empty($edgeFinishing['edge_id'])
+            ? \App\Models\EdgeProfile::find($edgeFinishing['edge_id'])
+            : null;
+
+        $edgeThickness = !empty($edgeFinishing['thickness_id'])
+            ? \App\Models\Thickness::find($edgeFinishing['thickness_id'])
+            : null;
+
+        $edgeColor = !empty($edgeFinishing['color_id'])
+            ? \App\Models\Color::find($edgeFinishing['color_id'])
+            : null;
+
+        $backsplash = !empty($backWall['wall_id'])
+            ? \App\Models\BacksplashShapes::find($backWall['wall_id'])
+            : null;
+
+        $sink = !empty($sinkSelection['sink_id'])
+            ? \App\Models\Sink::with(['images', 'category'])->find($sinkSelection['sink_id'])
+            : null;
+
+        $cutout = !empty($cutoutSelection['cutout_id'])
+            ? \App\Models\CutOuts::with(['images', 'category'])->find($cutoutSelection['cutout_id'])
+            : null;
+
+        /* ---------------------------
+        | Dimensions & Area
+        |----------------------------*/
+        $blad1 = $dimensions['blad1'] ?? ['width' => 0, 'height' => 0];
+
+        $area = (
+            is_numeric($blad1['width']) &&
+            is_numeric($blad1['height']) &&
+            $blad1['width'] > 0 &&
+            $blad1['height'] > 0
+        )
+            ? ($blad1['width'] * $blad1['height']) / 10000
+            : 0;
+
+        /* ---------------------------
+        | Price calculation
+        |----------------------------*/
+        $priceDetails = [
+            'layout'     => $layout?->price ?? 0,
+            'sink'       => ($sink?->price ?? 0) * ($sinkSelection['number'] ?? 1),
+            'cutout'     => $cutout?->price ?? 0,
+            'backsplash' => $backsplash?->price ?? 0,
+        ];
+
+        $totalPrice = array_sum($priceDetails);
+
+        return view('front.overview', compact(
+            'materialGroupName',
+            'materialType',
+            'color',
+            'finish',
+            'thickness',
+            'layout',
+            'layoutGroupName',
+            'layoutCategoryName',
+            'edgeProfile',
+            'edgeThickness',
+            'edgeColor',
+            'backsplash',
+            'sink',
+            'cutout',
+            'dimensions',
+            'edgeFinishing',
+            'backWall',
+            'sinkSelection',
+            'cutoutSelection',
+            'blad1',
+            'area',
+            'priceDetails',
+            'totalPrice'
+        ))->render();
         default:
             return response()->json(['error' => 'Invalid step'], 400);
     }

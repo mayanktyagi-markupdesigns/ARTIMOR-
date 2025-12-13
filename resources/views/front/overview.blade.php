@@ -166,7 +166,10 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                         @endif
                                         <div class="w-100">
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Type:</strong> {{ $materialType->name }}
+                                                <strong>Material Group:</strong> {{ $materialGroupName }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Material Type:</strong> {{ $materialType->name }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Color:</strong> {{ $color?->name ?? '—' }}
@@ -202,7 +205,13 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                         @endif
                                         <div class="w-100">
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Layout:</strong> {{ $layout->name }}
+                                                <strong>Layout Category:</strong> {{  $layoutCategoryName }}
+                                            </div>
+                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Layout Group:</strong> {{  $layoutGroupName }}
+                                            </div>
+                                            <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
+                                                <strong>Layout Shape:</strong> {{ $layout->name }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
                                                 <strong>Price:</strong> €{{ number_format($layout->price, 2) }}
