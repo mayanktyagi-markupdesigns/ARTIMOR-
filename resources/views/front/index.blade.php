@@ -12,7 +12,7 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
         <div class="icon"><span>01</span>
             <img src="{{ asset('assets/front/img/01.png') }}" width="28" height="28">
         </div>
-        <p>Material Price</p>
+        <p>Material</p>
     </div>
     <div class="step stepper2 step-click" data-step="2">
         <div class="icon"><span>02</span>
@@ -760,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Save selection to your JS object or send via AJAX
                 cutoutSelection.cutout_id = cutoutId;
                 cutoutSelection.material_type_id = materialSelect.value;
-                cutoutSelection.thickness_id = thicknessSelect.value;
+                cutoutSelection.thickness_value = thicknessSelect.value;
 
                 // Update selected card UI
                 document.querySelectorAll('.cutout-card').forEach(card => {

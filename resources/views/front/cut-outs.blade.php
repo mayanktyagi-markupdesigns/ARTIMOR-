@@ -110,9 +110,9 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
                                                     <option value="{{ $price->material_type_id }}"
-    {{ $selectedCutoutId == $item->id && ($cutoutSelection['material_type_id'] ?? null) == $price->material_type_id ? 'selected' : '' }}>
-    {{ $price->materialType->name ?? '—' }}
-</option>
+                                                        {{ $selectedCutoutId == $item->id && ($cutoutSelection['material_type_id'] ?? null) == $price->material_type_id ? 'selected' : '' }}>
+                                                        {{ $price->materialType->name ?? '—' }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -123,63 +123,63 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                                     data-cutout-id="{{ $item->id }}">
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
-                                                    <option value="{{ $price->thickness_id }}"
-    {{ $selectedCutoutId == $item->id && ($cutoutSelection['thickness_id'] ?? null) == $price->thickness_id ? 'selected' : '' }}>
-    {{ $price->thickness_value ?? '—' }}
-</option>
+                                                    <option value="{{ $price->thickness_value }}"
+                                                        {{ $selectedCutoutId == $item->id && ($cutoutSelection['thickness_value'] ?? null) == $price->thickness_value ? 'selected' : '' }}>
+                                                        {{ $price->thickness_value ?? '—' }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
 
-                                        <!-- Buttons -->
-                                        <div class="d-flex justify-content-start gap-4 mt-5">
-                                            <button class="btn btn-secondary cancel-btn"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button class="btn btn-primary red-btn confirm-cutout"
-                                                data-cutout-id="{{ $item->id }}">Confirm</button>
+
+                                            <!-- Buttons -->
+                                            <div class="d-flex justify-content-start gap-4 mt-5">
+                                                <button class="btn btn-secondary cancel-btn"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <button class="btn btn-primary red-btn confirm-cutout"
+                                                    data-cutout-id="{{ $item->id }}">Confirm</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                                    data-bs-dismiss="modal"></button>
                             </div>
-                            <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
-                                data-bs-dismiss="modal"></button>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
-</div>
 
-<style>
-.cutout-card {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
+    <style>
+    .cutout-card {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
 
-.cutout-card:hover {
-    transform: scale(1.02);
-}
+    .cutout-card:hover {
+        transform: scale(1.02);
+    }
 
-.cutout-card.selected {
-    border: 3px solid #007bff;
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
-    position: relative;
-}
+    .cutout-card.selected {
+        border: 3px solid #007bff;
+        box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
+        position: relative;
+    }
 
-.cutout-card.selected::after {
-    content: "✔ Selected";
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #007bff;
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 4px;
-    font-weight: bold;
-}
-</style>
+    .cutout-card.selected::after {
+        content: "✔ Selected";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #007bff;
+        color: white;
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    </style>
