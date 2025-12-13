@@ -197,8 +197,7 @@ protected function getCutOutsStepData(?int $materialId, ?int $materialTypeId, ?i
     return CutOuts::with([
         'category', 
         'images', 
-        'materialThicknessPrices.materialType', // material type
-        'materialThicknessPrices.thickness'      // thickness
+        'materialThicknessPrices.materialType'
     ])
     ->where('status', 1)
     ->get();
@@ -414,15 +413,58 @@ public function getCalculatorSteps(Request $request)
             
             return view('front.edge-finishing', compact('edgeProfiles', 'selectedMaterialTypeId', 'edgeFinishing', 'colors', 'thickness'))->render();
 
-        case 5:
+            case 5:
             $materialConfig = session('material_config', []);
-            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
+            $selectedMaterialTypeId = $materialConfig['material_type_id']
+                ?? session('selected_material_type_id');
+
             $selectedLayoutId = session('selected_layout_id');
-            if (!session()->has('dimensions')) {
-                session(['dimensions' => ['blad1' => ['width' => '', 'height' => '']]]);
-            }
-            $wall = $this->getBackWallStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
+
+            /* ------------------------------------
+            Ensure BACK WALL session structure
+            ------------------------------------ */
+            $backWall = session('back_wall', [
+                'wall_id' => null,
+                'selected_edges' => [],
+                'dimensions' => [
+                    'blad1' => [
+                        'width' => '',
+                        'height' => ''
+                    ]
+                ]
+            ]);
+
+            // Normalize structure (important for old sessions)
+         $backWallFromSession = session('back_wall');
+
+        $backWall = array_merge(
+            [
+                'wall_id' => null,
+                'selected_edges' => [],
+                'dimensions' => [
+                    'blad1' => [
+                        'width' => '',
+                        'height' => ''
+                    ]
+                ]
+            ],
+            is_array($backWallFromSession) ? $backWallFromSession : []
+        );
+
+        session(['back_wall' => $backWall]);
+
+
+            /* ------------------------------------
+            Load back wall shapes
+            ------------------------------------ */
+            $wall = $this->getBackWallStepData(
+                null,
+                $selectedMaterialTypeId,
+                $selectedLayoutId
+            );
+
             return view('front.back-wall', compact('wall'))->render();
+
 
         case 6:
             $materialConfig = session('material_config', []);

@@ -28,8 +28,8 @@ class CutoutMaterialThicknessPrice extends Model
          return $this->belongsTo(CutOuts::class, 'cut_out_id');
     }
 
-    public function thickness()
-    {
-        return $this->belongsTo(Thickness::class, 'thickness_id');
-    }
+    // public function thickness()
+    // {
+    //     return $this->belongsTo(Thickness::class, 'thickness_id');
+    // }
 }

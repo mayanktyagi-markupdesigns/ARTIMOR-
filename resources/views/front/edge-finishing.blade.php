@@ -45,51 +45,51 @@ session('selected_material_type_id'));
         </div>
     </div>
 
-    <!-- Step 2: Select Thickness (shown after edge profile is selected) -->
-    <div class="row mb-5" id="thickness-section">
+    <!-- Step 2 & 3: Thickness + Color in same row -->
+    <div class="row mb-5" id="thickness-color-section">
         <div class="col-lg-12">
             <hr class="my-4">
-            <h4 class="mb-4 fw-bold">Step 2: Select Thickness</h4>
+            <h4 class="mb-4 fw-bold">Step 2 & 3: Thickness & Color</h4>
+
             <div class="row">
-                <div class="col-md-6">
+                <!-- Thickness -->
+                <div class="col-md-6" id="thickness-section">
                     <div class="inputfild-box">
-                        <label class="form-label fw-bold">Thickness<sup class="text-danger">*</sup></label>
+                        <label class="form-label fw-bold">
+                            Thickness <sup class="text-danger">*</sup>
+                        </label>
                         <select class="form-select form-select-lg" id="edge-thickness-select" required>
                             <option value="">-- Select Thickness --</option>
                             @foreach($thickness as $item)
-                            <option value="{{ $item->id }}" {{ $selectedThickness = $item->id ? 'selected' : '' }}>
+                            <option value="{{ $item->id }}" {{ $selectedThicknessId == $item->id ? 'selected' : '' }}>
                                 {{ $item->thickness_value }}
                             </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Step 3: Select Color (shown after thickness is selected) -->
-    <div class="row mb-5" id="color-section">
-        <div class="col-lg-12">
-            <hr class="my-4">
-            <h4 class="mb-4 fw-bold">Step 3: Select Color</h4>
-            <div class="row">
-                <div class="col-md-6">
+                <!-- Color -->
+                <div class="col-md-6" id="color-section">
                     <div class="inputfild-box">
-                        <label class="form-label fw-bold">Color<sup class="text-danger">*</sup></label>
+                        <label class="form-label fw-bold">
+                            Color <sup class="text-danger">*</sup>
+                        </label>
                         <select class="form-select form-select-lg" id="edge-color-select" required>
                             <option value="">-- Select Color --</option>
                             @foreach($colors as $item)
-                            <option value="{{ $item->id }}" {{ $selectedColor = $item->id ? 'selected' : '' }}>
+                            <option value="{{ $item->id }}" {{ $selectedColorId == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}
                             </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
 
     <!-- Step 4: Select Edges (shown after color is selected) -->
     <div class="row mb-5" id="edges-selection-section">
@@ -98,10 +98,7 @@ session('selected_material_type_id'));
             <h4 class="mb-4 fw-bold">Step 4: Select Edges to Finish (Optional)</h4>
             <div class="row">
                 <div class="col-lg-12 mb-4">
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i> <strong>Note:</strong> The Green Edges Are Delivered
-                        Finished As Standard.
-                    </div>
+
                 </div>
                 <div class="col-lg-6">
                     <div class="border-btm-green edges-check-box d-flex align-items-center justify-content-center position-relative p-4"
@@ -121,7 +118,7 @@ session('selected_material_type_id'));
                 </div>
                 <div class="col-lg-6 d-flex align-items-center">
                     <div class="w-100">
-                        <h6 class="mb-3">Selected Edges:</h6>
+                        <!-- <h6 class="mb-3">Selected Edges:</h6> -->
                         <div id="selected-edges-list">
                             @if(count($selectedEdges) > 0)
                             @foreach($selectedEdges as $edge)
