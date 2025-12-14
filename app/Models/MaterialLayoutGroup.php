@@ -33,4 +33,5 @@ class MaterialLayoutGroup extends Model
             'layout_group_id'
         );
     }
+
 }

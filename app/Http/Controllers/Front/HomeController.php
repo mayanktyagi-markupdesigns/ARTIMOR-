@@ -483,30 +483,280 @@ public function getCalculatorSteps(Request $request)
             });
             return view('front.cut-outs', compact('grouped'))->render();
 
+        // case 8:
+        // // Overview: read from material_config (preferred) or fall back to legacy keys
+        // $materialConfig = session('material_config', null);
+        // $materialType = !empty($materialConfig['material_type_id'])
+        //     ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
+        //     : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
+
+        // $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
+
+        // // Edge removed
+        // $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
+
+        // $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
+        // $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
+        // $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
+
+        // return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+
         case 8:
-        // Overview: read from material_config (preferred) or fall back to legacy keys
-        $materialConfig = session('material_config', null);
+
+        /* ---------------------------
+        | Session data
+        |----------------------------*/
+        $materialConfig   = session('material_config', []);
+        $layoutId          = session('selected_layout_id');
+        $dimensions        = session('dimensions', []);
+        $edgeFinishing     = session('edge_finishing', []);
+        $backWall          = session('back_wall', []);
+        $sinkSelection     = session('sink_selection', []);
+        $cutoutSelection   = session('cutout_selection', []);
+
+        /* ---------------------------
+        | Fetch DB models
+        |----------------------------*/
         $materialType = !empty($materialConfig['material_type_id'])
-            ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
-            : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
+            ? \App\Models\MaterialType::with('group')->find($materialConfig['material_type_id'])
+            : null;
 
-        $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
-
-        // Edge removed
-        $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
-
-        $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
-        $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
-        $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
-
-        return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
+        $materialGroupName = $materialType?->group?->name ?? 'N/A';
 
 
+        $color     = !empty($materialConfig['color'])
+            ? \App\Models\Color::find($materialConfig['color'])
+            : null;
+
+        $finish    = !empty($materialConfig['finish'])
+            ? \App\Models\Finish::find($materialConfig['finish'])
+            : null;
+
+        $thickness = !empty($materialConfig['thickness'])
+            ? \App\Models\Thickness::find($materialConfig['thickness'])
+            : null;
+
+        $pricePerSqm = 0;
+
+        if ($thickness) {
+            // Business / Guest user check
+            $pricePerSqm = auth()->check()
+                ? $thickness->business_price_m2
+                : $thickness->guest_price_m2;
+        }
+
+        $layout = $layoutId
+            ? \App\Models\MaterialLayoutShape::with('layoutGroup.layoutCategory')->find($layoutId)
+            : null;
+
+        $layoutGroupName = $layout?->layoutGroup?->name ?? 'N/A';
+        $layoutCategoryName = $layout?->layoutGroup?->layoutCategory?->name ?? 'N/A';
+
+        $edgeProfile = !empty($edgeFinishing['edge_id'])
+            ? \App\Models\EdgeProfile::find($edgeFinishing['edge_id'])
+            : null;
+
+        $edgeThickness = !empty($edgeFinishing['thickness_id'])
+            ? \App\Models\Thickness::find($edgeFinishing['thickness_id'])
+            : null;
+
+        $edgeColor = !empty($edgeFinishing['color_id'])
+            ? \App\Models\Color::find($edgeFinishing['color_id'])
+            : null;
+
+        $backsplash = !empty($backWall['wall_id'])
+            ? \App\Models\BacksplashShapes::find($backWall['wall_id'])
+            : null;
+
+        $sink = !empty($sinkSelection['sink_id'])
+            ? \App\Models\Sink::with(['images', 'category'])->find($sinkSelection['sink_id'])
+            : null;
+
+        $cutout = !empty($cutoutSelection['cutout_id'])
+            ? \App\Models\CutOuts::with(['images', 'category'])->find($cutoutSelection['cutout_id'])
+            : null;
+
+        /* ---------------------------
+        | Dimensions & Area
+        |----------------------------*/
+        $blad1 = $dimensions['blad1'] ?? ['width' => 0, 'height' => 0];
+
+        $area = (
+            is_numeric($blad1['width']) &&
+            is_numeric($blad1['height']) &&
+            $blad1['width'] > 0 &&
+            $blad1['height'] > 0
+        )
+            ? ($blad1['width'] * $blad1['height']) / 10000
+            : 0;
+
+        $materialPrice = $area * $pricePerSqm;
+
+        $rule = \App\Models\EdgeProfileThicknessRule::where([
+            'edge_profile_id' => $edgeFinishing['edge_id'],
+            'material_type_id' => $materialConfig['material_type_id'],
+            'thickness_id' => $edgeFinishing['thickness_id'],
+            'status' => 1
+        ])->first();
+
+        $edgePricePerLm = 0;
+
+        if ($rule) {
+            $edgePricePerLm = auth()->check()
+                ? $rule->price_per_lm_business
+                : $rule->price_per_lm_guest;
+        }
+
+        if (!empty($edgeFinishing['color_id'])) {
+            $override = \App\Models\MaterialColorEdgeException::where([
+                'edge_profile_id' => $edgeFinishing['edge_id'],
+                'material_type_id' => $materialConfig['material_type_id'],
+                'thickness_id' => $edgeFinishing['thickness_id'],
+                'color_id' => $edgeFinishing['color_id'],
+                'status' => 1
+            ])->first();
+
+            if ($override) {
+                $edgePricePerLm = auth()->check()
+                    ? ($override->override_price_per_lm ?? $edgePricePerLm)
+                    : ($override->override_guest_price_per_lm ?? $edgePricePerLm);
+            }
+        }
+
+        $edgeLength = 0;
+
+        if (in_array('top', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['width'] / 100;
+        }
+        if (in_array('left', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['height'] / 100;
+        }
+        if (in_array('right', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['height'] / 100;
+        }
+
+        $edgePrice = $edgeLength * $edgePricePerLm;
+
+
+        if (!empty($backWall['wall_id'])) {
+
+            $widthCm = $backWall['dimensions']['blad1']['width'] ?? 50;
+            $lm = $widthCm / 100;
+
+            if ($lm > 0) {
+
+                $backsplashPrice = \App\Models\BacksplashPrice::where([
+                    'backsplash_shape_id' => $backWall['wall_id'],
+                    'material_type_id' => $materialConfig['material_type_id'],
+                    'status' => 1
+                ])->first();
+
+                if ($backsplashPrice) {
+
+                    $finishedSides = $backWall['selected_edges'] ?? [];
+                    $finishedSidesCount = count($finishedSides);
+
+                    if (auth()->check()) {
+                        $priceLm = $backsplashPrice->price_lm_business;
+                        $sidePriceLm = $backsplashPrice->finished_side_price_lm_business;
+                    } else {
+                        $priceLm = $backsplashPrice->price_lm_guest;
+                        $sidePriceLm = $backsplashPrice->finished_side_price_lm_guest;
+                    }
+
+                    $basePrice = $lm * $priceLm;
+                    $finishedPrice = $finishedSidesCount * $lm * $sidePriceLm;
+
+                    $totalBackwallPrice = $basePrice + $finishedPrice;
+                }
+            }
+        }
+
+        $cutoutPrice = 0;
+
+        if (!empty($cutoutSelection['cutout_id'])) {
+
+            $cutout = \App\Models\CutOuts::find($cutoutSelection['cutout_id']);
+
+            if ($cutout) {
+
+                $materialTypeId = $materialConfig['material_type_id'] ?? null;
+                $thicknessValue = null;
+
+                    if ($materialTypeId) {
+                        $thicknessValue = \DB::table('thicknesses')
+                            ->where('material_type_id', $materialTypeId) 
+                            ->where('status', 1)                      
+                            ->orderBy('id', 'asc')                     
+                            ->value('thickness_value');
+                    }
+
+                // Material+thickness specific price
+                $priceRow = null;
+                if ($materialTypeId && $thicknessValue) {
+                    $priceRow = \DB::table('cutout_material_thickness_prices')
+                        ->where('cut_out_id', $cutout->id)
+                        ->where('material_type_id', $materialTypeId)
+                        ->where('thickness_value', $thicknessValue)
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($priceRow) {
+                    $cutoutPrice = auth()->check()
+                        ? $priceRow->price_business
+                        : $priceRow->price_guest;
+                } else {
+                    $cutoutPrice = auth()->check()
+                        ? $cutout->user_price
+                        : $cutout->price;
+                }
+            }
+        }
+        
+        /* ---------------------------
+        | Price calculation
+        |----------------------------*/
+        $priceDetails = [
+            'material'   => $materialPrice ?? 0,
+            'layout'     => $layout?->price ?? 0,
+            'edgePrice'  => $edgePrice ?? 0,
+            'backsplash' => $totalBackwallPrice ?? 0,
+            'sink'       => ($sink?->price ?? 0) * ($sinkSelection['number'] ?? 1),
+            'cutout'     => $cutoutPrice ?? 0,
+        ];
+
+        $totalPrice = array_sum($priceDetails);
+
+        return view('front.overview', compact(
+            'materialGroupName',
+            'materialType',
+            'color',
+            'finish',
+            'thickness',
+            'layout',
+            'layoutGroupName',
+            'layoutCategoryName',
+            'edgeProfile',
+            'edgeThickness',
+            'edgeColor',
+            'backsplash',
+            'sink',
+            'cutout',
+            'dimensions',
+            'edgeFinishing',
+            'backWall',
+            'sinkSelection',
+            'cutoutSelection',
+            'blad1',
+            'area',
+            'priceDetails',
+            'totalPrice'
+        ))->render();
         default:
             return response()->json(['error' => 'Invalid step'], 400);
     }
 }
-
 
 public function submitQuote(Request $request)
     {

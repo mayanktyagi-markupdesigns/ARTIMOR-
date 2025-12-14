@@ -1,4 +1,4 @@
-@php
+<!-- @php
 $edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
 'edge_id' => null,
 'thickness_id' => null,
@@ -15,13 +15,34 @@ $edgeProfiles = $edgeProfiles ?? collect();
 $materialConfig = session('material_config', []);
 $selectedMaterialTypeId = $selectedMaterialTypeId ?? ($materialConfig['material_type_id'] ??
 session('selected_material_type_id'));
+@endphp -->
+
+@php
+$edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
+    'edge_id' => null,
+    'selected_edges' => []
+]);
+
+$materialConfig = session('material_config', []);
+
+$selectedEdgeId      = $edgeFinishing['edge_id'] ?? null;
+$selectedEdges       = $edgeFinishing['selected_edges'] ?? [];
+$selectedThicknessId = $materialConfig['thickness'] ?? null;
+$selectedColorId     = $materialConfig['color'] ?? null;
+
+$edgeProfiles = $edgeProfiles ?? collect();
+
+$selectedMaterialTypeId =
+    $selectedMaterialTypeId
+    ?? $materialConfig['material_type_id']
+    ?? session('selected_material_type_id');
 @endphp
 
 <div class="materials">
     <!-- Step 1: Select Edge Profile -->
     <div class="row mb-5">
         <div class="col-lg-12">
-            <h4 class="mb-4 fw-bold">Step 1: Select Edge Profile</h4>
+            <h4 class="mb-4 fw-bold">Select Edge Profile</h4>
             <div class="row" id="edge-profiles-list">
                 @forelse($edgeProfiles as $index => $edge)
                 <div class="col-md-3 col-sm-6 mb-4">
@@ -49,7 +70,7 @@ session('selected_material_type_id'));
     <div class="row mb-5" id="thickness-color-section">
         <div class="col-lg-12">
             <hr class="my-4">
-            <h4 class="mb-4 fw-bold">Step 2 & 3: Thickness & Color</h4>
+            <h4 class="mb-4 fw-bold">Thickness & Color</h4>
 
             <div class="row">
                 <!-- Thickness -->
@@ -95,7 +116,7 @@ session('selected_material_type_id'));
     <div class="row mb-5" id="edges-selection-section">
         <div class="col-lg-12">
             <hr class="my-4">
-            <h4 class="mb-4 fw-bold">Step 4: Select Edges to Finish (Optional)</h4>
+            <h4 class="mb-4 fw-bold">Select Edges to Finish</h4>
             <div class="row">
                 <div class="col-lg-12 mb-4">
 
@@ -113,20 +134,6 @@ session('selected_material_type_id'));
                                 data-edge="right" title="Right Edge"></span>
                             <span class="top-11-cir edge-circle {{ in_array('top', $selectedEdges) ? 'selected' : '' }}"
                                 data-edge="top" title="Top Edge"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 d-flex align-items-center">
-                    <div class="w-100">
-                        <!-- <h6 class="mb-3">Selected Edges:</h6> -->
-                        <div id="selected-edges-list">
-                            @if(count($selectedEdges) > 0)
-                            @foreach($selectedEdges as $edge)
-                            <span class="badge bg-success me-2 mb-2">{{ ucfirst($edge) }}</span>
-                            @endforeach
-                            @else
-                            <p class="text-muted"></p>
-                            @endif
                         </div>
                     </div>
                 </div>
