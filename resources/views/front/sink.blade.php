@@ -1,8 +1,8 @@
 @php
 $sinkSelection = session('sink_selection', [
-    'sink_id' => null,
-    'cutout' => null,
-    'number' => null
+'sink_id' => null,
+'cutout' => null,
+'number' => null
 ]) ?? [];
 $selectedSinkId = $sinkSelection['sink_id'] ?? null;
 @endphp
@@ -16,9 +16,9 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
     @php
     // Build category list from sink->category->name with fallback to 'Other'
     $seriesList = $sinks
-        ->map(function ($s) { return optional($s->category)->name ?: 'Other'; })
-        ->unique()
-        ->values();
+    ->map(function ($s) { return optional($s->category)->name ?: 'Other'; })
+    ->unique()
+    ->values();
     @endphp
 
     <!-- Nav Tabs -->
@@ -29,8 +29,8 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                 @php
                 $slug = Str::slug($series) ?: ('series-' . $sIndex);
                 @endphp
-                <button class="nav-link @if($sIndex==0) active @endif" id="{{ $slug }}-tab"
-                    data-bs-toggle="tab" data-bs-target="#{{ $slug }}" type="button" role="tab">
+                <button class="nav-link @if($sIndex==0) active @endif" id="{{ $slug }}-tab" data-bs-toggle="tab"
+                    data-bs-target="#{{ $slug }}" type="button" role="tab">
                     {{ $series ?: 'Other' }}
                 </button>
             </li>
@@ -50,7 +50,7 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                 @php
                 // Filter sinks whose category name matches this tab
                 $seriesSinks = $sinks->filter(function ($sink) use ($series) {
-                    return (optional($sink->category)->name ?: 'Other') === $series;
+                return (optional($sink->category)->name ?: 'Other') === $series;
                 });
                 @endphp
 
@@ -97,35 +97,48 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                                         @endif
                                         <p class="small">
                                             {{ $sink->radius ?? '' }} Radius<br />
-                                            <strong>Internal Dimensions:</strong> {{ $sink->internal_dimensions ?? '' }}<br />
-                                            <strong>External Dimensions:</strong> {{ $sink->external_dimensions ?? '' }}<br />
+                                            <strong>Internal Dimensions:</strong>
+                                            {{ $sink->internal_dimensions ?? '' }}<br />
+                                            <strong>External Dimensions:</strong>
+                                            {{ $sink->external_dimensions ?? '' }}<br />
                                             <strong>Depth:</strong> {{ $sink->depth ?? '' }}<br />
                                         </p>
                                         <!-- Form Fields -->
                                         <div class="row g-3 mb-4 mt-4">
                                             <div class="col-md-6">
                                                 <div class="inputfild-box">
-                                                    <label class="form-label">Cutout<sup>*</sup></label>
-                                                    <select class="form-select sink-cutout" data-sink-id="{{ $sink->id }}"
+                                                    <label class="form-label">Cutout Type<sup>*</sup></label>
+                                                    <select class="form-select sink-cutout"
+                                                        data-sink-id="{{ $sink->id }}"
                                                         value="{{ $selectedSinkId == $sink->id ? $sinkSelection['cutout'] : '' }}">
                                                         <option value="">Choose...</option>
-                                                        <option value="vlakinbouw" {{ $selectedSinkId == $sink->id && $sinkSelection['cutout'] == 'vlakinbouw' ? 'selected' : '' }}>Vlakinbouw/inleg</option>
-                                                        <option value="onderbouw" {{ $selectedSinkId == $sink->id && $sinkSelection['cutout'] == 'onderbouw' ? 'selected' : '' }}>Onderbouw</option>
+                                                        <option value="Flush"
+                                                            {{ $selectedSinkId == $sink->id && $sinkSelection['cutout'] == 'Flush' ? 'selected' : '' }}>
+                                                            Flush</option>
+                                                        <option value="Top"
+                                                            {{ $selectedSinkId == $sink->id && $sinkSelection['cutout'] == 'Top' ? 'selected' : '' }}>
+                                                            Top</option>
+                                                        <option value="Undermount"
+                                                            {{ $selectedSinkId == $sink->id && $sinkSelection['cutout'] == 'Undermount' ? 'selected' : '' }}>
+                                                            Undermount</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="inputfild-box">
                                                     <label class="form-label">Number<sup>*</sup></label>
-                                                    <input type="number" class="form-control sink-number" data-sink-id="{{ $sink->id }}"
+                                                    <input type="number" class="form-control sink-number"
+                                                        data-sink-id="{{ $sink->id }}"
                                                         value="{{ $selectedSinkId == $sink->id ? ($sinkSelection['number'] ?? 2) : 2 }}"
                                                         min="0" max="10">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="d-flex gap-4 mt-5">
-                                            <button class="btn btn-secondary cancel-btn" data-bs-dismiss="modal">Cancel</button>
-                                            <button class="btn btn-primary red-btn confirm-sink" data-sink-id="{{ $sink->id }}">Confirm</button>
+                                            <button class="btn btn-secondary cancel-btn"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-primary red-btn confirm-sink"
+                                                data-sink-id="{{ $sink->id }}">Confirm</button>
                                         </div>
                                     </div>
                                 </div>
@@ -152,14 +165,17 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
     cursor: pointer;
     transition: transform 0.2s ease;
 }
+
 .sink-card:hover {
     transform: scale(1.02);
 }
+
 .sink-card.selected {
     border: 3px solid #007bff;
     box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
     position: relative;
 }
+
 .sink-card.selected::after {
     content: "✔ Selected";
     position: absolute;

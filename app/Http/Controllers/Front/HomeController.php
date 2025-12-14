@@ -536,6 +536,15 @@ public function getCalculatorSteps(Request $request)
             ? \App\Models\Thickness::find($materialConfig['thickness'])
             : null;
 
+        $pricePerSqm = 0;
+
+        if ($thickness) {
+            // Business / Guest user check
+            $pricePerSqm = auth()->check()
+                ? $thickness->business_price_m2
+                : $thickness->guest_price_m2;
+        }
+
         $layout = $layoutId
             ? \App\Models\MaterialLayoutShape::with('layoutGroup.layoutCategory')->find($layoutId)
             : null;
@@ -581,14 +590,140 @@ public function getCalculatorSteps(Request $request)
             ? ($blad1['width'] * $blad1['height']) / 10000
             : 0;
 
+        $materialPrice = $area * $pricePerSqm;
+
+        $rule = \App\Models\EdgeProfileThicknessRule::where([
+            'edge_profile_id' => $edgeFinishing['edge_id'],
+            'material_type_id' => $materialConfig['material_type_id'],
+            'thickness_id' => $edgeFinishing['thickness_id'],
+            'status' => 1
+        ])->first();
+
+        $edgePricePerLm = 0;
+
+        if ($rule) {
+            $edgePricePerLm = auth()->check()
+                ? $rule->price_per_lm_business
+                : $rule->price_per_lm_guest;
+        }
+
+        if (!empty($edgeFinishing['color_id'])) {
+            $override = \App\Models\MaterialColorEdgeException::where([
+                'edge_profile_id' => $edgeFinishing['edge_id'],
+                'material_type_id' => $materialConfig['material_type_id'],
+                'thickness_id' => $edgeFinishing['thickness_id'],
+                'color_id' => $edgeFinishing['color_id'],
+                'status' => 1
+            ])->first();
+
+            if ($override) {
+                $edgePricePerLm = auth()->check()
+                    ? ($override->override_price_per_lm ?? $edgePricePerLm)
+                    : ($override->override_guest_price_per_lm ?? $edgePricePerLm);
+            }
+        }
+
+        $edgeLength = 0;
+
+        if (in_array('top', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['width'] / 100;
+        }
+        if (in_array('left', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['height'] / 100;
+        }
+        if (in_array('right', $edgeFinishing['selected_edges'])) {
+            $edgeLength += $blad1['height'] / 100;
+        }
+
+        $edgePrice = $edgeLength * $edgePricePerLm;
+
+
+        if (!empty($backWall['wall_id'])) {
+
+            $widthCm = $backWall['dimensions']['blad1']['width'] ?? 50;
+            $lm = $widthCm / 100;
+
+            if ($lm > 0) {
+
+                $backsplashPrice = \App\Models\BacksplashPrice::where([
+                    'backsplash_shape_id' => $backWall['wall_id'],
+                    'material_type_id' => $materialConfig['material_type_id'],
+                    'status' => 1
+                ])->first();
+
+                if ($backsplashPrice) {
+
+                    $finishedSides = $backWall['selected_edges'] ?? [];
+                    $finishedSidesCount = count($finishedSides);
+
+                    if (auth()->check()) {
+                        $priceLm = $backsplashPrice->price_lm_business;
+                        $sidePriceLm = $backsplashPrice->finished_side_price_lm_business;
+                    } else {
+                        $priceLm = $backsplashPrice->price_lm_guest;
+                        $sidePriceLm = $backsplashPrice->finished_side_price_lm_guest;
+                    }
+
+                    $basePrice = $lm * $priceLm;
+                    $finishedPrice = $finishedSidesCount * $lm * $sidePriceLm;
+
+                    $totalBackwallPrice = $basePrice + $finishedPrice;
+                }
+            }
+        }
+
+        $cutoutPrice = 0;
+
+        if (!empty($cutoutSelection['cutout_id'])) {
+
+            $cutout = \App\Models\CutOuts::find($cutoutSelection['cutout_id']);
+
+            if ($cutout) {
+
+                $materialTypeId = $materialConfig['material_type_id'] ?? null;
+                $thicknessValue = null;
+
+                    if ($materialTypeId) {
+                        $thicknessValue = \DB::table('thicknesses')
+                            ->where('material_type_id', $materialTypeId) 
+                            ->where('status', 1)                      
+                            ->orderBy('id', 'asc')                     
+                            ->value('thickness_value');
+                    }
+
+                // Material+thickness specific price
+                $priceRow = null;
+                if ($materialTypeId && $thicknessValue) {
+                    $priceRow = \DB::table('cutout_material_thickness_prices')
+                        ->where('cut_out_id', $cutout->id)
+                        ->where('material_type_id', $materialTypeId)
+                        ->where('thickness_value', $thicknessValue)
+                        ->where('status', 1)
+                        ->first();
+                }
+
+                if ($priceRow) {
+                    $cutoutPrice = auth()->check()
+                        ? $priceRow->price_business
+                        : $priceRow->price_guest;
+                } else {
+                    $cutoutPrice = auth()->check()
+                        ? $cutout->user_price
+                        : $cutout->price;
+                }
+            }
+        }
+        
         /* ---------------------------
         | Price calculation
         |----------------------------*/
         $priceDetails = [
+            'material'   => $materialPrice ?? 0,
             'layout'     => $layout?->price ?? 0,
+            'edgePrice'  => $edgePrice ?? 0,
+            'backsplash' => $totalBackwallPrice ?? 0,
             'sink'       => ($sink?->price ?? 0) * ($sinkSelection['number'] ?? 1),
-            'cutout'     => $cutout?->price ?? 0,
-            'backsplash' => $backsplash?->price ?? 0,
+            'cutout'     => $cutoutPrice ?? 0,
         ];
 
         $totalPrice = array_sum($priceDetails);
@@ -622,7 +757,6 @@ public function getCalculatorSteps(Request $request)
             return response()->json(['error' => 'Invalid step'], 400);
     }
 }
-
 
 public function submitQuote(Request $request)
     {
