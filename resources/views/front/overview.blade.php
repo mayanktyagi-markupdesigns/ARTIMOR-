@@ -181,7 +181,8 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                                 <strong>Thickness:</strong> {{ $thickness?->thickness_value ?? '—' }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['material']  }}
+                                                <strong>Price:</strong>
+                                                €{{ number_format($priceDetails['material'], 2) }}
                                             </div>
                                         </div>
                                     </div>
@@ -217,7 +218,7 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                                 <strong>Layout Shape:</strong> {{ $layout->name }}
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ number_format($layout->price, 2) }}
+                                                <strong>Price:</strong> €{{ number_format($priceDetails['layout'], 2) }}
                                             </div>
                                         </div>
                                     </div>
@@ -281,7 +282,8 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                                 @endif
                                             </div>
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['edgePrice']  }}
+                                                <strong>Price:</strong>
+                                                €{{ number_format($priceDetails['edgePrice'], 2) }}
                                             </div>
                                         </div>
                                     </div>
@@ -317,7 +319,8 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                             </div>
                                             @endif
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Price:</strong> €{{ $priceDetails['backsplash']  }}
+                                                <strong>Price:</strong>
+                                                €{{ number_format($priceDetails['backsplash'], 2) }}
                                             </div>
                                         </div>
                                     </div>
@@ -357,7 +360,8 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                                     <strong>Quantity:</strong> {{ $sinkSelection['number'] ?? 'N/A' }}
                                                 </div>
                                                 <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                    <strong>Price:</strong> €{{ $priceDetails['sink'] ?? 'N/A' }}
+                                                    <strong>Price:</strong>
+                                                    €{{ number_format($priceDetails['sink'], 2) }}
                                                 </div>
                                             </div>
                                         </div>
@@ -391,7 +395,8 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                                     <strong>Cutout Name:</strong> {{ $cutout->name ?? 'N/A' }}
                                                 </div>
                                                 <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                    <strong>Price:</strong> €{{ $priceDetails['cutout']  }}
+                                                    <strong>Price:</strong>
+                                                    €{{ number_format($priceDetails['cutout'], 2)  }}
                                                 </div>
                                             </div>
                                         </div>
@@ -411,7 +416,7 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                     <div class="result-gride d-flex">
                                         <div class="w-100">
                                             <div class="fs-5 mb-4 d-flex justify-content-between flex-wrap">
-                                                <strong>Total Price:</strong> €{{ $totalPrice  }}
+                                                <strong>Total Price:</strong> €{{ number_format($totalPrice, 2)  }}
                                             </div>
                                         </div>
                                     </div>
