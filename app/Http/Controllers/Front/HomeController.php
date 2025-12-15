@@ -475,13 +475,17 @@ public function getCalculatorSteps(Request $request)
 
         case 7:
             $materialConfig = session('material_config', []);
-            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? session('selected_material_type_id');
+            $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
+            $selectedThicknessValue = !empty($materialConfig['thickness'])
+                ? \App\Models\Thickness::where('id', $materialConfig['thickness'])
+                    ->value('thickness_value')
+                : null;
             $selectedLayoutId = session('selected_layout_id');
             $cutOuts = $this->getCutOutsStepData(null, $selectedMaterialTypeId, $selectedLayoutId);
             $grouped = $cutOuts->groupBy(function ($cutout) {
                 return optional($cutout->category)->name ?: 'Other';
             });
-            return view('front.cut-outs', compact('grouped'))->render();
+            return view('front.cut-outs', compact('grouped','selectedMaterialTypeId','selectedThicknessValue'))->render();
 
         // case 8:
         // // Overview: read from material_config (preferred) or fall back to legacy keys
@@ -675,41 +679,30 @@ public function getCalculatorSteps(Request $request)
         $cutoutPrice = 0;
 
         if (!empty($cutoutSelection['cutout_id'])) {
-
             $cutout = \App\Models\CutOuts::find($cutoutSelection['cutout_id']);
 
             if ($cutout) {
-
                 $materialTypeId = $materialConfig['material_type_id'] ?? null;
-                $thicknessValue = null;
-
-                    if ($materialTypeId) {
-                        $thicknessValue = \DB::table('thicknesses')
-                            ->where('material_type_id', $materialTypeId) 
-                            ->where('status', 1)                      
-                            ->orderBy('id', 'asc')                     
-                            ->value('thickness_value');
-                    }
-
-                // Material+thickness specific price
-                $priceRow = null;
+                $thicknessValue = !empty($materialConfig['thickness'])
+                ? \App\Models\Thickness::where('id', $materialConfig['thickness'])
+                    ->value('thickness_value')
+                : null;
+                
                 if ($materialTypeId && $thicknessValue) {
+                    // Material + Thickness specific price ONLY
                     $priceRow = \DB::table('cutout_material_thickness_prices')
                         ->where('cut_out_id', $cutout->id)
                         ->where('material_type_id', $materialTypeId)
                         ->where('thickness_value', $thicknessValue)
                         ->where('status', 1)
                         ->first();
-                }
 
-                if ($priceRow) {
-                    $cutoutPrice = auth()->check()
-                        ? $priceRow->price_business
-                        : $priceRow->price_guest;
-                } else {
-                    $cutoutPrice = auth()->check()
-                        ? $cutout->user_price
-                        : $cutout->price;
+                    if ($priceRow) {
+                        // Auth check
+                        $cutoutPrice = auth()->check()
+                            ? $priceRow->price_business
+                            : $priceRow->price_guest;
+                    }
                 }
             }
         }
