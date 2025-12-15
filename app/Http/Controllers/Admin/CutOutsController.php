@@ -30,8 +30,8 @@ class CutOutsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'required|numeric|min:0',
-            'user_price'         => 'required|numeric|min:0',
+            //'price'         => 'required|numeric|min:0',
+            //'user_price'         => 'required|numeric|min:0',
             'cut_outs_category_id' => 'required|exists:cut_outs_categories,id',           
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
@@ -42,8 +42,8 @@ class CutOutsController extends Controller
         // Create cut outs record first
         $outs = CutOuts::create([
             'name' => $validated['name'],
-            'price' => $validated['price'],
-            'user_price' => $validated['user_price'],
+            'price' => 0.00,
+            'user_price' => 0.00,
             'cut_outs_category_id' => $validated['cut_outs_category_id'],            
             'description' => $validated['description'],
             'status' => $validated['status'],
@@ -86,8 +86,8 @@ class CutOutsController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price'         => 'required|numeric|min:0',
-            'user_price'         => 'required|numeric|min:0',
+            //'price'         => 'required|numeric|min:0',
+            //'user_price'         => 'required|numeric|min:0',
             'cut_outs_category_id' => 'required|exists:cut_outs_categories,id',
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
@@ -96,8 +96,8 @@ class CutOutsController extends Controller
 
         $outs->update([
             'name' => $validated['name'],
-            'price' => $validated['price'],
-            'user_price' => $validated['user_price'],
+            'price' => 0.00,
+            'user_price' => 0.00,
             'cut_outs_category_id' => $validated['cut_outs_category_id'],            
             'description' => $validated['description'],
             'status' => $validated['status'],

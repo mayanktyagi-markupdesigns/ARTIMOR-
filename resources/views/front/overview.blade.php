@@ -439,46 +439,94 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                 <div class="col-md-12">
                     <h3>Summary of Your Selections</h3>
                     <ul>
-                        @if($materialType && $color && $finish && $thickness)
-                        <li><strong>Type:</strong> {{ $materialType->name }} (Color: {{ $color->name ?? 'N/A' }},
-                            Finish: {{ $finish->finish_name ?? 'N/A' }}, Thickness:
-                            {{ $thickness?->thickness_value ?? '—' }})
+
+                        {{-- Material --}}
+                        @if($materialType)
+                        <li>
+                            <strong>Material:</strong>
+                            {{ $materialType->name }}
+                            (Color: {{ $color?->name ?? '—' }},
+                            Finish: {{ $finish?->finish_name ?? '—' }},
+                            Thickness: {{ $thickness?->thickness_value ?? '—' }},
+                            Price: €{{ number_format($priceDetails['material'] ?? 0, 2) }})
                         </li>
                         @endif
 
+                        {{-- Layout --}}
                         @if($layout)
-                        <li><strong>Layout:</strong> {{ $layout->name }} (Price:
-                            €{{ number_format($layout->price, 2) }})</li>
+                        <li>
+                            <strong>Layout:</strong>
+                            {{ $layout->name }}
+                            (Price: €{{ number_format($priceDetails['layout'] ?? 0, 2) }})
+                        </li>
                         @endif
 
+                        {{-- Dimensions --}}
                         @if($blad1['width'] || $blad1['height'])
-                        <li><strong>Dimensions:</strong> Width: {{ $blad1['width'] ?: 'N/A' }} cm, Height:
-                            {{ $blad1['height'] ?: 'N/A' }} cm, Area: {{ number_format($area, 2) }} m²</li>
+                        <li>
+                            <strong>Dimensions:</strong>
+                            Width: {{ $blad1['width'] ?: 'N/A' }} cm,
+                            Height: {{ $blad1['height'] ?: 'N/A' }} cm,
+                            Area: {{ number_format($area, 2) }} m²
+                        </li>
                         @endif
 
+                        {{-- Edge Finishing --}}
                         @if($edgeProfile)
-                        <li><strong>Profile:</strong> {{ $edgeProfile->name }} (Thickness:
-                            {{ $edgeThickness?->thickness_value ?? '—' }}, Color:
-                            {{ $edgeColor?->name ?? '—' }})</li>
+                        <li>
+                            <strong>Edge Finishing:</strong>
+                            {{ $edgeProfile->name }}
+                            (Thickness: {{ $edgeThickness?->thickness_value ?? '—' }},
+                            Color: {{ $edgeColor?->name ?? '—' }},
+                            Edges:
+                            {{ !empty($edgeFinishing['selected_edges'])
+                ? implode(', ', array_map('ucfirst', $edgeFinishing['selected_edges']))
+                : 'Standard'
+            }},
+                            Price: €{{ number_format($priceDetails['edgePrice'] ?? 0, 2) }})
+                        </li>
                         @endif
 
+                        {{-- Back Wall --}}
                         @if($backsplash)
-                        <li><strong>Back Wall:</strong> {{ $backsplash->name ?? 'N/A' }} </li>
+                        <li>
+                            <strong>Back Wall:</strong>
+                            {{ $backsplash->name }}
+                            (Price: €{{ number_format($priceDetails['backsplash'] ?? 0, 2) }})
+                        </li>
                         @endif
+
+                        {{-- Sink --}}
                         @if($sink)
-                        <li><strong>Sink:</strong> {{ $sink->name }} (Category:
-                            {{ optional($sink->category)->name ?? 'N/A' }}, Type:
-                            {{ ucfirst($sinkSelection['cutout']) ?? 'N/A' }}, Number:
-                            {{ $sinkSelection['number'] ?? 'N/A' }}, Price: €{{ $priceDetails['sink'] ?? 'N/A' }})</li>
+                        <li>
+                            <strong>Sink:</strong>
+                            {{ $sink->name }}
+                            (Category: {{ optional($sink->category)->name ?? 'N/A' }},
+                            Cutout: {{ ucfirst($sinkSelection['cutout'] ?? '—') }},
+                            Quantity: {{ $sinkSelection['number'] ?? '—' }},
+                            Price: €{{ number_format($priceDetails['sink'] ?? 0, 2) }})
+                        </li>
                         @endif
+
+                        {{-- Cutout --}}
                         @if($cutout)
-                        <li><strong>Cut-Out:</strong> {{ $cutout->name ?? 'N/A' }} (Category:
-                            {{ optional($cutout->category)->name ?? 'N/A' }}, Type:
-                            {{ ucfirst($cutoutSelection['recess_type']) ?? 'N/A' }}, Price:
-                            €{{ $priceDetails['cutout'] ?? 'N/A' }})</li>
+                        <li>
+                            <strong>Cut-Out:</strong>
+                            {{ $cutout->name }}
+                            (Category: {{ optional($cutout->category)->name ?? 'N/A' }},
+                            Type: {{ ucfirst($cutoutSelection['recess_type'] ?? '—') }},
+                            Price: €{{ number_format($priceDetails['cutout'] ?? 0, 2) }})
+                        </li>
                         @endif
-                        <li><strong>Total Price:</strong> €</li>
+
+                        {{-- Total --}}
+                        <li>
+                            <strong>Total Price:</strong>
+                            €{{ number_format($totalPrice ?? 0, 2) }}
+                        </li>
+
                     </ul>
+
                 </div>
             </div>
         </div>

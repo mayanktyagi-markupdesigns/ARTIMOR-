@@ -37,10 +37,10 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.cut.outs.view', $item->id) }}"
+                                <!-- <a href="{{ route('admin.cut.outs.view', $item->id) }}"
                                     class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-eye"></i> View
-                                </a>
+                                </a> -->
                                 <a href="{{ route('admin.cut.outs.edit', $item->id) }}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>

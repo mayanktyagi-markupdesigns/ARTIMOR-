@@ -82,8 +82,6 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                             <strong>Category:</strong> {{ $item->category?->name ?? '—' }}
                                         </p>
                                         <p class="small">
-                                            <strong>Series:</strong> {{ $item->series_type }}<br />
-                                            <strong>Price:</strong> ₹{{ $item->price }}<br />
                                             <strong>Description:</strong> {{ $item->description }}
                                         </p>
 
@@ -110,7 +108,7 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
                                                     <option value="{{ $price->material_type_id }}"
-                                                        {{ $selectedCutoutId == $item->id && ($cutoutSelection['material_type_id'] ?? null) == $price->material_type_id ? 'selected' : '' }}>
+                                                        {{ $price->material_type_id == $selectedMaterialTypeId ? 'selected' : '' }}>
                                                         {{ $price->materialType->name ?? '—' }}
                                                     </option>
                                                     @endforeach
@@ -124,13 +122,12 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
                                                     <option value="{{ $price->thickness_value }}"
-                                                        {{ $selectedCutoutId == $item->id && ($cutoutSelection['thickness_value'] ?? null) == $price->thickness_value ? 'selected' : '' }}>
+                                                        {{ $price->thickness_value == $selectedThicknessValue ? 'selected' : '' }}>
                                                         {{ $price->thickness_value ?? '—' }}
                                                     </option>
                                                     @endforeach
                                                 </select>
                                             </div>
-
 
                                             <!-- Buttons -->
                                             <div class="d-flex justify-content-start gap-4 mt-5">
