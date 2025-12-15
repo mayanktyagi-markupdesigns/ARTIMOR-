@@ -44,7 +44,7 @@ class MaterialColorEdgeExceptionController extends Controller
             'status'           => 'required|in:0,1',           
         ]);        
         // Convert true/false string → 1/0
-        $isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
+        //$isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
 
         $color_edge_exception = new MaterialColorEdgeException();
 
@@ -88,7 +88,7 @@ class MaterialColorEdgeExceptionController extends Controller
         ]);
         
         // Convert true/false string → 1/0
-        $isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
+        //$isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
 
         $color_edge_exception = MaterialColorEdgeException::findOrFail($id);
         
@@ -111,6 +111,28 @@ class MaterialColorEdgeExceptionController extends Controller
         $color_edge_exception = MaterialColorEdgeException::findOrFail($id);        
         $color_edge_exception->delete();
         return redirect()->route('admin.color.edge.exception.list')->with('success', 'Material color edge exception deleted successfully.');
+    }
+
+    public function getColorsByMaterial($materialTypeId)
+    {
+        $colors = \DB::table('colors')
+            ->where('material_type_id', $materialTypeId)
+            ->where('status', 1)
+            ->select('id', 'name')
+            ->get();
+
+        return response()->json($colors);
+    }
+
+    public function getThicknessByMaterial($materialTypeId)
+    {
+        $thicknesses = \DB::table('thicknesses')
+            ->where('material_type_id', $materialTypeId)
+            ->where('status', 1)
+            ->select('id', 'thickness_value')
+            ->get();
+
+        return response()->json($thicknesses);
     }
     
 }

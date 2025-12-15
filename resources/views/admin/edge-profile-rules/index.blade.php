@@ -19,7 +19,6 @@
                             <th style="width: 200px; background-color: #f1f5f9;">Material Type</th>
                             <th style="width: 200px; background-color: #f1f5f9;">Edge Profile</th>                           
                             <th style="width: 200px; background-color: #f1f5f9;">Thickness</th>
-                            <!-- <th style="width: 150px; background-color: #f1f5f9;">Is Allowed</th> -->
                             <th style="width: 150px; background-color: #f1f5f9;">Guest Price</th>
                             <th style="width: 150px; background-color: #f1f5f9;">Business Price</th>
                             <th style="width: 120px; background-color: #f1f5f9;">Status</th>

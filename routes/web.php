@@ -177,6 +177,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/edit/{id}', [EdgeProfileThicknessController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [EdgeProfileThicknessController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [EdgeProfileThicknessController::class, 'destroy'])->name('destroy');
+            Route::get('/material-type/{id}/thicknesses',[EdgeProfileThicknessController::class, 'getThicknessByMaterial']);
         });
         /*---------------------------------End Edge Profile Thickness Controller---------------------------------*/
 
@@ -188,6 +189,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/edit/{id}', [MaterialColorEdgeExceptionController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [MaterialColorEdgeExceptionController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [MaterialColorEdgeExceptionController::class, 'destroy'])->name('destroy');
+            Route::get('/material-type/{id}/thicknesses',[MaterialColorEdgeExceptionController::class, 'getThicknessByMaterial']);
+            Route::get('/material-type/{id}/colors',[MaterialColorEdgeExceptionController::class, 'getColorsByMaterial']);
         });
         /*---------------------------------End Material Color Edge Exception Controller--------------------------*/
 
