@@ -104,7 +104,7 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                             <div class="col-md-6">
                                                 <label class="form-label">Material Type</label>
                                                 <select class="form-select material-type-select"
-                                                    data-cutout-id="{{ $item->id }}">
+                                                    data-cutout-id="{{ $item->id }}" disabled>
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
                                                     <option value="{{ $price->material_type_id }}"
@@ -118,7 +118,7 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
                                             <div class="col-md-6">
                                                 <label class="form-label">Thickness</label>
                                                 <select class="form-select thickness-select"
-                                                    data-cutout-id="{{ $item->id }}">
+                                                    data-cutout-id="{{ $item->id }}" disabled>
                                                     <option value="">Choose...</option>
                                                     @foreach($item->materialThicknessPrices as $price)
                                                     <option value="{{ $price->thickness_value }}"

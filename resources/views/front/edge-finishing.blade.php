@@ -79,7 +79,7 @@ $selectedMaterialTypeId =
                         <label class="form-label fw-bold">
                             Thickness <sup class="text-danger">*</sup>
                         </label>
-                        <select class="form-select form-select-lg" id="edge-thickness-select" required>
+                        <select class="form-select form-select-lg" id="edge-thickness-select" disabled>
                             <option value="">-- Select Thickness --</option>
                             @foreach($thickness as $item)
                             <option value="{{ $item->id }}" {{ $selectedThicknessId == $item->id ? 'selected' : '' }}>
@@ -96,7 +96,7 @@ $selectedMaterialTypeId =
                         <label class="form-label fw-bold">
                             Color <sup class="text-danger">*</sup>
                         </label>
-                        <select class="form-select form-select-lg" id="edge-color-select" required>
+                        <select class="form-select form-select-lg" id="edge-color-select" disabled>
                             <option value="">-- Select Color --</option>
                             @foreach($colors as $item)
                             <option value="{{ $item->id }}" {{ $selectedColorId == $item->id ? 'selected' : '' }}>

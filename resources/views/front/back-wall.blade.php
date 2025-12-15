@@ -294,8 +294,9 @@ $blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'h
 }
 
 .wall-card.selected {
-    border: 3px solid #007bff;
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
+    border: 3px solid #28a745 !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5) !important;
+    background-color: #f8fff9;
     position: relative;
 }
 
@@ -304,7 +305,7 @@ $blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'h
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     padding: 4px 8px;
     font-size: 12px;

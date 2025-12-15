@@ -548,15 +548,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Listen for edge profile card clicks (handled in blade but sync here)
             document.querySelectorAll('.edge-profile-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const edgeId = this.getAttribute('data-id');
-                    if (edgeId && ef) {
-                        ef.edge_id = edgeId;
-                        // Save to session
-                        saveEdgeFinishingToSession();
-                    }
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Remove selected class from all
+                    document.querySelectorAll('.edge-profile-card').forEach(c => c
+                        .classList.remove('selected'));
+
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+
+                    // Save selected edge id and name
+                    selectedEdgeId = this.getAttribute('data-id');
+                    selectedEdgeName = this.getAttribute('data-name');
+
+                    // Update global object
+                    if (window.edgeFinishing) window.edgeFinishing.edge_id =
+                        selectedEdgeId;
+
+                    // Show summary section
+                    //const summarySection = document.getElementById('selection-summary');
+                    //if (summarySection) summarySection.style.display = 'block';
+
+                    // Update summary display
+                    //updateSummary();
+
+                    // Save to session
+                    saveEdgeFinishingToSession();
+
+                    console.log('Selected Edge Profile:', selectedEdgeName);
                 });
             });
+
         }, 200);
     }
 
@@ -642,12 +666,31 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.wall-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const wallId = this.getAttribute('data-id');
-                    if (wallId) {
-                        ef.wall_id = wallId;
-                        saveBackWallToSession();
-                    }
+                    if (!wallId) return;
+
+                    // Remove previous selection
+                    document.querySelectorAll('.wall-card').forEach(c => c.classList
+                        .remove('selected'));
+
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+
+                    // --- CRITICAL ---
+                    if (!window.backWall) window.backWall = {};
+                    window.backWall.wall_id = wallId;
+
+                    if (!backWall) backWall = {};
+                    backWall.wall_id = wallId;
+
+                    // Show sides section
+                    //const sidesSection = document.getElementById('sides-selection-section');
+                    //if (sidesSection) sidesSection.style.display = 'block';
+
+                    // Save to session (optional but recommended)
+                    saveBackWallToSession();
                 });
             });
+
 
         }, 200);
     }
