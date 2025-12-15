@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialLayoutShapeController extends Controller
 {
-    
     //listing Material Layout Shape with pagination
     public function index(Request $request)
-    {        
+    {
         $query = MaterialLayoutShape::orderBy('id', 'desc');
         // Paginate the Location, retain the search query on pagination
         $data['shape'] = $query->paginate(10)->withQueryString();     
@@ -24,7 +23,7 @@ class MaterialLayoutShapeController extends Controller
 
     //Add Material Layout Shape
     public function create()
-    {        
+    {
         $data['group'] = MaterialLayoutGroup::where('status', 1)->orderBy('name')->get();
         return view('admin.material_layout_shapes.add', $data);
     }
@@ -37,10 +36,8 @@ class MaterialLayoutShapeController extends Controller
             'layout_group_id' => 'required|exists:material_layout_groups,id',
             'status'        => 'required|in:0,1',
             'image'         => 'required|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
-           // 'dimension_sides' => 'nullable|array',
-            'dimension_sides.*.name' => 'required_with:dimension_sides|string',
-            'dimension_sides.*.min' => 'required_with:dimension_sides|numeric',
-            'dimension_sides.*.max' => 'required_with:dimension_sides|numeric',
+            'price_guest'      => 'required|numeric|min:0',
+            'price_business'   => 'required|numeric|min:0',
         ]);
 
         $imageName = null;
@@ -69,8 +66,8 @@ class MaterialLayoutShapeController extends Controller
         $shape->layout_group_id        = $request->layout_group_id;    
         $shape->image                  = $imageName;
         $shape->status                 = $request->status;
-       // $shape->dimension_sides        = $request->dimension_sides;
-
+        $shape->price_guest            = $request->price_guest;
+        $shape->price_business         = $request->price_business;
         $shape->save();    
 
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape added successfully!');
@@ -94,10 +91,8 @@ class MaterialLayoutShapeController extends Controller
             'layout_group_id' => 'required|exists:material_layout_groups,id',
             'status'        => 'required|in:0,1',
             'image'         => 'nullable|image|mimes:jpg,jpeg,JPG,svg,png,PNG|max:10024',
-            'dimension_sides' => 'nullable|array',
-            'dimension_sides.*.name' => 'required_with:dimension_sides|string',
-            'dimension_sides.*.min' => 'required_with:dimension_sides|numeric',
-            'dimension_sides.*.max' => 'required_with:dimension_sides|numeric',
+            'price_guest'      => 'required|numeric|min:0',
+            'price_business'   => 'required|numeric|min:0',
         ]);
         
         $imageName = $shape->image;
@@ -121,11 +116,12 @@ class MaterialLayoutShapeController extends Controller
         }
         $shape = MaterialLayoutShape::findOrFail($id);
         
-        $shape->name                  = $request->name;
-        $shape->layout_group_id       = $request->layout_group_id; 
-        $shape->image                 = $imageName;
-        $shape->status                = $request->status;
-        $shape->dimension_sides       = $request->dimension_sides;
+        $shape->name                   = $request->name;
+        $shape->layout_group_id        = $request->layout_group_id; 
+        $shape->image                  = $imageName;
+        $shape->status                 = $request->status;
+        $shape->price_guest            = $request->price_guest;
+        $shape->price_business         = $request->price_business;
         $shape->save();
 
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape updated successfully!');
@@ -150,12 +146,10 @@ class MaterialLayoutShapeController extends Controller
         return redirect()->route('admin.material.layout.shape.list')->with('success', 'Material layout shape deleted successfully.');
     }
 
-    //view
+    //view Material Layout Shape
     public function view($id)
     {
         $shape = MaterialLayoutShape::with('layoutGroup')->findOrFail($id);
         return view('admin.material_layout_shapes.view', compact('shape'));
     }
-
-
 }

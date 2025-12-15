@@ -48,30 +48,21 @@
                             @error('image') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- <div class="col-12 mb-3">
-                            <label>Dimension Sides</label>
-                            <div id="dimension-wrapper">
+                        <!-- Price Guest -->
+                        <div class="col-md-4 mb-3">
+                            <label>Price Guest <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" name="price_guest" class="form-control"
+                                value="{{ old('price_guest') }}">
+                            @error('price_guest') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
 
-                                <div class="row mb-2 single-side">
-                                    <div class="col-md-4">
-                                        <input type="text" name="dimension_sides[0][name]" class="form-control"
-                                            placeholder="Side Name (e.g., Side A)">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="number" name="dimension_sides[0][min]" class="form-control"
-                                            placeholder="Min Value">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="number" name="dimension_sides[0][max]" class="form-control"
-                                            placeholder="Max Value">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-danger remove-side d-none">X</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" id="add-side" class="btn btn-primary btn-sm mt-2">+ Add Side</button>
-                        </div> -->
+                        <!-- Price Business -->
+                        <div class="col-md-4 mb-3">
+                            <label>Price Business <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" name="price_business" class="form-control"
+                                value="{{ old('price_business') }}">
+                            @error('price_business') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
                         <!-- Status -->
                         <div class="col-md-4 mb-3">
                             <label for="status">Status</label>
@@ -91,34 +82,4 @@
         </div>
     </div>
 </div>
-
-<script>
-let index = 1;
-
-document.getElementById('add-side').addEventListener('click', function() {
-    let html = `
-        <div class="row mb-2 single-side">
-            <div class="col-md-4">
-                <input type="text" name="dimension_sides[${index}][name]" class="form-control" placeholder="Side Name">
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="dimension_sides[${index}][min]" class="form-control" placeholder="Min Value">
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="dimension_sides[${index}][max]" class="form-control" placeholder="Max Value">
-            </div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-danger remove-side">X</button>
-            </div>
-        </div>`;
-    document.getElementById('dimension-wrapper').insertAdjacentHTML('beforeend', html);
-    index++;
-});
-
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-side')) {
-        e.target.closest('.single-side').remove();
-    }
-});
-</script>
 @endsection

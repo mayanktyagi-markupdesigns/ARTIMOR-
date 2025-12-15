@@ -42,10 +42,9 @@ class EdgeProfileThicknessController extends Controller
             'status'              => 'required|in:0,1',           
         ]);        
         // Convert true/false string → 1/0
-        $isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
+       // $isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
 
         $edge_profile_rule = new EdgeProfileThicknessRule();
-
         $edge_profile_rule->edge_profile_id         = $request->edge_profile_id;
         $edge_profile_rule->material_type_id        = $request->material_type_id;
         $edge_profile_rule->thickness_id            = $request->thickness_id;    
@@ -83,7 +82,7 @@ class EdgeProfileThicknessController extends Controller
         ]);
         
         // Convert true/false string → 1/0
-        $isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
+        //$isAllowed = filter_var($request->is_allowed, FILTER_VALIDATE_BOOLEAN);
 
         $edge_profile_rule = EdgeProfileThicknessRule::findOrFail($id);
         
@@ -106,5 +105,17 @@ class EdgeProfileThicknessController extends Controller
         $edge_profile_rule->delete();
         return redirect()->route('admin.edge.profile.thickness.list')->with('success', 'Edge profile thickness rule deleted successfully.');
     }
+
+    public function getThicknessByMaterial($materialTypeId)
+    {
+        $thicknesses = \DB::table('thicknesses')
+            ->where('material_type_id', $materialTypeId)
+            ->where('status', 1)
+            ->select('id', 'thickness_value')
+            ->get();
+
+        return response()->json($thicknesses);
+    }
+
     
 }

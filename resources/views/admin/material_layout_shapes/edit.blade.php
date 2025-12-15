@@ -42,10 +42,27 @@
                         <input type="file" class="form-control" name="image" id="image" accept=".jpg,.jpeg,.png,.svg">
                         @if($shape->image)
                         <img src="{{ asset('uploads/layout-shapes/'.$shape->image) }}" class="img-thumbnail mt-2"
-                            width="120">
+                            width="60">
                         @endif
 
                         @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <!-- Price Guest -->
+                    <div class="col-md-4 mb-3">
+                        <label for="price_guest">Price Guest <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" name="price_guest"
+                            value="{{ old('price_guest', $shape->price_guest) }}" placeholder="Enter guest price">
+                        @error('price_guest') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <!-- Price Business -->
+                    <div class="col-md-4 mb-3">
+                        <label for="price_business">Price Business <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" name="price_business"
+                            value="{{ old('price_business', $shape->price_business) }}"
+                            placeholder="Enter business price">
+                        @error('price_business') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                     <!-- Status -->
                     <div class="col-md-4 mb-3">
@@ -59,60 +76,6 @@
                         @error('status') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
-                {{-- ===============================
-                    DIMENSION SIDES (JSON INPUT)
-                ================================== --}}
-
-                <!-- @php
-                $sides = old('dimension_sides', $shape->dimension_sides ?? []);
-                @endphp -->
-
-                <!-- <div class="col-12 mt-3">
-                    <label class="fw-bold">Dimension Sides</label>
-                    <div id="dimension-wrapper">
-                        @if(!empty($sides))
-                        @foreach($sides as $index => $side)
-                        <div class="row mb-2 single-side">
-                            <div class="col-md-4">
-                                <input type="text" name="dimension_sides[{{ $index }}][name]" class="form-control"
-                                    placeholder="Side Name" value="{{ $side['name'] ?? '' }}">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" name="dimension_sides[{{ $index }}][min]" class="form-control"
-                                    placeholder="Min" value="{{ $side['min'] ?? '' }}">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" name="dimension_sides[{{ $index }}][max]" class="form-control"
-                                    placeholder="Max" value="{{ $side['max'] ?? '' }}">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger remove-side">X</button>
-                            </div>
-                        </div>
-                        @endforeach
-                        @else
-                        {{-- If no sides exist, show one default row --}}
-                        <div class="row mb-2 single-side">
-                            <div class="col-md-4">
-                                <input type="text" name="dimension_sides[0][name]" class="form-control"
-                                    placeholder="Side Name">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" name="dimension_sides[0][min]" class="form-control"
-                                    placeholder="Min">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" name="dimension_sides[0][max]" class="form-control"
-                                    placeholder="Max">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger remove-side d-none">X</button>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                    <button type="button" id="add-side" class="btn btn-primary btn-sm mt-2">+ Add Side</button>
-                </div> -->
 
                 <!-- Submit -->
                 <div class="mt-4 text-end">
@@ -124,36 +87,4 @@
         </div>
     </div>
 </div>
-<script>
-let index = {
-    {
-        !empty($sides) ? count($sides) : 1
-    }
-};
-document.getElementById('add-side').addEventListener('click', function() {
-    let html = `
-        <div class="row mb-2 single-side">
-            <div class="col-md-4">
-                <input type="text" name="dimension_sides[${index}][name]" class="form-control" placeholder="Side Name">
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="dimension_sides[${index}][min]" class="form-control" placeholder="Min">
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="dimension_sides[${index}][max]" class="form-control" placeholder="Max">
-            </div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-danger remove-side">X</button>
-            </div>
-        </div>`;
-    document.getElementById('dimension-wrapper').insertAdjacentHTML('beforeend', html);
-    index++;
-});
-
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-side')) {
-        e.target.closest('.single-side').remove();
-    }
-});
-</script>
 @endsection
