@@ -713,13 +713,24 @@ public function getCalculatorSteps(Request $request)
                 }
             }
         }
+
+        $layoutPrice = 0;
+
+        if ($layout) {
+            if (auth()->check()) {
+                $layoutPrice = $layout->price_business;
+            } else {
+                $layoutPrice = $layout->price_guest;
+            }
+        }
+
         
         /* ---------------------------
         | Price calculation
         |----------------------------*/
         $priceDetails = [
             'material'   => $materialPrice ?? 0,
-            'layout'     => $layout?->price ?? 0,
+            'layout'     => $layoutPrice ?? 0,
             'edgePrice'  => $edgePrice ?? 0,
             'backsplash' => $totalBackwallPrice ?? 0,
             'sink'       => ($sink?->price ?? 0) * ($sinkSelection['number'] ?? 1),
