@@ -425,7 +425,7 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
 
                             <!-- Submit Button -->
                             <div class="text-center my-5 d-flex align-items-center justify-content-start gap-4">
-                                <button type="submit" class="btn btn-dark btn-primary px-4">Submit</button>
+                                <button type="submit" class="btn btn-dark btn-primary px-4" disabled>Submit</button>
                             </div>
                         </div>
                     </div>

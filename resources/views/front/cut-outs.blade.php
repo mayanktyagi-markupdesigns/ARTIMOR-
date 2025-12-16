@@ -179,4 +179,13 @@ $selectedCutoutId = $cutoutSelection['cutout_id'] ?? null;
         border-radius: 4px;
         font-weight: bold;
     }
+
+    /* Modal ke disabled select se dropdown arrow remove */
+    select:disabled {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: none !important;
+        cursor: not-allowed;
+    }
     </style>

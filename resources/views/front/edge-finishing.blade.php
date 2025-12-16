@@ -19,23 +19,23 @@ session('selected_material_type_id'));
 
 @php
 $edgeFinishing = $edgeFinishing ?? session('edge_finishing', [
-    'edge_id' => null,
-    'selected_edges' => []
+'edge_id' => null,
+'selected_edges' => []
 ]);
 
 $materialConfig = session('material_config', []);
 
-$selectedEdgeId      = $edgeFinishing['edge_id'] ?? null;
-$selectedEdges       = $edgeFinishing['selected_edges'] ?? [];
+$selectedEdgeId = $edgeFinishing['edge_id'] ?? null;
+$selectedEdges = $edgeFinishing['selected_edges'] ?? [];
 $selectedThicknessId = $materialConfig['thickness'] ?? null;
-$selectedColorId     = $materialConfig['color'] ?? null;
+$selectedColorId = $materialConfig['color'] ?? null;
 
 $edgeProfiles = $edgeProfiles ?? collect();
 
 $selectedMaterialTypeId =
-    $selectedMaterialTypeId
-    ?? $materialConfig['material_type_id']
-    ?? session('selected_material_type_id');
+$selectedMaterialTypeId
+?? $materialConfig['material_type_id']
+?? session('selected_material_type_id');
 @endphp
 
 <div class="materials">
@@ -79,7 +79,7 @@ $selectedMaterialTypeId =
                         <label class="form-label fw-bold">
                             Thickness <sup class="text-danger">*</sup>
                         </label>
-                        <select class="form-select form-select-lg" id="edge-thickness-select" disabled>
+                        <select class="form-select form-select-lg no-arrow" id="edge-thickness-select" disabled>
                             <option value="">-- Select Thickness --</option>
                             @foreach($thickness as $item)
                             <option value="{{ $item->id }}" {{ $selectedThicknessId == $item->id ? 'selected' : '' }}>
@@ -96,7 +96,7 @@ $selectedMaterialTypeId =
                         <label class="form-label fw-bold">
                             Color <sup class="text-danger">*</sup>
                         </label>
-                        <select class="form-select form-select-lg" id="edge-color-select" disabled>
+                        <select class="form-select form-select-lg no-arrow" id="edge-color-select" disabled>
                             <option value="">-- Select Color --</option>
                             @foreach($colors as $item)
                             <option value="{{ $item->id }}" {{ $selectedColorId == $item->id ? 'selected' : '' }}>
@@ -750,6 +750,16 @@ $selectedMaterialTypeId =
 
 #selection-summary {
     animation: fadeIn 0.5s ease;
+}
+
+/* Disabled select se dropdown arrow remove */
+select.no-arrow:disabled {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none !important;
+    padding-right: 12px;
+    cursor: not-allowed;
 }
 
 @keyframes fadeIn {
