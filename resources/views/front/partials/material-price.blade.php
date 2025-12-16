@@ -53,10 +53,8 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
                 <!-- MATERIAL CARD -->
                 <div class="col-md-4 mb-4">
-                    <div class="p-0 card border-0 rounded-0 position-relative product-col material-type-card
-                                {{ (string)$selectedMaterialTypeId === (string)$type->id ? 'selected' : '' }}"
-                        data-id="{{ $type->id }}"
-                        data-modal-target="#materialModal-{{ $type->id }}">
+                    <div class="p-0 card border-0 rounded-0 position-relative product-col material-type-card"
+                        data-id="{{ $type->id }}" data-modal-target="#materialModal-{{ $type->id }}">
 
                         <img src="{{ $typeImage }}" class="card-img-top" alt="{{ $type->name }}">
 
@@ -90,7 +88,7 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                             <select class="form-select mat-color" data-id="{{ $type->id }}" required>
                                                 <option value="">Select Color</option>
                                                 @foreach($type->colors as $color)
-                                                <option value="{{ $color->id }}" 
+                                                <option value="{{ $color->id }}"
                                                     {{ (string)$materialConfig['color'] === (string)$color->id ? 'selected' : '' }}>
                                                     {{ $color->name }}
                                                 </option>
@@ -117,7 +115,8 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
                                         <!-- THICKNESS -->
                                         <div class="inputfild-box mt-3">
                                             <label class="form-label">Thickness<sup>*</sup></label>
-                                            <select class="form-select mat-thickness" data-id="{{ $type->id }}" required>
+                                            <select class="form-select mat-thickness" data-id="{{ $type->id }}"
+                                                required>
                                                 <option value="">Select Thickness</option>
                                                 @foreach($type->thicknesses as $thickness)
                                                 <option value="{{ $thickness->id }}"
@@ -164,7 +163,12 @@ $selectedMaterialTypeId = $materialConfig['material_type_id'] ?? null;
 
 <script>
 //let selectedMaterialTypeId = "{{ $selectedMaterialTypeId }}";
-let materialSelection = {};
+let materialSelection = {
+    material_type_id: null,
+    color: null,
+    finish: null,
+    thickness: null
+};
 
 console.log('Final Material script loaded');
 
@@ -188,14 +192,14 @@ document.addEventListener('click', function(e) {
     const modalElement = document.querySelector(modalTarget);
     if (modalElement) {
         const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-        
+
         // Restore selected values if material was already selected
         const materialTypeId = card.getAttribute('data-id');
         if (materialSelection.material_type_id === materialTypeId) {
             const colorSelect = modalElement.querySelector('.mat-color');
             const finishSelect = modalElement.querySelector('.mat-finish');
             const thicknessSelect = modalElement.querySelector('.mat-thickness');
-            
+
             if (colorSelect && materialSelection.color) {
                 colorSelect.value = materialSelection.color;
                 colorSelect.classList.add('is-valid');
@@ -209,7 +213,7 @@ document.addEventListener('click', function(e) {
                 thicknessSelect.classList.add('is-valid');
             }
         }
-        
+
         modal.show();
     }
 });
@@ -296,7 +300,8 @@ document.addEventListener('click', function(e) {
         const badge = document.createElement('span');
         badge.className = 'confirmation-badge';
         badge.innerHTML = '✓ Confirmed';
-        badge.style.cssText = 'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
+        badge.style.cssText =
+            'position: absolute; top: 10px; left: 10px; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10;';
         selectedCard.style.position = 'relative';
         selectedCard.appendChild(badge);
     }
@@ -304,7 +309,7 @@ document.addEventListener('click', function(e) {
     /* SAFE MODAL CLOSE */
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
     modalInstance.hide();
-    
+
     // No alert message - just visual feedback through selected state
 });
 

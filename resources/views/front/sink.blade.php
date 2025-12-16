@@ -129,7 +129,7 @@ $selectedSinkId = $sinkSelection['sink_id'] ?? null;
                                                     <label class="form-label">Number<sup>*</sup></label>
                                                     <input type="number" class="form-control sink-number"
                                                         data-sink-id="{{ $sink->id }}"
-                                                        value="{{ $selectedSinkId == $sink->id ? ($sinkSelection['number'] ?? 2) : 2 }}"
+                                                        value="{{ $selectedSinkId == $sink->id ? ($sinkSelection['number'] ?? 2) : 1 }}"
                                                         min="0" max="10">
                                                 </div>
                                             </div>
