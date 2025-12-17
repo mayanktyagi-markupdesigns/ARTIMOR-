@@ -634,6 +634,7 @@ public function getCalculatorSteps(Request $request)
                 $backsplashPrice = \App\Models\BacksplashPrice::where([
                     'backsplash_shape_id' => $backWall['wall_id'],
                     'material_type_id' => $materialConfig['material_type_id'],
+                    'thickness_id' => $materialConfig['thickness'],
                     'status' => 1
                 ])->first();
 
