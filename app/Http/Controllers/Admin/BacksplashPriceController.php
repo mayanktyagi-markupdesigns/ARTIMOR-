@@ -6,18 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BacksplashPrice;
 use App\Models\MaterialType;
+use App\Models\Thickness;
 use App\Models\BacksplashShapes;
 
 class BacksplashPriceController extends Controller
 {
     // LIST
     public function index()
-    {       
-        $query = BacksplashPrice::with('materialType')->orderBy('id','desc');
-        // Paginate the Location, retain the search query on pagination
-        $data['prices'] = $query->paginate(10)->withQueryString();     
-        return view('admin.backsplash-price.index', $data); 
+    {
+        $query = BacksplashPrice::with([
+            'materialType',
+            'thickness',
+            'backsplashShape'
+        ])->orderBy('id', 'desc');
+
+        $data['prices'] = $query->paginate(10)->withQueryString();
+
+        return view('admin.backsplash-price.index', $data);
     }
+
 
     // CREATE FORM
     public function create()
@@ -33,6 +40,7 @@ class BacksplashPriceController extends Controller
         $request->validate([
             'backsplash_shape_id' => 'required|exists:backsplash_shapes,id',
             'material_type_id' => 'required|exists:material_types,id',
+            'thickness_id'        => 'required|exists:thicknesses,id',
             'price_lm_guest' => 'required|numeric|min:0',
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
             'price_lm_business' => 'required|numeric|min:0',
@@ -46,6 +54,7 @@ class BacksplashPriceController extends Controller
 
         $price->backsplash_shape_id               = $request->backsplash_shape_id ;
         $price->material_type_id                  = $request->material_type_id;
+        $price->thickness_id                      = $request->thickness_id;
         $price->price_lm_guest                    = $request->price_lm_guest;
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;
         $price->price_lm_business                 = $request->price_lm_business;
@@ -64,6 +73,7 @@ class BacksplashPriceController extends Controller
         $data['price']         = BacksplashPrice::findOrFail($id);
         $data['materialTypes'] = MaterialType::where('status', 1)->get();
         $data['backsplashShapes'] = BacksplashShapes::where('status', 1)->get();
+        $data['thicknesses'] = Thickness::where('status', 1)->orderBy('thickness_value')->get();
         return view('admin.backsplash-price.edit', $data);
     }
 
@@ -75,6 +85,7 @@ class BacksplashPriceController extends Controller
         $request->validate([
             'backsplash_shape_id' => 'required|exists:backsplash_shapes,id',
             'material_type_id' => 'required|exists:material_types,id',
+            'thickness_id'     => 'required|exists:thicknesses,id',
             'price_lm_guest' => 'required|numeric|min:0',
             'finished_side_price_lm_guest' => 'nullable|numeric|min:0',
             'price_lm_business' => 'required|numeric|min:0',
@@ -86,6 +97,7 @@ class BacksplashPriceController extends Controller
 
         $price->backsplash_shape_id               = $request->backsplash_shape_id;
         $price->material_type_id                  = $request->material_type_id;
+        $price->thickness_id                      = $request->thickness_id;
         $price->price_lm_guest                    = $request->price_lm_guest;
         $price->finished_side_price_lm_guest      = $request->finished_side_price_lm_guest;
         $price->price_lm_business                 = $request->price_lm_business;
