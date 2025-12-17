@@ -487,24 +487,6 @@ public function getCalculatorSteps(Request $request)
             });
             return view('front.cut-outs', compact('grouped','selectedMaterialTypeId','selectedThicknessValue'))->render();
 
-        // case 8:
-        // // Overview: read from material_config (preferred) or fall back to legacy keys
-        // $materialConfig = session('material_config', null);
-        // $materialType = !empty($materialConfig['material_type_id'])
-        //     ? \App\Models\MaterialType::find($materialConfig['material_type_id'])
-        //     : (session('selected_material_type_id') ? \App\Models\MaterialType::find(session('selected_material_type_id')) : null);
-
-        // $layout = session('selected_layout_id') ? \App\Models\MaterialLayoutShape::find(session('selected_layout_id')) : null;
-
-        // // Edge removed
-        // $edge = null; // session('edge_finishing.edge_id') ? \App\Models\MaterialEdge::find(session('edge_finishing.edge_id')) : null;
-
-        // $wall = session('back_wall.wall_id') ? \App\Models\BacksplashShapes::find(session('back_wall.wall_id')) : null;
-        // $sink = session('sink_selection.sink_id') ? \App\Models\Sink::with(['images', 'category'])->find(session('sink_selection.sink_id')) : null;
-        // $cutout = session('cutout_selection.cutout_id') ? \App\Models\CutOuts::with(['images', 'category'])->find(session('cutout_selection.cutout_id')) : null;
-
-        // return view('front.overview', compact('materialType', 'layout', 'edge', 'wall', 'sink', 'cutout'))->render();
-
         case 8:
 
         /* ---------------------------
@@ -545,7 +527,7 @@ public function getCalculatorSteps(Request $request)
         if ($thickness) {
             // Business / Guest user check
             $pricePerSqm = auth()->check()
-                ? $thickness->business_price_m2
+                ? $thickness->bussiness_price_m2
                 : $thickness->guest_price_m2;
         }
 
@@ -732,6 +714,20 @@ public function getCalculatorSteps(Request $request)
 
         $totalPrice = array_sum($priceDetails);
 
+        $user = auth()->user();
+
+        $firstName = null;
+        $lastName  = null;
+
+        if ($user?->name) {
+            $nameParts = preg_split('/\s+/', trim($user->name));
+
+            $firstName = $nameParts[0] ?? null;
+            $lastName  = count($nameParts) > 1
+                ? implode(' ', array_slice($nameParts, 1))
+                : null;
+  }
+
         return view('front.overview', compact(
             'materialGroupName',
             'materialType',
@@ -755,7 +751,10 @@ public function getCalculatorSteps(Request $request)
             'blad1',
             'area',
             'priceDetails',
-            'totalPrice'
+            'totalPrice',
+            'user', 
+            'firstName', 
+            'lastName'
         ))->render();
         default:
             return response()->json(['error' => 'Invalid step'], 400);

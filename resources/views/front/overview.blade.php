@@ -78,28 +78,33 @@ $area = ($blad1['width'] && $blad1['height']) ? ($blad1['width'] * $blad1['heigh
                                     <div class="inputfild-box">
                                         <label class="form-label">First Name<sup>*</sup></label>
                                         <input type="text" id="firstName" name="first_name" class="form-control"
-                                            placeholder="e.g. Johan" value="" required />
+                                            placeholder="e.g. Johan" value="{{ old('first_name', $firstName) }}"
+                                            required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Last Name<sup>*</sup></label>
                                         <input type="text" id="lastName" name="last_name" class="form-control"
-                                            placeholder="e.g. Sans" value="" required />
+                                            placeholder="e.g. Sans" value="{{ old('last_name', $lastName) }}"
+                                            required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Phone Number<sup>*</sup></label>
                                         <input type="text" id="phoneNumber" name="phone_number" class="form-control"
-                                            placeholder="e.g. +32 4 9720 4041" value="" required />
+                                            placeholder="e.g. +32 4 9720 4041"
+                                            value="{{ old('mobile', $user?->mobile) }}" required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
                                     <div class="inputfild-box">
                                         <label class="form-label">Email ID<sup>*</sup></label>
                                         <input type="email" id="email" name="email" class="form-control"
-                                            placeholder="e.g. Johan@artimordesgns.com" value="" required />
+                                            placeholder="e.g. Johan@artimordesgns.com"
+                                            value="{{ old('email', $user?->email) }}"
+                                            {{ auth()->check() ? 'readonly' : '' }} required />
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5 position-relative">
