@@ -29,7 +29,7 @@
                     <p>{{ $thickness->thickness_value }}</p>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <!-- <div class="col-md-6 mb-3">
                     <label class="fw-bold">Is Massive?</label>
                     <p>
                         @if($thickness->is_massive)
@@ -38,9 +38,9 @@
                             <span class="badge bg-secondary">No</span>
                         @endif
                     </p>
-                </div>
+                </div> -->
 
-                <div class="col-md-6 mb-3">
+                <!-- <div class="col-md-6 mb-3">
                     <label class="fw-bold">Can Be Laminated?</label>
                     <p>
                         @if($thickness->can_be_laminated)
@@ -49,8 +49,8 @@
                             <span class="badge bg-secondary">No</span>
                         @endif
                     </p>
-                </div>
-                @if($thickness->can_be_laminated)
+                </div> -->
+                <!-- @if($thickness->can_be_laminated)
                     <div class="col-md-6 mb-3">
                         <label class="fw-bold">Laminate Min</label>
                         <p>{{ $thickness->laminate_min ?? '—' }}</p>
@@ -60,7 +60,7 @@
                         <label class="fw-bold">Laminate Max</label>
                         <p>{{ $thickness->laminate_max ?? '—' }}</p>
                     </div>
-                @endif
+                @endif -->
 
                 <div class="col-md-6 mb-3">
                     <label class="fw-bold">Business Price (m²)</label>

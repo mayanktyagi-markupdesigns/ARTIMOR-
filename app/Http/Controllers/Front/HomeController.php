@@ -626,7 +626,7 @@ public function getCalculatorSteps(Request $request)
 
         if (!empty($backWall['wall_id'])) {
 
-            $widthCm = $backWall['dimensions']['blad1']['width'];
+            $widthCm = $backWall['dimensions']['blad1']['width'] ?? 0;
             $lm = $widthCm / 100;
 
             if ($lm > 0) {
