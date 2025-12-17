@@ -18,12 +18,11 @@
                             <th scope="col" style="width: 50px;  background-color: #f1f5f9;">SN.</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Backsplash Shapes</th>
                             <th scope="col" style="width: 250px; background-color: #f1f5f9;">Material Type</th>
+                            <th scope="col" style="width: 250px; background-color: #f1f5f9;">Thickness</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price (Guest)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Guest)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Price (Business)</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Finished Side Price (Business)</th>
-                            <!-- <th scope="col" style="width: 200px; background-color: #f1f5f9;">Min Height (mm)</th>
-                            <th scope="col" style="width: 200px; background-color: #f1f5f9;">Max Height</th> -->
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Status</th>
                             <th scope="col" style="width: 200px; background-color: #f1f5f9;">Action</th>                           
                         </tr>
@@ -32,8 +31,9 @@
                         @foreach($prices as $price)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $price->backsplashShapes->name ?? '—' }}</td>
+                            <td>{{ $price->backsplashShape->name ?? '—' }}</td>
                             <td>{{ $price->materialType->name ?? '—' }}</td>
+                            <td>{{ $price->thickness->thickness_value ?? '—' }}</td>
                             <td>{{ $price->price_lm_guest }}</td>
                             <td>{{ $price->finished_side_price_lm_guest }}</td>
                             <td>{{ $price->price_lm_business }}</td>
