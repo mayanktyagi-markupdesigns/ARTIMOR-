@@ -54,7 +54,7 @@
                     </div>
 
                     <!-- Is Massive -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Is Massive?</label>
                         <select name="is_massive" class="form-select">
                             <option value="0" {{ old('is_massive', $thickness->is_massive) == 0 ? 'selected' : '' }}>No
@@ -62,10 +62,10 @@
                             <option value="1" {{ old('is_massive', $thickness->is_massive) == 1 ? 'selected' : '' }}>Yes
                             </option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <!-- Can Be Laminated -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Can Be Laminated?</label>
                         <select name="can_be_laminated" id="can_be_laminated" class="form-select">
                             <option value="0"
@@ -75,23 +75,23 @@
                                 {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? 'selected' : '' }}>Yes
                             </option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <!-- Laminate Min -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Lamination Min (mm)</label>
                         <input type="number" name="laminate_min" id="laminate_min" class="form-control"
                             value="{{ old('laminate_min', $thickness->laminate_min) }}"
                             {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? '' : 'disabled' }}>
-                    </div>
+                    </div> -->
 
                     <!-- Laminate Max -->
-                    <div class="col-md-4 mb-3">
+                    <!-- <div class="col-md-4 mb-3">
                         <label>Lamination Max (mm)</label>
                         <input type="number" name="laminate_max" id="laminate_max" class="form-control"
                             value="{{ old('laminate_max', $thickness->laminate_max) }}"
                             {{ old('can_be_laminated', $thickness->can_be_laminated) == 1 ? '' : 'disabled' }}>
-                    </div>
+                    </div> -->
 
                     <!-- Business Price -->
                     <div class="col-md-4 mb-3">
