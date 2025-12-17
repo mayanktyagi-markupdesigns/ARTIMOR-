@@ -62,8 +62,8 @@ $blad1 = isset($dimensions['blad1']) ? $dimensions['blad1'] : ['width' => '', 'h
                     </div>
                     <div class="prod-box-rht">
                         <div class="inpnumber">
-                            <input type="text" class="form-control height-input" id="backwall_height" placeholder="Height (cm)"
-                                value="">
+                            <input type="text" class="form-control height-input" id="backwall_height"
+                                placeholder="Height (cm)" value="">
                         </div>
                     </div>
                 </div>

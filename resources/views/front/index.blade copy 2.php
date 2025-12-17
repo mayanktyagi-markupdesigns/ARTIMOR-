@@ -98,7 +98,7 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 </div>
 <!-- Next Step Button -->
 <div class="text-center my-5 d-flex align-items-center justify-content-center gap-4">
-    <button id="prevStepBtn" class="btn btn-secondary cancel-btn" data-step="1">Step Back</button>
+    <a href="{{ route('home') }}" class="btn btn-secondary cancel-btn">Step Back</a>
     <button id="nextStepBtn" class="btn btn-dark btn-primary px-4" data-step="2">Next Step</button>
 </div>
 
@@ -115,52 +115,6 @@ $selectedLayoutId = $selectedLayoutId ?? session('selected_layout_id');
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
-    const prevStepBtn = document.getElementById('prevStepBtn');
-
-    prevStepBtn.addEventListener('click', function() {
-        let currentStep = parseInt(nextStepBtn.getAttribute('data-step')) - 1;
-
-        if (currentStep <= 1) {
-            // Already at the first step, disable or hide button
-            alert("You are at the first step.");
-            return;
-        }
-
-        const prevStep = currentStep - 1;
-
-        // Show previous step and hide current step
-        for (let i = 1; i <= 9; i++) {
-            const div = document.getElementById('step' + i);
-            const stepperDiv = document.querySelector('.stepper' + i);
-            if (div) {
-                if (i === prevStep) {
-                    div.classList.remove('hidden');
-                    div.classList.add('show', 'active');
-                } else {
-                    div.classList.add('hidden');
-                    div.classList.remove('show', 'active');
-                }
-            }
-            if (stepperDiv) {
-                if (i < prevStep) {
-                    stepperDiv.classList.add('completed');
-                    stepperDiv.classList.remove('active');
-                } else if (i === prevStep) {
-                    stepperDiv.classList.add('active');
-                    stepperDiv.classList.remove('completed');
-                } else {
-                    stepperDiv.classList.remove('active', 'completed');
-                }
-            }
-        }
-
-        // Update nextStepBtn data-step
-        nextStepBtn.setAttribute('data-step', prevStep + 1);
-
-        // Update prevStepBtn data-step
-        prevStepBtn.setAttribute('data-step', prevStep);
-    });
 
     // ==============================
     // CLICKABLE STEPPER NAVIGATION
